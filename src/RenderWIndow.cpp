@@ -16,7 +16,6 @@ void RenderWindow::initSystem(){
 	if (window==nullptr) std::cerr<<"CreateWindow Error";
 	renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 	if (renderer==nullptr) std::cerr<<"CreateRenderer Error";
-	
 	render("res/hello_world.bmp");
 };
 
