@@ -1,1 +1,0 @@
-# LTNC2022_UET_Nhom8_PokemonVNU
