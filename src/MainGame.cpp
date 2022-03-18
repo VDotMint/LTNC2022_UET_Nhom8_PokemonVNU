@@ -1,7 +1,7 @@
 #include "MainGame.h"
 
 MainGame::MainGame() {
-    gameState=true;
+	gameState=false;
 };
 
 MainGame::~MainGame(){
@@ -10,16 +10,18 @@ MainGame::~MainGame(){
 
 void MainGame::run(){
 	renderWindow.initSystem();
+	gameState=true;
 	gameLoop();
 };
 
 
 
 void MainGame::gameLoop(){
-	int fps=24;
     while(gameState) {
 		inputProcess();
-		SDL_Delay(1000/fps);
+		updateGame();
+		renderGame();
+		delay();
 	}
 	
 };
@@ -40,4 +42,16 @@ void MainGame::inputProcess() {
 		}
 	};
 };
+
+void MainGame::updateGame() {
+
+};
+void MainGame::renderGame(){
+
+};
+void MainGame::delay(){
+	const int ph_fps=24;
+	SDL_Delay(1000/ph_fps);
+};
+
 

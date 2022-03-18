@@ -10,6 +10,9 @@ public:
     void initSystem();
     void gameLoop();
     void inputProcess();
+    void updateGame();
+    void renderGame();
+    void delay();
 private:
     RenderWindow renderWindow;
     bool gameState;
