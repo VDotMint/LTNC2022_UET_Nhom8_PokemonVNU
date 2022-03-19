@@ -12,6 +12,7 @@ public:
 
     void initSystem();
     void render(const char* path);
+    void renderasset(int x, int y, const char* path);
     
     SDL_Texture* loadTexture(const char* path);
 
