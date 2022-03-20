@@ -20,7 +20,7 @@ void RenderWindow::initSystem() {
 	renderer=SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if (renderer == nullptr) std::cerr << "CreateRenderer Error";
 	render("res/titlescreen/background.png");
-	renderasset((SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-284)/2, "res/titlescreen/logo.png");
+	render((SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-284)/2, "res/titlescreen/logo.png");
 	SDL_RenderPresent(renderer);
 };
 
@@ -30,11 +30,15 @@ void RenderWindow::render(const char* path) {
 	SDL_RenderCopy(renderer, texture, NULL, &dst);
 };
 
-void RenderWindow::renderasset(int x, int y, const char* path) {
+void RenderWindow::render(int x, int y, const char* path) {
 	SDL_Rect renderQuad = {x, y, 500, 284};
 	SDL_Texture* texture = loadTexture(path);
 	SDL_RenderCopy(renderer, texture, NULL, &renderQuad);
 }
+
+void RenderWindow::render(Player player) {
+	
+};
 
 SDL_Texture* RenderWindow::loadTexture(const char* path) {
 	SDL_Texture* texture = nullptr;
