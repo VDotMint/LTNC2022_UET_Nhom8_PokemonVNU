@@ -17,10 +17,10 @@ void RenderWindow::initSystem() {
 	}
     window=SDL_CreateWindow("Pokemon VNU", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 	if (window == nullptr) std::cerr << "CreateWindow Error";
-	renderer=SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer=SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (renderer == nullptr) std::cerr << "CreateRenderer Error";
 	render("res/titlescreen/background.png");
-	render((SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-284)/2, "res/titlescreen/logo.png");
+	render((SCREEN_WIDTH-500)/2, (SCREEN_HEIGHT-284)/6, "res/titlescreen/logo.png");
 	SDL_RenderPresent(renderer);
 };
 
