@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+#include "tile.h"
+
 class Map {
     private:
         int** map;
@@ -13,5 +15,5 @@ class Map {
         ~Map();
         void freeMap();
         void loadMap();
-
+        void drawMap();
 };
