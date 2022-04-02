@@ -6,6 +6,7 @@ class Music {
     public:
         Music();
         ~Music();
+        void freeMusic();
         void loadMusic(const char* path);
         void play();
     private:

@@ -1,20 +1,19 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "Player.h"
-#include <iostream>
 
 class RenderWindow {
-public:
-    RenderWindow();
-    
-    SDL_Window* window;
-    SDL_Renderer* renderer;
+    public:
+        RenderWindow(const char* title, int wWidth, int wHeight);
+        SDL_Texture* loadTexture(const char* path);
+        void close();
+        void clear();
+        void drawColor(int red, int green, int blue);
+        void render(SDL_Texture* texture);
+        void display();
 
-    void initSystem();
-    void render(const char* path);
-    void render(int x, int y, const char* path);
-    void render(Player player);
-    SDL_Texture* loadTexture(const char* path);
-
+        static SDL_Renderer* renderer;
+        
+    private:
+        SDL_Window* window;
 };
