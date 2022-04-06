@@ -22,8 +22,6 @@ int hardMap[11][13] = {
 
 Map::Map() {
     map = NULL;
-    natureTileSheet.loadTileSheet("res/tileset/tileset01.png");
-    objectTileSheet.loadTileSheet("res/tileset/tileset02.png");
 }
 
 Map::~Map() {
@@ -38,6 +36,8 @@ void Map::freeMap() {
 }
 
 void Map::loadMap() {
+    natureTileSheet.loadTileSheet("res/tileset/tileset01.png");
+    objectTileSheet.loadTileSheet("res/tileset/tileset02.png");
     map = new int*[11];
     for (int i = 0; i < 11; i++) {
         map[i] = new int[13];

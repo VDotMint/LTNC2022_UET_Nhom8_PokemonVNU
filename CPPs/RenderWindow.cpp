@@ -5,13 +5,18 @@ using namespace std;
 
 SDL_Renderer* RenderWindow::renderer = nullptr;
 
-RenderWindow::RenderWindow(const char* title, int wWidth, int wHeight) {
-    window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, wWidth, wHeight, SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+RenderWindow::RenderWindow() {
+    renderer=NULL;
+    window=NULL;
 }
 
 RenderWindow::~RenderWindow() {
     close();
+}
+
+void RenderWindow::create(const char *title,int w,int h) {
+    window=SDL_CreateWindow(title,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,SDL_WINDOW_RESIZABLE);
+    renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 }
 
 SDL_Texture* RenderWindow::loadTexture(const char* path) {
