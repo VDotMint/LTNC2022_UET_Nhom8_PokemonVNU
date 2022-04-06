@@ -52,16 +52,19 @@ void gameLoop() {
 			        break;
 		    }
         }
-    renderWindow.drawColor(0,0,0);
-    renderWindow.clear();
+
+        SDL_Delay(1000/24);
+
+        renderWindow.drawColor(0,0,0);
+        renderWindow.clear();
         
-    testMap.drawMap();
+        testMap.drawMap();
 
-    renderWindow.display();
+        renderWindow.display();
 
-    if (Mix_PlayingMusic() == 0) {
+        if (Mix_PlayingMusic() == 0) {
             gameTheme.play();
-    }
+        }
     }
 }
 
