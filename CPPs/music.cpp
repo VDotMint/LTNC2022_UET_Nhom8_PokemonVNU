@@ -5,7 +5,11 @@ Music::Music() {
 }
 
 Music::~Music() {
+    freeMusic();
+}
 
+void Music::freeMusic() {
+    Mix_FreeMusic(gameTheme);
 }
 
 void Music::loadMusic(const char* path) {
