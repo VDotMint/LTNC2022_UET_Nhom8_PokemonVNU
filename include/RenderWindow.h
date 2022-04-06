@@ -1,10 +1,12 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 
 class RenderWindow {
     public:
         RenderWindow(const char* title, int wWidth, int wHeight);
+        ~RenderWindow();
         SDL_Texture* loadTexture(const char* path);
         void close();
         void clear();

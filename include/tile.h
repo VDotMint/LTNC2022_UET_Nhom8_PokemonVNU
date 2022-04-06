@@ -14,6 +14,5 @@ class Tile {
         Tile();
         ~Tile();
         void defineTile(TileSheet* sheet, int index, bool walk);
-        void drawTile();
         SDL_Rect* getClip();
 };

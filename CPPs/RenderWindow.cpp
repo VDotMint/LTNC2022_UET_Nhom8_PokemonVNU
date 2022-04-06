@@ -10,6 +10,10 @@ RenderWindow::RenderWindow(const char* title, int wWidth, int wHeight) {
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 }
 
+RenderWindow::~RenderWindow() {
+    close();
+}
+
 SDL_Texture* RenderWindow::loadTexture(const char* path) {
     SDL_Texture* texture = NULL;
     texture = IMG_LoadTexture(renderer, path);
@@ -38,6 +42,7 @@ void RenderWindow::close() {
     renderer = NULL;
     SDL_DestroyWindow(window);
     window = NULL;
+    Mix_Quit();
     IMG_Quit();
     SDL_Quit();
 }
