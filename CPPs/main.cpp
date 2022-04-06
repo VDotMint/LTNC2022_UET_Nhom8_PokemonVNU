@@ -11,34 +11,23 @@
 
 using namespace std;
 
-RenderWindow window;
-Map testMap;
-Music gameTheme;
-bool quit = false;
-
-void initSystem();
-void gameLoop();
-
 int main(int argc, char* argv[]) {
 
-    initSystem();
-    gameLoop();
-    window.close();
-    return 0;
-}
-
-
-
-void initSystem() {
     SDL_Init(SDL_INIT_VIDEO);
     IMG_Init(IMG_INIT_PNG);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    RenderWindow window("Pokémon VNU", 832, 704);
-    testMap.loadMap();
-    gameTheme.loadMusic("res/music/fridaynight.mp3");
-}
 
-void gameLoop() {
+    RenderWindow window("Pokémon VNU", 832, 704);
+
+    Map testMap;
+    testMap.loadMap();
+
+    Music gameTheme;
+
+    gameTheme.loadMusic("res/music/fridaynight.mp3");
+
+    bool quit = false;
+
     SDL_Event e;
 
     while (quit == false) {
@@ -46,17 +35,21 @@ void gameLoop() {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
-            switch (e.type) {
-		        case SDL_QUIT:
-			        quit=true;
-			        break;
-		        case SDL_MOUSEBUTTONDOWN:
-			        cerr<<e.motion.x<<" "<<e.motion.y<<endl;
-			        break;
-		        default:
-			        break;
-		    }
         }
-    }
-}
 
+        window.drawColor(0,0,0);
+        window.clear();
+        
+        testMap.drawMap();
+
+        window.display();
+
+        if (Mix_PlayingMusic() == 0) {
+            gameTheme.play();
+        }
+
+    }
+
+    window.close();
+    return 0;
+}
