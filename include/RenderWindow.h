@@ -5,7 +5,7 @@
 
 class RenderWindow {
     public:
-        RenderWindow(const char* title="Title", int wWidth=640, int wHeight=640);
+        RenderWindow(const char* title="Title", int wWidth = 832, int wHeight = 704);
         ~RenderWindow();
         SDL_Texture* loadTexture(const char* path);
         void close();
