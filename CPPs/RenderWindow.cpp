@@ -6,17 +6,17 @@ using namespace std;
 SDL_Renderer* RenderWindow::renderer = nullptr;
 
 RenderWindow::RenderWindow() {
-    renderer=NULL;
-    window=NULL;
+    renderer = NULL;
+    window = NULL;
 }
 
 RenderWindow::~RenderWindow() {
     close();
 }
 
-void RenderWindow::create(const char *title,int w,int h) {
-    window=SDL_CreateWindow(title,SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,SDL_WINDOW_RESIZABLE);
-    renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
+void RenderWindow::create(const char *title, int w, int h) {
+    window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED, w, h, SDL_WINDOW_RESIZABLE);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 SDL_Texture* RenderWindow::loadTexture(const char* path) {

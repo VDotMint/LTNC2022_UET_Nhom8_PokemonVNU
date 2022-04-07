@@ -8,7 +8,7 @@ class RenderWindow {
         RenderWindow();
         ~RenderWindow();
         SDL_Texture* loadTexture(const char* path);
-        void create(const char *title="Title",int h=64*13,int w=64*11);
+        void create(const char *title = "Title", int w = 64*13, int h = 64*11);
         void close();
         void clear();
         void drawColor(int red, int green, int blue);

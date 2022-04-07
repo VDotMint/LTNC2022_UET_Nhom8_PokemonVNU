@@ -25,8 +25,6 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-
-
 void initSystem() {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
@@ -43,10 +41,10 @@ void gameLoop() {
         while (SDL_PollEvent(&e)) {
             switch (e.type) {
 		        case SDL_QUIT:
-			        quit=true;
+			        quit = true;
 			        break;
 		        case SDL_MOUSEBUTTONDOWN:
-			        cerr<<e.motion.x<<" "<<e.motion.y<<endl;
+			        cerr << e.motion.x << " "<< e.motion.y <<endl;
 			        break;
 		        default:
 			        break;
