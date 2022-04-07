@@ -13,7 +13,9 @@ using namespace std;
 
 RenderWindow renderWindow;
 Map testMap;
+Map g2Map;
 Music gameTheme;
+
 bool quit = false;
 void initSystem();
 void gameLoop();
@@ -44,14 +46,14 @@ void gameLoop() {
 			        quit = true;
 			        break;
 		        case SDL_MOUSEBUTTONDOWN:
-			        cerr << e.motion.x << " "<< e.motion.y <<endl;
+			        cerr << e.motion.x << " "<< e.motion.y << endl;
 			        break;
 		        default:
 			        break;
 		    }
         }
 
-        SDL_Delay(1000/24);
+        SDL_Delay(1000/60);
 
         renderWindow.drawColor(0,0,0);
         renderWindow.clear();
