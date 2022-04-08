@@ -7,12 +7,10 @@
 
 class Tile {
     private:
-        int tID;
-        bool isWalkable;
         SDL_Rect tileClip;
     public:
         Tile();
         ~Tile();
-        void defineTile(TileSheet* sheet, int index, bool walk);
+        void defineTile(TileSheet* sheet, int index);
         SDL_Rect* getClip();
 };

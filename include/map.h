@@ -8,12 +8,13 @@
 class Map {
     private:
         int** map;
+        int** tilePropMap;
         int mapWidth;
         int mapHeight;
     public:
         Map();
         ~Map();
         void freeMap();
-        void loadMap();
-        void drawMap();
+        void loadMap(const char* path);
+        void drawMap(TileSheet* sheet);
 };

@@ -12,7 +12,7 @@
 using namespace std;
 
 RenderWindow renderWindow;
-Map testMap;
+TileSheet g2TileSheet;
 Map g2Map;
 Music gameTheme;
 
@@ -32,7 +32,8 @@ void initSystem() {
     IMG_Init(IMG_INIT_PNG);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
-    testMap.loadMap();
+    g2TileSheet.loadTileSheet("res/tileset/tileset03.png");
+    g2Map.loadMap("res/map/g2.map");
     gameTheme.loadMusic("res/music/fridaynight.mp3");
 }
 
@@ -58,7 +59,7 @@ void gameLoop() {
         renderWindow.drawColor(0,0,0);
         renderWindow.clear();
         
-        testMap.drawMap();
+        g2Map.drawMap(&g2TileSheet);
 
         renderWindow.display();
 

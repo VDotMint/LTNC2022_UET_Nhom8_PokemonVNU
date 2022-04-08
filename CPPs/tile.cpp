@@ -7,15 +7,13 @@
 
 Tile::Tile() {
     tileClip = {0, 0, 0, 0};
-    isWalkable = 0; 
 }
 
 Tile::~Tile() {
     tileClip = {0, 0, 0, 0};
-    isWalkable = 0; 
 }
 
-void Tile::defineTile(TileSheet* sheet, int index, bool walk) {
+void Tile::defineTile(TileSheet* sheet, int index) {
     if (index > (sheet->getWidth()/sheet->getHeight())) {
         std::cout << "Sheet Index Out Of Bound!\n"; 
     } else {
@@ -23,7 +21,6 @@ void Tile::defineTile(TileSheet* sheet, int index, bool walk) {
         tileClip.y = 0;
         tileClip.w = sheet -> getHeight();
         tileClip.h = sheet -> getHeight();
-        isWalkable = walk;
     }
 }
 
