@@ -38,20 +38,29 @@ void Map::loadMap(const char* path) {
         for (int j = 0; j < mapWidth; j++) {
             inputmap >> map[i][j];
         }
-    }    
+    }
+    inputmap.close();    
 }
 
-void Map::drawMap(TileSheet* sheet) {
+void Map::drawMap(TileSheet* sheet, SDL_Rect* camera) {
     for (int i = 0; i < mapHeight; i++) {
         for (int j = 0; j < mapWidth; j++) {
             Tile drawTile;
             drawTile.defineTile(sheet, map[i][j]);
             SDL_Rect dstRect;
-            dstRect.x = j*64;
-            dstRect.y = i*64;
+            dstRect.x = j*64 - camera->x;
+            dstRect.y = i*64 - camera->y;
             dstRect.w = 64;
             dstRect.h = 64;
             SDL_RenderCopy(RenderWindow::renderer, sheet->getTileSheet(), drawTile.getClip(), &dstRect);
         }
     }
+}
+
+int Map::getMapWidth() {
+    return mapWidth;
+}
+
+int Map::getMapHeight() {
+    return mapHeight;
 }

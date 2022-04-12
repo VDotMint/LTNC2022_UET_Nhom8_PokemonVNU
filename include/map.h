@@ -16,5 +16,7 @@ class Map {
         ~Map();
         void freeMap();
         void loadMap(const char* path);
-        void drawMap(TileSheet* sheet);
+        void drawMap(TileSheet* sheet, SDL_Rect* camera);
+        int getMapWidth();
+        int getMapHeight();
 };

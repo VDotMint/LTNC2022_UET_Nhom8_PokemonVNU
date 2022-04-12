@@ -40,18 +40,42 @@ void initSystem() {
 void gameLoop() {
     SDL_Event e;
 
+    SDL_Rect camera = {0, 0, 64*13, 64*11};
+
     while (quit == false) {
         while (SDL_PollEvent(&e)) {
-            switch (e.type) {
-		        case SDL_QUIT:
-			        quit = true;
-			        break;
-		        case SDL_MOUSEBUTTONDOWN:
-			        cerr << e.motion.x << " "<< e.motion.y << endl;
-			        break;
-		        default:
-			        break;
-		    }
+            if (e.type == SDL_QUIT) {
+                quit = true;
+            } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                cerr << e.motion.x << " " << e.motion.y << endl;
+            } else if (e.type == SDL_KEYDOWN) {
+                switch (e.key.keysym.sym) {
+                    case SDLK_w:
+                        camera.y -= 64;
+                        break;
+                    case SDLK_a:
+                        camera.x -= 64;
+                        break;
+                    case SDLK_s:
+                        camera.y += 64;
+                        break;
+                    case SDLK_d:
+                        camera.x += 64;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        if (camera.x > g2Map.getMapWidth()*64 - 832) {
+            camera.x -= 64;
+        } else if (camera.y > g2Map.getMapHeight()*64 - 704) {
+            camera.y -= 64;
+        } else if (camera.x < 0) {
+            camera.x += 64;
+        } else if (camera.y < 0) {
+            camera.y += 64;
         }
 
         SDL_Delay(1000/60);
@@ -59,8 +83,8 @@ void gameLoop() {
         renderWindow.drawColor(0,0,0);
         renderWindow.clear();
         
-        g2Map.drawMap(&g2TileSheet);
-
+        g2Map.drawMap(&g2TileSheet, &camera);
+        
         renderWindow.display();
 
         if (Mix_PlayingMusic() == 0) {
