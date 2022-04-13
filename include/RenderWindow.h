@@ -12,7 +12,7 @@ class RenderWindow {
         void close();
         void clear();
         void drawColor(int red, int green, int blue);
-        void render(SDL_Texture* texture);
+        void render(SDL_Texture* texture, SDL_Rect* clip = NULL);
         void display();
 
         static SDL_Renderer* renderer;

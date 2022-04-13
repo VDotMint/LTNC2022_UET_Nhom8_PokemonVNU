@@ -34,8 +34,8 @@ void RenderWindow::drawColor(int red, int green, int blue) {
     SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
 }
 
-void RenderWindow::render(SDL_Texture* texture) {
-    SDL_RenderCopy(renderer, texture, NULL, NULL);
+void RenderWindow::render(SDL_Texture* texture, SDL_Rect* clip) {
+    SDL_RenderCopy(renderer, texture, NULL, clip);
 }
 
 void RenderWindow::display() {

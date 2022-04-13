@@ -17,6 +17,7 @@ TileSheet g2TileSheet;
 Map g2Map;
 Music gameTheme;
 mPlayer mainPlayer;
+SDL_Rect camera = {0, 0, 64*13, 64*11};
 
 bool quit = false;
 void initSystem();
@@ -40,28 +41,28 @@ void initSystem() {
     if (!mainPlayer.loadPlayerData()) {
         cout << "No player save detected!\n";
     } else {
-        cout << mainPlayer.getPlayerName() << endl << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
+        camera.x = mainPlayer.getXCoords() * 64;
+        camera.y = mainPlayer.getYCoords() * 64;
     }
 }
 
 void gameLoop() {
     SDL_Event e;
 
-    SDL_Rect camera = {0, 0, 64*13, 64*11};
-
     while (quit == false) {
         while (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
+                mainPlayer.savePlayerData();
                 quit = true;
             } else if (e.type == SDL_MOUSEBUTTONDOWN) {
                 cerr << e.motion.x << " " << e.motion.y << endl;
             } else if (e.type == SDL_KEYDOWN) {
                 switch (e.key.keysym.sym) {
                     case SDLK_w:
-                        camera.y -= 64;
+                        camera.y -= 64;                    
                         break;
                     case SDLK_a:
-                        camera.x -= 64;
+                        camera.x -= 64;                    
                         break;
                     case SDLK_s:
                         camera.y += 64;
@@ -72,6 +73,7 @@ void gameLoop() {
                     default:
                         break;
                 }
+                mainPlayer.setPlayerCoords(camera.x/64, camera.y/64);
             }
         }
 
@@ -91,7 +93,7 @@ void gameLoop() {
         renderWindow.clear();
         
         g2Map.drawMap(&g2TileSheet, &camera);
-        
+
         renderWindow.display();
 
         if (Mix_PlayingMusic() == 0) {

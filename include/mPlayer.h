@@ -20,4 +20,5 @@ class mPlayer {
         int getCurrentMap();
         int getXCoords();
         int getYCoords();
+        void setPlayerCoords(int x, int y);
 };

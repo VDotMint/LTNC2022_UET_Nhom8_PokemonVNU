@@ -58,3 +58,8 @@ int mPlayer::getXCoords() {
 int mPlayer::getYCoords() {
     return yCoords;
 }
+
+void mPlayer::setPlayerCoords(int x, int y) {
+    xCoords = x;
+    yCoords = y;
+}
