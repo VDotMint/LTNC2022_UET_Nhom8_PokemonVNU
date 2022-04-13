@@ -8,6 +8,7 @@
 #include "tile.h"
 #include "tilesheet.h"
 #include "map.h"
+#include "mPlayer.h"
 
 using namespace std;
 
@@ -15,6 +16,7 @@ RenderWindow renderWindow;
 TileSheet g2TileSheet;
 Map g2Map;
 Music gameTheme;
+mPlayer mainPlayer;
 
 bool quit = false;
 void initSystem();
@@ -35,6 +37,11 @@ void initSystem() {
     g2TileSheet.loadTileSheet("res/tileset/tileset03.png");
     g2Map.loadMap("res/map/g2.map");
     gameTheme.loadMusic("res/music/fridaynight.mp3");
+    if (!mainPlayer.loadPlayerData()) {
+        cout << "No player save detected!\n";
+    } else {
+        cout << mainPlayer.getPlayerName() << endl << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
+    }
 }
 
 void gameLoop() {
