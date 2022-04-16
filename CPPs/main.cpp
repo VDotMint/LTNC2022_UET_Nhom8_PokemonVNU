@@ -9,6 +9,7 @@
 #include "tilesheet.h"
 #include "map.h"
 #include "mPlayer.h"
+#include "camera.h"
 
 using namespace std;
 
@@ -19,13 +20,11 @@ TileSheet g2TileSheet;
 Map g2Map;
 Music gameTheme;
 mPlayer mainPlayer;
-SDL_Rect camera = {0, 0, 64*13, 64*11};
+gameCam mainCamera;
 
 bool quit = false;
 void initSystem();
 void gameLoop();
-void moveCamera();
-void finishMovement();
 
 int main(int argc, char* argv[]) {
     initSystem();
@@ -45,64 +44,7 @@ void initSystem() {
     if (!mainPlayer.loadPlayerData()) {
         cout << "No player save detected!\n";
     } else {
-        camera.x = mainPlayer.getXCoords() * 64;
-        camera.y = mainPlayer.getYCoords() * 64;
-    }
-}
-
-bool isMoving = false;
-bool finishMove = false;
-bool moveUp = false, moveLeft = false, moveDown = false, moveRight = false;
-
-void moveCamera() {
-    if (moveRight == true) {
-        isMoving = true; 
-        camera.x += MOVE_SPEED;
-    } else if (moveLeft == true) {
-        isMoving = true; 
-        camera.x -= MOVE_SPEED;
-    } else if (moveUp == true) {
-        isMoving = true; 
-        camera.y -= MOVE_SPEED;
-    } else if (moveDown == true) {
-        isMoving = true; 
-        camera.y += MOVE_SPEED;
-    }
-}
-
-void finishMovement() {
-    if (moveRight == true) {
-        if (camera.x % 64 != 0) {
-            camera.x += MOVE_SPEED;
-        } else {
-            moveRight = false;
-            isMoving = false;
-            finishMove = false;
-        }
-    } else if (moveLeft == true) {
-        if (camera.x % 64 != 0) {
-            camera.x -= MOVE_SPEED;
-        } else {
-            isMoving = false;
-            moveLeft = false;
-            finishMove = false;
-        }
-    } else if (moveUp == true) {
-        if (camera.y % 64 != 0) {
-            camera.y -= MOVE_SPEED;
-        } else {
-            isMoving = false;
-            moveUp = false;
-            finishMove = false;
-        }
-    } else if (moveDown == true) {
-        if (camera.y % 64 != 0) {
-            camera.y += MOVE_SPEED;
-        } else {
-            isMoving = false;
-            moveDown = false;
-            finishMove = false;
-        }
+        mainCamera.setCameraPos(mainPlayer.getXCoords() * 64, mainPlayer.getYCoords() * 64);
     }
 }
 
@@ -116,67 +58,28 @@ void gameLoop() {
                 quit = true;
             } else if (e.type == SDL_MOUSEBUTTONDOWN) {
                 cerr << e.motion.x << " " << e.motion.y << endl;
-            } else if (e.type == SDL_KEYDOWN and isMoving == false and e.key.repeat == 0) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_w:
-                        cout << "Key pressed: W" << endl;
-                        moveUp = true; break;
-                    case SDLK_a:
-                        cout << "Key pressed: A" << endl;
-                        moveLeft = true; break;
-                    case SDLK_s:
-                        cout << "Key pressed: S" << endl;
-                        moveDown = true; break;
-                    case SDLK_d:
-                        cout << "Key pressed: D" << endl;
-                        moveRight = true; break;
-                    default:
-                        break;
-                }
-            } else if (e.type == SDL_KEYUP and isMoving == true and e.key.repeat == 0) {
-                switch (e.key.keysym.sym) {
-                    case SDLK_w:
-                        cout << "Key released: W" << endl;
-                        finishMove = true; break;
-                    case SDLK_a:
-                        cout << "Key released: A" << endl;
-                        finishMove = true; break;
-                    case SDLK_s:
-                        cout << "Key released: S" << endl;
-                        finishMove = true; break;
-                    case SDLK_d:
-                        cout << "Key released: D" << endl;
-                        finishMove = true; break;
-                    default:
-                        break;
-                }
+            } else if (e.type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e.key.repeat == 0) {
+                mainCamera.beginMovement(&e);
+            } else if (e.type == SDL_KEYUP and mainCamera.getMovementState() == true and e.key.repeat == 0) {
+                mainCamera.stopMovement(&e);
             }
         }
 
-        if (finishMove == true) {
-            finishMovement();
+        if (mainCamera.getFinishingState() == true) {
+            mainCamera.finishMovement();
         } else {
-            moveCamera();
+            mainCamera.moveCamera();
+            mainCamera.finishIllegalPos(g2Map.getMapWidth(), g2Map.getMapHeight());
         }
 
-        if (camera.x > g2Map.getMapWidth()*64 - 832) {
-            camera.x -= 64;
-        } else if (camera.y > g2Map.getMapHeight()*64 - 704) {
-            camera.y -= 64;
-        } else if (camera.x < 0) {
-            camera.x += 64;
-        } else if (camera.y < 0) {
-            camera.y += 64;
-        }
-
-        mainPlayer.setPlayerCoords(camera.x/64, camera.y/64);
+        mainPlayer.setPlayerCoords(mainCamera.getCamX()/64, mainCamera.getCamY()/64);
 
         SDL_Delay(1000/60);
 
         renderWindow.drawColor(0,0,0);
         renderWindow.clear();
         
-        g2Map.drawMap(&g2TileSheet, &camera);
+        g2Map.drawMap(&g2TileSheet, &mainCamera);
 
         renderWindow.display();
 
@@ -185,4 +88,3 @@ void gameLoop() {
         }
     }
 }
-
