@@ -9,6 +9,7 @@ using namespace std;
 
 Map::Map() {
     map = NULL;
+    tilePropMap = NULL;
     mapWidth = 0;
     mapHeight = 0;
 }
@@ -18,6 +19,12 @@ Map::~Map() {
 }
 
 void Map::freeMap() {
+    
+    for (int i = 0; i < mapHeight; i++) {
+        delete[] tilePropMap[i];
+    }
+    delete[] tilePropMap;
+
     for (int i = 0; i < mapHeight; i++) {
         delete[] map[i];
     }

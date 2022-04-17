@@ -13,8 +13,6 @@
 
 using namespace std;
 
-const int MOVE_SPEED = 4;
-
 RenderWindow renderWindow;
 TileSheet g2TileSheet;
 Map g2Map;
@@ -25,6 +23,7 @@ gameCam mainCamera;
 bool quit = false;
 void initSystem();
 void gameLoop();
+void inputProcess(SDL_Event e);
 
 int main(int argc, char* argv[]) {
     initSystem();
@@ -48,22 +47,32 @@ void initSystem() {
     }
 }
 
+void inputProcess(SDL_Event e) {
+    while (SDL_PollEvent(&e)) {
+        if (e.type == SDL_QUIT) {
+            mainPlayer.savePlayerData();
+            quit = true;
+        } else if (e.type == SDL_MOUSEBUTTONDOWN) {
+            cerr << e.motion.x << " " << e.motion.y << endl;
+        } else if (e.type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e.key.repeat == 0) {
+            cout << "Key pressed" << endl;
+            mainCamera.beginMovement(&e);
+        } else if (e.type == SDL_KEYUP and mainCamera.getMovementState() == true and e.key.repeat == 0) {
+            cout << "Key released" << endl;
+            mainCamera.stopMovement(&e);
+        }
+    }
+}
+
 void gameLoop() {
     SDL_Event e;
 
     while (quit == false) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                mainPlayer.savePlayerData();
-                quit = true;
-            } else if (e.type == SDL_MOUSEBUTTONDOWN) {
-                cerr << e.motion.x << " " << e.motion.y << endl;
-            } else if (e.type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e.key.repeat == 0) {
-                mainCamera.beginMovement(&e);
-            } else if (e.type == SDL_KEYUP and mainCamera.getMovementState() == true and e.key.repeat == 0) {
-                mainCamera.stopMovement(&e);
-            }
-        }
+        inputProcess(e);
+
+        const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+        if (currentKeyStates[SDL_SCANCODE_B]) mainCamera.speedUp();
+        else mainCamera.slowDown();
 
         if (mainCamera.getFinishingState() == true) {
             mainCamera.finishMovement();

@@ -1,10 +1,11 @@
 #include <camera.h>
 
-const int MOVE_SPEED = 4;
+// VERY PRIMITIVE STANDALONE CAMERA. LINKING WITH PLAYER TO BE IMPLEMENTED LATER.
 
 gameCam::gameCam() {
     camera = {0, 0, 64*13, 64*11};
     isMoving = 0, finishMove = 0, moveUp = 0, moveLeft = 0, moveDown = 0, moveRight = 0;
+    movementSpeed = 4;
 }
 
 gameCam::~gameCam() {
@@ -49,23 +50,23 @@ void gameCam::stopMovement(SDL_Event *e) {
 void gameCam::moveCamera() {
     if (moveRight == true) {
         isMoving = true; 
-        camera.x += MOVE_SPEED;
+        camera.x += movementSpeed;
     } else if (moveLeft == true) {
         isMoving = true; 
-        camera.x -= MOVE_SPEED;
+        camera.x -= movementSpeed;
     } else if (moveUp == true) {
         isMoving = true; 
-        camera.y -= MOVE_SPEED;
+        camera.y -= movementSpeed;
     } else if (moveDown == true) {
         isMoving = true; 
-        camera.y += MOVE_SPEED;
+        camera.y += movementSpeed;
     }
 }
 
 void gameCam::finishMovement() {
     if (moveRight == true) {
         if (camera.x % 64 != 0) {
-            camera.x += MOVE_SPEED;
+            camera.x += movementSpeed;
         } else {
             moveRight = false;
             isMoving = false;
@@ -73,7 +74,7 @@ void gameCam::finishMovement() {
         }
     } else if (moveLeft == true) {
         if (camera.x % 64 != 0) {
-            camera.x -= MOVE_SPEED;
+            camera.x -= movementSpeed;
         } else {
             isMoving = false;
             moveLeft = false;
@@ -81,7 +82,7 @@ void gameCam::finishMovement() {
         }
     } else if (moveUp == true) {
         if (camera.y % 64 != 0) {
-            camera.y -= MOVE_SPEED;
+            camera.y -= movementSpeed;
         } else {
             isMoving = false;
             moveUp = false;
@@ -89,7 +90,7 @@ void gameCam::finishMovement() {
         }
     } else if (moveDown == true) {
         if (camera.y % 64 != 0) {
-            camera.y += MOVE_SPEED;
+            camera.y += movementSpeed;
         } else {
             isMoving = false;
             moveDown = false;
@@ -108,6 +109,14 @@ void gameCam::finishIllegalPos(int mapWidth, int mapHeight) {
     } else if (camera.y < 0) {
         camera.y += 64;
     }
+}
+
+void gameCam::speedUp() {
+    movementSpeed = 8;
+}
+
+void gameCam::slowDown() {
+    movementSpeed = 4;
 }
 
 bool gameCam::getMovementState() {

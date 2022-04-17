@@ -7,6 +7,7 @@ class gameCam {
         SDL_Rect camera;
         bool isMoving, finishMove;
         bool moveUp, moveLeft, moveDown, moveRight;
+        int movementSpeed;
     public:
         gameCam();
         ~gameCam();
@@ -16,7 +17,9 @@ class gameCam {
         void stopMovement(SDL_Event* e);
         void moveCamera();
         void finishMovement();
-        void finishIllegalPos(int mapWidth, int mapHeight);
+        void finishIllegalPos(int mapWidth, int mapHeight);\
+        void speedUp();
+        void slowDown();
 
         bool getMovementState();
         bool getFinishingState();
