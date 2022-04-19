@@ -17,16 +17,20 @@ void gameCam::setCameraPos(int _x, int _y) {
     camera.y = _y;
 }
 
-void gameCam::beginMovement(SDL_Event* e) {
+void gameCam::beginMovement(SDL_Event* e, int x, int y, int** colMap) {
     switch (e->key.keysym.sym) {
-        case SDLK_w:                    
-            moveUp = true; break;
-        case SDLK_a:                     
-            moveLeft = true; break;
-        case SDLK_s:                    
-            moveDown = true; break;
-        case SDLK_d:                    
-            moveRight = true; break;
+        case SDLK_w:
+            if (colMap[y-1][x] == 0) {moveUp = true; break;}
+            else break;               
+        case SDLK_a:     
+            if (colMap[y][x-1] == 0) {moveLeft = true; break;}
+            else break;                
+        case SDLK_s:           
+            if (colMap[y+1][x] == 0) {moveDown = true; break;}
+            else break;         
+        case SDLK_d:
+            if (colMap[y][x+1] == 0) {moveRight = true; break;}                  
+            else break;
         default:
             break;
     }
@@ -47,19 +51,31 @@ void gameCam::stopMovement(SDL_Event *e) {
     }
 }
 
-void gameCam::moveCamera() {
+void gameCam::moveCamera(int x, int y, int** colMap) {
     if (moveRight == true) {
-        isMoving = true; 
-        camera.x += movementSpeed;
+        if (colMap[y][x+1] != 0) finishMovement();
+        else {
+            isMoving = true; 
+            camera.x += movementSpeed;
+        }
     } else if (moveLeft == true) {
-        isMoving = true; 
-        camera.x -= movementSpeed;
+        if (colMap[y][x-1] != 0) finishMovement();
+        else {
+            isMoving = true; 
+            camera.x -= movementSpeed;
+        } 
     } else if (moveUp == true) {
-        isMoving = true; 
-        camera.y -= movementSpeed;
+        if (colMap[y-1][x] != 0) finishMovement();
+        else {
+            isMoving = true; 
+            camera.y -= movementSpeed;
+        }
     } else if (moveDown == true) {
-        isMoving = true; 
-        camera.y += movementSpeed;
+        if (colMap[y+1][x] != 0) finishMovement();
+        else {
+            isMoving = true; 
+            camera.y += movementSpeed;
+        } 
     }
 }
 

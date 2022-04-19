@@ -8,8 +8,8 @@
 
 class Map {
     private:
-        int** map;
-        int** tilePropMap;
+        int** map; //Tile map
+        int** tilePropMap; //Collision, Events Map
         int mapWidth;
         int mapHeight;
     public:
@@ -20,4 +20,5 @@ class Map {
         void drawMap(TileSheet* sheet, gameCam* camera);
         int getMapWidth();
         int getMapHeight();
+        int** getCollisionMap();
 };

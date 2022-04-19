@@ -33,6 +33,7 @@ void Map::freeMap() {
 
 void Map::loadMap(const char* path) {
     ifstream inputmap(path);
+    string temp;
     inputmap >> mapHeight;
     inputmap >> mapWidth;
 
@@ -46,7 +47,17 @@ void Map::loadMap(const char* path) {
             inputmap >> map[i][j];
         }
     }
-    inputmap.close();    
+    inputmap >> temp;
+    tilePropMap = new int*[mapHeight];
+    for (int i = 0; i < mapHeight; i++) {
+        tilePropMap[i] = new int[mapWidth];
+    }
+    for (int i = 0; i < mapHeight; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            inputmap >> tilePropMap[i][j];
+        }
+    }
+    inputmap.close();
 }
 
 void Map::drawMap(TileSheet* sheet, gameCam* camera) {
@@ -70,4 +81,8 @@ int Map::getMapWidth() {
 
 int Map::getMapHeight() {
     return mapHeight;
+}
+
+int** Map::getCollisionMap() {
+    return tilePropMap;
 }

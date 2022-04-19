@@ -13,11 +13,11 @@ class gameCam {
         ~gameCam();
 
         void setCameraPos(int _x = 0, int _y = 0);
-        void beginMovement(SDL_Event* e);
+        void beginMovement(SDL_Event* e, int x, int y, int** colMap);
         void stopMovement(SDL_Event* e);
-        void moveCamera();
+        void moveCamera(int x, int y, int** colMap);
         void finishMovement();
-        void finishIllegalPos(int mapWidth, int mapHeight);\
+        void finishIllegalPos(int mapWidth, int mapHeight);
         void speedUp();
         void slowDown();
 

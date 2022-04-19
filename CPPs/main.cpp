@@ -66,11 +66,11 @@ void initSystem()
     else
     {
         mainPlayer.initPlayerTexture();
-        mainCamera.setCameraPos(mainPlayer.getXCoords() * 64, mainPlayer.getYCoords() * 64);
+        mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
     }
 }
 
-void inputProcess(SDL_Event e)
+void inputProcess(SDL_Event e, int pCX, int pCY)
 {
     while (SDL_PollEvent(&e))
     {
@@ -105,7 +105,7 @@ void inputProcess(SDL_Event e)
                 default:
                     break;
             }
-            mainCamera.beginMovement(&e);
+            mainCamera.beginMovement(&e, pCX, pCY, g2Map.getCollisionMap());
         }
         else if (e.type == SDL_KEYUP and mainCamera.getMovementState() == true and e.key.repeat == 0)
         {
@@ -121,7 +121,8 @@ void gameLoop()
 
     while (quit == false)
     {
-        inputProcess(e);
+        int pCX = mainPlayer.getXCoords(), pCY = mainPlayer.getYCoords();
+        inputProcess(e, pCX, pCY);
 
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
         if (currentKeyStates[SDL_SCANCODE_Z])
@@ -132,11 +133,11 @@ void gameLoop()
         if (mainCamera.getFinishingState() == true) {
             mainCamera.finishMovement();
         } else {
-            mainCamera.moveCamera();
+            mainCamera.moveCamera(pCX, pCY, g2Map.getCollisionMap());
             mainCamera.finishIllegalPos(g2Map.getMapWidth(), g2Map.getMapHeight());
         }
 
-        mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64, mainCamera.getCamY() / 64);
+        mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5);
 
         SDL_Delay(1000 / 60);
 
