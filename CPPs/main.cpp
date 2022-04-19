@@ -36,6 +36,7 @@ Move moves[]=
 };
 
 bool quit = false;
+
 void initSystem();
 void gameLoop();
 void inputProcess(SDL_Event e);
@@ -55,7 +56,7 @@ void initSystem()
     IMG_Init(IMG_INIT_PNG);
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
-    g2TileSheet.loadTileSheet("res/tileset/tileset03.png");
+    g2TileSheet.loadTileSheet("res/tileset/g2o_tiles.png");
     g2Map.loadMap("res/map/g2.map");
     gameTheme.loadMusic("res/music/pallettown.mp3");
     if (!mainPlayer.loadPlayerData())
@@ -64,6 +65,7 @@ void initSystem()
     }
     else
     {
+        mainPlayer.initPlayerTexture();
         mainCamera.setCameraPos(mainPlayer.getXCoords() * 64, mainPlayer.getYCoords() * 64);
     }
 }
@@ -81,12 +83,28 @@ void inputProcess(SDL_Event e)
         {
             cerr << e.motion.x << " " << e.motion.y << endl;
         }
-        else if (e.type==SDL_KEYDOWN&&e.key.keysym.sym==SDLK_b) {
+        else if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_b) {
             battle(pokemon[0],pokemon[1]);
         }
         else if (e.type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e.key.repeat == 0)
         {
             cout << "Key pressed" << endl;
+            switch (e.key.keysym.sym) {
+                case SDLK_s:
+                    mainPlayer.changeFacingDirect(0);
+                    break;
+                case SDLK_d:
+                    mainPlayer.changeFacingDirect(1);
+                    break;
+                case SDLK_w:
+                    mainPlayer.changeFacingDirect(2);
+                    break;
+                case SDLK_a:
+                    mainPlayer.changeFacingDirect(3);
+                    break;
+                default:
+                    break;
+            }
             mainCamera.beginMovement(&e);
         }
         else if (e.type == SDL_KEYUP and mainCamera.getMovementState() == true and e.key.repeat == 0)
@@ -106,17 +124,14 @@ void gameLoop()
         inputProcess(e);
 
         const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
-        if (currentKeyStates[SDL_SCANCODE_B])
+        if (currentKeyStates[SDL_SCANCODE_Z])
             mainCamera.speedUp();
         else
             mainCamera.slowDown();
 
-        if (mainCamera.getFinishingState() == true)
-        {
+        if (mainCamera.getFinishingState() == true) {
             mainCamera.finishMovement();
-        }
-        else
-        {
+        } else {
             mainCamera.moveCamera();
             mainCamera.finishIllegalPos(g2Map.getMapWidth(), g2Map.getMapHeight());
         }
@@ -130,10 +145,15 @@ void gameLoop()
 
         g2Map.drawMap(&g2TileSheet, &mainCamera);
 
+        if (mainCamera.getMovementState() == true) {
+            mainPlayer.renderMovingPlayer();
+        } else {
+            mainPlayer.renderStandingPlayer();
+        }
+
         renderWindow.display();
 
-        if (Mix_PlayingMusic() == 0)
-        {
+        if (Mix_PlayingMusic() == 0) {
             gameTheme.play();
         }
     }

@@ -5,5 +5,6 @@
 
 class GameEntity {
     protected:
+        
     public:
 };
