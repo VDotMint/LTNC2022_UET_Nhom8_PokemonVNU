@@ -75,7 +75,7 @@ void gameCam::moveCamera(int x, int y, int** colMap) {
         else {
             isMoving = true; 
             camera.y += movementSpeed;
-        } 
+        }
     }
 }
 
@@ -128,7 +128,7 @@ void gameCam::finishIllegalPos(int mapWidth, int mapHeight) {
 }
 
 void gameCam::speedUp() {
-    movementSpeed = 8;
+    if (camera.x % 8 == 0 and camera.y % 8 == 0) movementSpeed = 8;
 }
 
 void gameCam::slowDown() {

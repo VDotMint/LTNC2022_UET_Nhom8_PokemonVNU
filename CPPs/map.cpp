@@ -2,8 +2,7 @@
 
 #include "map.h"
 #include "RenderWindow.h"
-#include "tile.h"
-#include "tilesheet.h"
+#include "Tiling.h"
 
 using namespace std;
 

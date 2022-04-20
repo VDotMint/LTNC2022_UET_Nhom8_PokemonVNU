@@ -16,3 +16,13 @@ class TileSheet {
         int getWidth();
         int getHeight();
 };
+
+class Tile {
+    private:
+        SDL_Rect tileClip;
+    public:
+        Tile();
+        ~Tile();
+        void defineTile(TileSheet* sheet, int index);
+        SDL_Rect* getClip();
+};

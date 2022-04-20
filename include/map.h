@@ -4,7 +4,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "camera.h"
-#include "tile.h"
+#include "Tiling.h"
 
 class Map {
     private:
