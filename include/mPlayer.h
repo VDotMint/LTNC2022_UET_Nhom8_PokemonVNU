@@ -12,7 +12,7 @@ class mPlayer {
         int xCoords, yCoords;
         int faceDirection;
         SDL_Texture* playerTexture;
-        SDL_Rect walkFrames[16];
+        SDL_Rect walkFrames[32];
     public:
         mPlayer();
         ~mPlayer();
@@ -31,4 +31,5 @@ class mPlayer {
         void setPlayerCoords(int x, int y);
         void renderStandingPlayer();
         void renderMovingPlayer();
+        void renderRunningPlayer();
 };
