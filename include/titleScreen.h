@@ -20,6 +20,7 @@ class TitleScreenButton {
         void buttonHandler(SDL_Event* e);
         bool isClicked();
         void resetClickState();
+        SDL_Texture* getButtonTexture();
 };
 
 class TitleScreen {
@@ -27,14 +28,16 @@ class TitleScreen {
         SDL_Texture* splashScreenTexture;
         SDL_Texture* titleScreenBackground;
         SDL_Texture* titleScreenLogo;
-        TitleScreenButton tsButtons[4];
+        bool presentSaveFile;
         bool acceptInput;
     public:
+        TitleScreenButton tsButtons[4];
         TitleScreen();
         ~TitleScreen();
         void freeTitleScreen();
-        void initTitleScreen();
+        void initTitleScreen(bool hasSaveFile);
         void drawTitleScreen();
+        void stopInputState();
         bool acceptInputState();
         void doButtonEvents(SDL_Event* e);
         void tsButtonInit(); // Place the buttons on the title screen

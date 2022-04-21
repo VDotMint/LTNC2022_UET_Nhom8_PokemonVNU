@@ -9,10 +9,10 @@ SDL_Rect screenCenter = {(832-64)/2, (704-64)/2-22, 64, 88};
 static int moveFrame = 0, walkFrame = 0;
 
 mPlayer::mPlayer() {
-    gender = -1; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
+    gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
     name = "NO NAME";
     currentMap = -1;
-    xCoords = 0, yCoords = 0;
+    xCoords = 11, yCoords = 22;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;
     for (int i = 0; i < 32; i++) {

@@ -5,7 +5,7 @@
 #include <string>
 #include <iomanip>
 
-#include "otherGraphics.h"
+#include "titleScreen.h"
 #include "RenderWindow.h"
 #include "music.h"
 #include "Tiling.h"
@@ -17,6 +17,7 @@
 RenderWindow renderWindow;
 
 TitleScreen gameTitleScreen;
+SDL_Texture* blackTransitionTexture;
 
 TileSheet g2TileSheet;
 Map g2Map;
@@ -36,6 +37,10 @@ Move moves[]=
 	{"tackle",1}
 };
 
+bool inSceneTransition;
+static int transitionTransparency = 0;
+
+bool hasSaveFile = true;
 bool quit = false;
 bool inTitleScreen = true;
 bool inBattle = false;
@@ -60,18 +65,25 @@ void initSystem() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
 
-    gameTitleScreen.initTitleScreen();
+    if (!mainPlayer.loadPlayerData()) {
+        hasSaveFile = false;
+        mainPlayer.initPlayerTexture();
+        mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+    }
+    else {
+        mainPlayer.initPlayerTexture();
+        mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+    }
+
+    gameTitleScreen.initTitleScreen(hasSaveFile);
     gameTitleScreen.tsButtonInit();
 
     g2TileSheet.loadTileSheet("res/tileset/g2o_tiles.png");
     g2Map.loadMap("res/map/g2.map");
     gameTheme.loadMusic("res/music/pallettown.mp3");
 
-    if (!mainPlayer.loadPlayerData()) cout << "No player save detected!\n";
-    else {
-        mainPlayer.initPlayerTexture();
-        mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
-    }
+    blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
+    SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
@@ -111,12 +123,23 @@ void titleScreenInputProcess(SDL_Event* e) {
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             quit = true;
-        } else if (e->type == SDL_KEYDOWN and e->key.keysym.sym == SDLK_v and gameTitleScreen.acceptInputState() == true) {
-            inTitleScreen = false;
-            gameTitleScreen.freeTitleScreen();
         }
         if (gameTitleScreen.acceptInputState() == true) {
             gameTitleScreen.doButtonEvents(e);
+            if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
+                gameTitleScreen.tsButtons[0].resetClickState();
+                gameTitleScreen.stopInputState();
+                inSceneTransition = true;
+            } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
+                gameTitleScreen.tsButtons[1].resetClickState();
+                mPlayer newTempPlayer;
+                mainPlayer = newTempPlayer;
+                gameTitleScreen.stopInputState();
+                inSceneTransition = true;                
+            } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
+                quit = true;
+                gameTitleScreen.freeTitleScreen();
+            } 
         }
     }
 }
@@ -125,7 +148,8 @@ void gameLoop() {
     SDL_Event e;
 
     while (quit == false) {
-        if (inTitleScreen == true) {
+        if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN
+        {
             titleScreenInputProcess(&e);
             
             renderWindow.drawColor(0, 0, 0);
@@ -133,10 +157,26 @@ void gameLoop() {
 
             gameTitleScreen.drawTitleScreen();
 
+            if (inSceneTransition == true) {
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 17;
+                } else if (transitionTransparency >= 255) {
+                    inTitleScreen = false;
+                    gameTitleScreen.freeTitleScreen();
+                    SDL_Delay(2000);
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
             renderWindow.display();
 
             SDL_Delay(1000/60);
-        } else {
+        }
+        
+        else // PLAYER IN THE MAP
+        
+        {
             int pCX = mainPlayer.getXCoords(), pCY = mainPlayer.getYCoords();
             overworldInputProcess(&e, pCX, pCY);
 
@@ -164,6 +204,15 @@ void gameLoop() {
                 else mainPlayer.renderMovingPlayer();
             }
             
+            if (inSceneTransition == true) {
+                if (transitionTransparency > 0) {
+                    transitionTransparency -= 17;
+                } else if (transitionTransparency <= 0) {
+                    inSceneTransition = false;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
 
             renderWindow.display();
 
