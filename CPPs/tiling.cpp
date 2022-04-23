@@ -11,8 +11,6 @@ SDL_Rect* Tile::getClip() {
 
 TileSheet::TileSheet() {
     tilesheet = NULL;
-    sheetWidth = 0;
-    sheetHeight = 0;
 }
 
 TileSheet::~TileSheet() {
@@ -23,8 +21,8 @@ void TileSheet::loadTileSheet(const char* path) {
     freeTileSheet();
     SDL_Surface* tempSurface = IMG_Load(path);
     tilesheet = SDL_CreateTextureFromSurface(RenderWindow::renderer, tempSurface);
-    sheetWidth = tempSurface->w;
-    sheetHeight = tempSurface->h;
+    sheetRows = tempSurface->h / 16;
+    sheetColumns = tempSurface->w / 16;
     SDL_FreeSurface(tempSurface);
 }
 
@@ -32,8 +30,6 @@ void TileSheet::freeTileSheet() {
     if (tilesheet != NULL) {
         SDL_DestroyTexture(tilesheet);
         tilesheet = NULL;
-        sheetWidth = 0;
-        sheetHeight = 0;
     }
 }
 
@@ -41,13 +37,15 @@ SDL_Texture* TileSheet::getTileSheet() {
     return tilesheet;
 }
 
-int TileSheet::getWidth() {
-    return sheetWidth;
+int TileSheet::getSheetWidth() {
+    return sheetColumns;
 }
 
-int TileSheet::getHeight() {
-    return sheetHeight;
+int TileSheet::getSheetHeight() {
+    return sheetRows;
 }
+
+// TILE
 
 Tile::Tile() {
     tileClip = {0, 0, 0, 0};
@@ -58,12 +56,11 @@ Tile::~Tile() {
 }
 
 void Tile::defineTile(TileSheet* sheet, int index) {
-    if (index > (sheet->getWidth()/sheet->getHeight())) {
-        std::cout << "Sheet Index Out Of Bound!\n"; 
-    } else {
-        tileClip.x = index * sheet->getHeight();
-        tileClip.y = 0;
-        tileClip.w = sheet -> getHeight();
-        tileClip.h = sheet -> getHeight();
-    }
+    int coordsX = 16 * (index % sheet->getSheetWidth());
+    int coordsY = 16 * (index / sheet->getSheetWidth());
+    
+    tileClip.x = coordsX;
+    tileClip.y = coordsY;
+    tileClip.w = 16;
+    tileClip.h = 16;
 }

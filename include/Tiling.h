@@ -5,16 +5,15 @@
 class TileSheet {
     private:
         SDL_Texture* tilesheet;
-        int sheetWidth;
-        int sheetHeight;
+        int sheetColumns, sheetRows;
     public:
         TileSheet();
         ~TileSheet();
         void loadTileSheet(const char* path);
         void freeTileSheet();
         SDL_Texture* getTileSheet();
-        int getWidth();
-        int getHeight();
+        int getSheetWidth();
+        int getSheetHeight();
 };
 
 class Tile {

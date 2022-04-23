@@ -29,6 +29,7 @@ bool mPlayer::loadPlayerData() {
     bool success = true;
     ifstream playerDatInStream("data/player.sav");
     if (!playerDatInStream) {
+        cout << "No save file detected! Default player config loaded instead!\n";
         success = false;
     } else {
         getline(playerDatInStream, name);

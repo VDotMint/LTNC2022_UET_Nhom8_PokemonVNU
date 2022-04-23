@@ -1,3 +1,4 @@
+#include <iostream>
 #include <fstream>
 
 #include "map.h"
@@ -17,8 +18,7 @@ Map::~Map() {
     freeMap();
 }
 
-void Map::freeMap() {
-    
+void Map::freeMap() {   
     for (int i = 0; i < mapHeight; i++) {
         delete[] tilePropMap[i];
     }

@@ -37,7 +37,7 @@ Move moves[]=
 	{"tackle",1}
 };
 
-bool inSceneTransition;
+bool tsToMapTransition;
 static int transitionTransparency = 0;
 
 bool hasSaveFile = true;
@@ -65,11 +65,7 @@ void initSystem() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
 
-    if (!mainPlayer.loadPlayerData()) {
-        hasSaveFile = false;
-        mainPlayer.initPlayerTexture();
-        mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
-    }
+    if (!mainPlayer.loadPlayerData()) hasSaveFile = false;
     else {
         mainPlayer.initPlayerTexture();
         mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
@@ -84,6 +80,8 @@ void initSystem() {
 
     blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
+
+    
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
@@ -129,13 +127,15 @@ void titleScreenInputProcess(SDL_Event* e) {
             if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
                 gameTitleScreen.tsButtons[0].resetClickState();
                 gameTitleScreen.stopInputState();
-                inSceneTransition = true;
+                tsToMapTransition = true;
             } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
                 gameTitleScreen.tsButtons[1].resetClickState();
                 mPlayer newTempPlayer;
                 mainPlayer = newTempPlayer;
+                mainPlayer.initPlayerTexture();
+                mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 gameTitleScreen.stopInputState();
-                inSceneTransition = true;                
+                tsToMapTransition = true;                
             } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
                 quit = true;
                 gameTitleScreen.freeTitleScreen();
@@ -157,7 +157,7 @@ void gameLoop() {
 
             gameTitleScreen.drawTitleScreen();
 
-            if (inSceneTransition == true) {
+            if (tsToMapTransition == true) {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 17;
                 } else if (transitionTransparency >= 255) {
@@ -204,11 +204,11 @@ void gameLoop() {
                 else mainPlayer.renderMovingPlayer();
             }
             
-            if (inSceneTransition == true) {
+            if (tsToMapTransition == true) {
                 if (transitionTransparency > 0) {
                     transitionTransparency -= 17;
                 } else if (transitionTransparency <= 0) {
-                    inSceneTransition = false;
+                    tsToMapTransition = false;
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
@@ -224,6 +224,8 @@ void gameLoop() {
 }
 
 void battle(Pokemon my,Pokemon op) {
+    using namespace std;
+
 	bool battleState = true;
 	int turn = 0;
 	int input;
