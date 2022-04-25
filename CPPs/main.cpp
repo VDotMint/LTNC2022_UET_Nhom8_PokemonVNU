@@ -19,9 +19,7 @@ RenderWindow renderWindow;
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 
-TileSheet g2TileSheet;
 Map g2Map;
-Music gameTheme;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
@@ -42,8 +40,11 @@ static int transitionTransparency = 0;
 
 bool hasSaveFile = true;
 bool quit = false;
-bool inTitleScreen = true;
+
+bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
+
 bool inBattle = false;
+
 bool playerIsRunning = false;
 
 void initSystem();
@@ -74,13 +75,10 @@ void initSystem() {
     gameTitleScreen.initTitleScreen(hasSaveFile);
     gameTitleScreen.tsButtonInit();
 
-    g2TileSheet.loadTileSheet("res/tileset/g2o_tiles.png");
-    g2Map.loadMap("res/map/g2.map");
-    gameTheme.loadMusic("res/music/pallettown.mp3");
+    g2Map.loadMap("res/map/g2.map", "res/tileset/g2o_tiles.png", "res/music/overworldMusic.mp3", 8.85);
 
     blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
-
     
 }
 
@@ -91,6 +89,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             quit = true;
         } else if (e->type == SDL_MOUSEBUTTONDOWN) {
             cerr << e->motion.x << " " << e->motion.y << endl;
+            g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) {
             battle(pokemon[0],pokemon[1]);
         } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) {
@@ -196,7 +195,7 @@ void gameLoop() {
             renderWindow.drawColor(0, 0, 0);
             renderWindow.clear();
 
-            g2Map.drawMap(&g2TileSheet, &mainCamera);
+            g2Map.drawMap(&mainCamera);
 
             if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer();
             else {
@@ -218,7 +217,7 @@ void gameLoop() {
 
             SDL_Delay(1000 / 60);
 
-            if (Mix_PlayingMusic() == 0) gameTheme.play();
+            g2Map.playMapTheme();
         }
     }
 }

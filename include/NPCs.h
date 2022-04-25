@@ -7,6 +7,7 @@ class NPC {
 private:
     int npcID;
     int npcXCoords, npcYCoords;
+    int faceDirection;
     SDL_Texture* npcTexture;
     SDL_Rect walkFrames[16];
 public:

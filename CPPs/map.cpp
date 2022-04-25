@@ -30,7 +30,8 @@ void Map::freeMap() {
     delete[] map;
 }
 
-void Map::loadMap(const char* path) {
+void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {
+    // Load the level
     ifstream inputmap(path);
     string temp;
     inputmap >> mapHeight;
@@ -57,21 +58,29 @@ void Map::loadMap(const char* path) {
         }
     }
     inputmap.close();
+
+    // Load the map's tilesheet
+    mapSheet.loadTileSheet(sheetPath);
+    mapTheme.loadMusic(musicPath, repeatP);
 }
 
-void Map::drawMap(TileSheet* sheet, gameCam* camera) {
+void Map::drawMap(gameCam* camera) {
     for (int i = 0; i < mapHeight; i++) {
         for (int j = 0; j < mapWidth; j++) {
             Tile drawTile;
-            drawTile.defineTile(sheet, map[i][j]);
+            drawTile.defineTile(&mapSheet, map[i][j]);
             SDL_Rect dstRect;
             dstRect.x = j*64 - camera->getCamX();
             dstRect.y = i*64 - camera->getCamY();
             dstRect.w = 64;
             dstRect.h = 64;
-            SDL_RenderCopy(RenderWindow::renderer, sheet->getTileSheet(), drawTile.getClip(), &dstRect);
+            SDL_RenderCopy(RenderWindow::renderer, mapSheet.getTileSheet(), drawTile.getClip(), &dstRect);
         }
     }
+}
+
+void Map::playMapTheme() {
+    mapTheme.play();
 }
 
 int Map::getMapWidth() {
