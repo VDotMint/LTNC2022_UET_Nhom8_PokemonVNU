@@ -11,5 +11,3 @@ dialogueBox::~dialogueBox() {
     SDL_DestroyTexture(dialogueBoxTexture);
     dialogueBoxTexture = NULL;
 }
-
-void dialogueBox::initDialogueBox(con)
