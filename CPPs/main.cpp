@@ -90,9 +90,9 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         } else if (e->type == SDL_MOUSEBUTTONDOWN) {
             cerr << e->motion.x << " " << e->motion.y << endl;
             g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
-        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) {
+        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) { // START A BATTLE
             battle(pokemon[0],pokemon[1]);
-        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) {
+        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) { // BEGIN MOVEMENT
             switch (e->key.keysym.sym) {
                 case SDLK_s:
                     mainPlayer.changeFacingDirect(0);
@@ -110,8 +110,27 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                     break;
             }
             mainCamera.beginMovement(e, pCX, pCY, g2Map.getCollisionMap());
-        } else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) {
+        } else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) { // STOP MOVEMENT 
             mainCamera.stopMovement(e);
+        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == true and e->key.repeat == 0) { // CHANGE DIRECTION
+            mainCamera.stopMovement(e);
+            switch (e->key.keysym.sym) {
+                case SDLK_s:
+                    mainPlayer.changeFacingDirect(0);
+                    break;
+                case SDLK_d:
+                    mainPlayer.changeFacingDirect(1);
+                    break;
+                case SDLK_w:
+                    mainPlayer.changeFacingDirect(2);
+                    break;
+                case SDLK_a:
+                    mainPlayer.changeFacingDirect(3);
+                    break;
+                default:
+                    break;
+            }
+            mainCamera.beginMovement(e, pCX, pCY, g2Map.getCollisionMap());
         }
     }
 }
