@@ -4,7 +4,6 @@
 
 
 using namespace std;
-
 class Move {
 	public:
 		string name;
@@ -17,3 +16,8 @@ class Pokemon {
 		int health;
 };
 
+extern Pokemon pokemon[];
+extern Move moves[];
+
+
+void battle(Pokemon my,Pokemon op);

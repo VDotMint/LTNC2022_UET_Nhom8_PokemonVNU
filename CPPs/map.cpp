@@ -9,7 +9,7 @@ using namespace std;
 
 Map::Map() {
     map = NULL;
-    tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactibles
+    tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactable
     mapWidth = 0;
     mapHeight = 0;
 }
