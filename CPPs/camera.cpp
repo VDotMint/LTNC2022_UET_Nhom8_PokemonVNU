@@ -115,7 +115,7 @@ void gameCam::finishMovement() {
     }    
 }
 
-void gameCam::finishIllegalPos(int mapWidth, int mapHeight) {
+void gameCam::finishIllegalPos(int mapWidth, int mapHeight) { // safety check for when player moves out of bound
     if (camera.x > mapWidth*64 - 832) {
         camera.x -= 64;
     } else if (camera.y > mapHeight*64 - 704) {

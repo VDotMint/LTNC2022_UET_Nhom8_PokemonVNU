@@ -13,6 +13,7 @@
 #include "mPlayer.h"
 #include "camera.h"
 #include "Battle.h"
+#include "NPCs.h"
 
 RenderWindow renderWindow;
 
@@ -41,7 +42,7 @@ static int transitionTransparency = 0;
 bool hasSaveFile = true;
 bool quit = false;
 
-bool inTitleScreen = true; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
+bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 
 bool inBattle = false;
 
@@ -66,8 +67,10 @@ void initSystem() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
 
-    if (!mainPlayer.loadPlayerData()) hasSaveFile = false;
-    else {
+    if (!mainPlayer.loadPlayerData()) {
+        hasSaveFile = false;
+        inTitleScreen = true;
+    } else {
         mainPlayer.initPlayerTexture();
         mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
     }
@@ -76,10 +79,10 @@ void initSystem() {
     gameTitleScreen.tsButtonInit();
 
     g2Map.loadMap("res/map/g2.map", "res/tileset/g2o_tiles.png", "res/music/overworldMusic.mp3", 8.85);
+    g2Map.loadNPCs("res/map/g2.npc");
 
     blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
-    
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
@@ -90,6 +93,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         } else if (e->type == SDL_MOUSEBUTTONDOWN) {
             cerr << e->motion.x << " " << e->motion.y << endl;
             g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
+            cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) { // START A BATTLE
             battle(pokemon[0],pokemon[1]);
         } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) { // BEGIN MOVEMENT
@@ -112,30 +116,11 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             mainCamera.beginMovement(e, pCX, pCY, g2Map.getCollisionMap());
         } else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) { // STOP MOVEMENT 
             mainCamera.stopMovement(e);
-        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == true and e->key.repeat == 0) { // CHANGE DIRECTION
-            mainCamera.stopMovement(e);
-            switch (e->key.keysym.sym) {
-                case SDLK_s:
-                    mainPlayer.changeFacingDirect(0);
-                    break;
-                case SDLK_d:
-                    mainPlayer.changeFacingDirect(1);
-                    break;
-                case SDLK_w:
-                    mainPlayer.changeFacingDirect(2);
-                    break;
-                case SDLK_a:
-                    mainPlayer.changeFacingDirect(3);
-                    break;
-                default:
-                    break;
-            }
-            mainCamera.beginMovement(e, pCX, pCY, g2Map.getCollisionMap());
         }
     }
 }
 
-void titleScreenInputProcess(SDL_Event* e) {
+void titleScreenInputProcess(SDL_Event* e) { // ALREADY MOSTLY FINISHED. DO NOT TOUCH.
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             quit = true;
@@ -166,7 +151,7 @@ void gameLoop() {
     SDL_Event e;
 
     while (quit == false) {
-        if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN
+        if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN. AGAIN, MOSTLY FINSIHED, DO NOT TOUCH
         {
             titleScreenInputProcess(&e);
             
@@ -195,34 +180,34 @@ void gameLoop() {
         else // PLAYER IN THE MAP
         
         {
-            int pCX = mainPlayer.getXCoords(), pCY = mainPlayer.getYCoords();
-            overworldInputProcess(&e, pCX, pCY);
+            int pCX = mainPlayer.getXCoords(), pCY = mainPlayer.getYCoords(); // GET PLAYER COORDS
+            overworldInputProcess(&e, pCX, pCY); // INPUT PROCESS
 
             const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
-            if (currentKeyStates[SDL_SCANCODE_Z]) {mainCamera.speedUp(); playerIsRunning = true;}
+            if (currentKeyStates[SDL_SCANCODE_Z]) {mainCamera.speedUp(); playerIsRunning = true;} // TOGGLE RUNNING STATE
             else {mainCamera.slowDown(); playerIsRunning = false;}
 
-            if (mainCamera.getFinishingState() == true) {
+            if (mainCamera.getFinishingState() == true) { // MOVE THE CAMERA
                 mainCamera.finishMovement();
             } else {
                 mainCamera.moveCamera(pCX, pCY, g2Map.getCollisionMap());
                 mainCamera.finishIllegalPos(g2Map.getMapWidth(), g2Map.getMapHeight());
             }
 
-            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5);
+            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5); // UPDATE THE PLAYER COORDINATES
 
-            renderWindow.drawColor(0, 0, 0);
+            renderWindow.drawColor(0, 0, 0); // PRPARE THE RENDERING SCREEN
             renderWindow.clear();
 
-            g2Map.drawMap(&mainCamera);
+            g2Map.drawMap(&mainCamera); // DRAW THE MAP TO THE SCREEN
 
-            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer();
+            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer(); // DRAW THE PLAYER TO THE SCREEN
             else {
-                if (playerIsRunning == true) mainPlayer.renderRunningPlayer();
+                if (playerIsRunning == true) mainPlayer.renderRunningPlayer(); 
                 else mainPlayer.renderMovingPlayer();
             }
             
-            if (tsToMapTransition == true) {
+            if (tsToMapTransition == true) { // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
                 if (transitionTransparency > 0) {
                     transitionTransparency -= 17;
                 } else if (transitionTransparency <= 0) {
@@ -232,11 +217,12 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
-            renderWindow.display();
-
-            SDL_Delay(1000 / 60);
-
             g2Map.playMapTheme();
+
+            renderWindow.display(); // DISPLAY THE CONTENT TO THE WINDOW
+
+            SDL_Delay(1000 / 60); // PRIMITIVE CAP FRAME RATE AT 60 FPS
+
         }
     }
 }
