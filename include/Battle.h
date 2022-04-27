@@ -7,13 +7,16 @@ using namespace std;
 class Move {
 	public:
 		string name;
-		int damage;
+		int power;
 };
 
 class Pokemon {
 	public:
 		string name;
-		int health;
+		int hp;
+		int atk;
+		int def;
+		Move* move[2];
 };
 
 extern Pokemon pokemon[];

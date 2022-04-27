@@ -23,17 +23,20 @@ Map g2Map;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
-Pokemon pokemon[]=
-{
-	{"Charmander",10},
-	{"Pikachu",8}
-};
-
 Move moves[]=
 {
-	{"ember",2},
-	{"tackle",1}
+	{"flamethrower",90},
+	{"tackle",40},
+    {"thunderbolt",90},
+    {"surf",90},
+    {"earthquake",100}
 };
+Pokemon pokemon[]=
+{
+	{"Charmander",99,65,55,{moves,moves+1}},
+	{"Pikachu",95,55,55,{moves,moves+2}}
+};
+
 
 bool tsToMapTransition;
 static int transitionTransparency = 0;
@@ -41,7 +44,7 @@ static int transitionTransparency = 0;
 bool hasSaveFile = true;
 bool quit = false;
 
-bool inTitleScreen = true; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
+bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 
 bool inBattle = false;
 
