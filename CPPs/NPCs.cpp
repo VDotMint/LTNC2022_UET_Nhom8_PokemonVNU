@@ -46,3 +46,22 @@ void NPC::drawNPC(int camX, int camY) {
         break;
     }
 }
+
+void NPC::talkNPC(int playerFace) {
+    switch (playerFace) {
+    case 0:
+        faceDirection = 2;
+        break;
+    case 1:
+        faceDirection = 3;
+        break;
+    case 2:
+        faceDirection = 0;
+        break;
+    case 3:
+        faceDirection = 1;
+        break;
+    default:
+        break;
+    }
+}

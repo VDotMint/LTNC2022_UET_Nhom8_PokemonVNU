@@ -95,7 +95,12 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) { // START A BATTLE
-            battle(pokemon[0],pokemon[1]);
+            battle(pokemon[0], pokemon[1]);
+        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) {
+            NPC* selNPC = g2Map.getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
+            if (selNPC != NULL) {
+                selNPC->talkNPC(mainPlayer.getFacingDirection());
+            }
         } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) { // BEGIN MOVEMENT
             switch (e->key.keysym.sym) {
                 case SDLK_s:
@@ -199,13 +204,17 @@ void gameLoop() {
             renderWindow.drawColor(0, 0, 0); // PRPARE THE RENDERING SCREEN
             renderWindow.clear();
 
-            g2Map.drawMap(&mainCamera); // DRAW THE MAP TO THE SCREEN
+            g2Map.drawMap(&mainCamera); // DRAW THE MAP
 
-            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer(); // DRAW THE PLAYER TO THE SCREEN
+            g2Map.drawNPCs(&mainCamera); // DRAW THE MAP'S NPC
+
+            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer(); // DRAW THE PLAYER 
             else {
                 if (playerIsRunning == true) mainPlayer.renderRunningPlayer(); 
                 else mainPlayer.renderMovingPlayer();
             }
+
+            g2Map.drawFrontNPCs(&mainCamera); // DRAW NPCs THAT ARE IN FRONT OF THE PLAYER
             
             if (tsToMapTransition == true) { // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
                 if (transitionTransparency > 0) {

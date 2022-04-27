@@ -19,7 +19,7 @@ public:
     ~NPC();
     void initNPC(int x, int y, int face, const char* texturePath, bool canBattle = false);
     void changeFacingDirection(int face);
-    void talkNPC();
+    void talkNPC(int playerFace);
     void drawNPC(int camX, int camY);
     int getX() {return npcXCoords;}
     int getY() {return npcYCoords;}

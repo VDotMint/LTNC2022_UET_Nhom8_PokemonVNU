@@ -17,6 +17,7 @@ class Map {
         int mapHeight;
         TileSheet mapSheet;
         std::vector<NPC*> mapNPCs;
+        std::vector<NPC*> NPCsinFront; // Only used for rendering NPCs that are in front of the players
     public:
         Map();
         ~Map();
@@ -25,8 +26,11 @@ class Map {
         void loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP = 0.0);
         void loadNPCs(const char* npcData);
         void drawMap(gameCam* camera);
+        void drawNPCs(gameCam* camera);
+        void drawFrontNPCs(gameCam* camera);
         void playMapTheme();
         int getMapWidth();
         int getMapHeight();
         int** getCollisionMap();
+        NPC* getNearbyNPC(int pCX, int pCY, int playerFace);
 };

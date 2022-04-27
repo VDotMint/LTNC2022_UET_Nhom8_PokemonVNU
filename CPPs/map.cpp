@@ -104,8 +104,22 @@ void Map::drawMap(gameCam* camera) {
             SDL_RenderCopy(RenderWindow::renderer, mapSheet.getTileSheet(), drawTile.getClip(), &dstRect);
         }
     }
+}
+
+void Map::drawNPCs(gameCam* camera) {
+    NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
-        mapNPCs[i]->drawNPC(camera->getCamX(), camera->getCamY());
+        if (camera->getCamY() + 64*5 < mapNPCs[i]->getY()*64) {
+            NPCsinFront.push_back(mapNPCs[i]);
+        } else {
+            mapNPCs[i]->drawNPC(camera->getCamX(), camera->getCamY());
+        }
+    }
+}
+
+void Map::drawFrontNPCs(gameCam* camera) {
+    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
+        NPCsinFront[i]->drawNPC(camera->getCamX(), camera->getCamY());
     }
 }
 
@@ -124,3 +138,32 @@ int Map::getMapHeight() {
 int** Map::getCollisionMap() {
     return tilePropMap;
 }
+
+NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
+    for (unsigned int i = 0; i < mapNPCs.size(); i++) {
+        switch (playerFace) {
+        case 0:
+            if (mapNPCs[i]->getY() == pCY + 1) return mapNPCs[i];
+            break;
+        case 1:
+            if (mapNPCs[i]->getX() == pCX + 1) return mapNPCs[i];
+            break;
+        case 2:
+            if (mapNPCs[i]->getY() == pCY - 1) return mapNPCs[i];
+            break;
+        case 3:
+            if (mapNPCs[i]->getX() == pCX - 1) return mapNPCs[i];
+            break;
+        default:
+            break;
+        }
+    }
+    
+    return NULL;
+}
+
+// NPC* Map::getNearbyEntity(int pCX, int pCY) {
+//     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
+//         if (mapNPCs[i]->getX() == pCX + 1 or mapNPCs[i]->getX() == pCX - 1 or mapNPCs[i]->getY() == pCY - 1 or )
+//     }
+// }
