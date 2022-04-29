@@ -44,8 +44,8 @@ bool quit = false;
 
 bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 
+bool inDialogue = false;
 bool inBattle = false;
-
 bool playerIsRunning = false;
 
 void initSystem();
@@ -94,14 +94,15 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cerr << e->motion.x << " " << e->motion.y << endl;
             g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
-        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b) { // START A BATTLE
+        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) { // START A BATTLE
             battle(pokemon[0], pokemon[1]);
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) {
             NPC* selNPC = g2Map.getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
-                selNPC->talkNPC(mainPlayer.getFacingDirection());
+                if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) inDialogue = true;
+                else inDialogue = false;
             }
-        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0) { // BEGIN MOVEMENT
+        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false) { // BEGIN MOVEMENT
             switch (e->key.keysym.sym) {
                 case SDLK_s:
                     mainPlayer.changeFacingDirect(0);
@@ -205,7 +206,6 @@ void gameLoop() {
             renderWindow.clear();
 
             g2Map.drawMap(&mainCamera); // DRAW THE MAP
-
             g2Map.drawNPCs(&mainCamera); // DRAW THE MAP'S NPC
 
             if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer(); // DRAW THE PLAYER 

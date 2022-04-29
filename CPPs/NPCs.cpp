@@ -2,6 +2,8 @@
 #include "RenderWindow.h"
 #include <iostream>
 
+static unsigned int NPCsen = 0;
+
 NPC::NPC() {
     npcXCoords = 0, npcYCoords = 0, faceDirection = 0;
     isTrainer = false, hasBattled = 2;
@@ -47,7 +49,7 @@ void NPC::drawNPC(int camX, int camY) {
     }
 }
 
-void NPC::talkNPC(int playerFace) {
+bool NPC::talkNPC(int playerFace) {
     switch (playerFace) {
     case 0:
         faceDirection = 2;
@@ -64,4 +66,21 @@ void NPC::talkNPC(int playerFace) {
     default:
         break;
     }
+
+    if (NPCsen < dialogueTexts.size()) {
+        std::cout << dialogueTexts[NPCsen] << std::endl;
+        if (NPCsen + 1 == dialogueTexts.size()) {
+            NPCsen = 0;
+            return false;
+        } else {
+            NPCsen++;
+            return true;
+        }
+    } else {
+        return false;
+    }
+}
+
+void NPC::initDialogue(std::string nextSentence) {
+    dialogueTexts.push_back(nextSentence);
 }

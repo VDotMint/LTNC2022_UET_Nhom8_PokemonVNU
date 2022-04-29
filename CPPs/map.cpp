@@ -81,9 +81,20 @@ void Map::loadNPCs(const char* npcData) {
             int npcX, npcY, face;
             string npcTextPath;
             npcmap >> npcX >> npcY >> face >> npcTextPath;
+
             NPC* newNPC = new NPC;
             newNPC->initNPC(npcX, npcY, face, npcTextPath.c_str());
+            
+            string dialogueSentence;
+            while (dialogueSentence != "NPC_DIALOGUE_END") {
+                getline(npcmap, dialogueSentence);
+                if (dialogueSentence != "NPC_DIALOGUE_END" and dialogueSentence != "") {
+                    newNPC->initDialogue(dialogueSentence);
+                }
+            }
+
             mapNPCs.push_back(newNPC);
+
             tilePropMap[npcY][npcX] = 4;
             i--;
         }
@@ -143,16 +154,16 @@ NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         switch (playerFace) {
         case 0:
-            if (mapNPCs[i]->getY() == pCY + 1) return mapNPCs[i];
+            if (mapNPCs[i]->getY() == pCY + 1 and mapNPCs[i]->getX() == pCX) return mapNPCs[i];
             break;
         case 1:
-            if (mapNPCs[i]->getX() == pCX + 1) return mapNPCs[i];
+            if (mapNPCs[i]->getX() == pCX + 1 and mapNPCs[i]->getY() == pCY) return mapNPCs[i];
             break;
         case 2:
-            if (mapNPCs[i]->getY() == pCY - 1) return mapNPCs[i];
+            if (mapNPCs[i]->getY() == pCY - 1 and mapNPCs[i]->getX() == pCX) return mapNPCs[i];
             break;
         case 3:
-            if (mapNPCs[i]->getX() == pCX - 1) return mapNPCs[i];
+            if (mapNPCs[i]->getX() == pCX - 1 and mapNPCs[i]->getY() == pCY) return mapNPCs[i];
             break;
         default:
             break;
@@ -161,9 +172,3 @@ NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
     
     return NULL;
 }
-
-// NPC* Map::getNearbyEntity(int pCX, int pCY) {
-//     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
-//         if (mapNPCs[i]->getX() == pCX + 1 or mapNPCs[i]->getX() == pCX - 1 or mapNPCs[i]->getY() == pCY - 1 or )
-//     }
-// }

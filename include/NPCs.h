@@ -19,7 +19,7 @@ public:
     ~NPC();
     void initNPC(int x, int y, int face, const char* texturePath, bool canBattle = false);
     void changeFacingDirection(int face);
-    void talkNPC(int playerFace);
+    bool talkNPC(int playerFace);
     void drawNPC(int camX, int camY);
     int getX() {return npcXCoords;}
     int getY() {return npcYCoords;}
@@ -27,4 +27,5 @@ public:
     bool getTrainerStatus() {return isTrainer;}
     int getBattleStatus() {return hasBattled;}
     void startBattle();
+    void initDialogue(std::string nextSentence);
 };
