@@ -13,6 +13,7 @@ class mPlayer {
         int faceDirection;
         SDL_Texture* playerTexture;
         SDL_Rect walkFrames[32];
+        
     public:
         mPlayer();
         ~mPlayer();

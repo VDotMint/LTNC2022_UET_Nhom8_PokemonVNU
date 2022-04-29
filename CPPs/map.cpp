@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "NPCs.h"
 #include "map.h"
 #include "RenderWindow.h"
 #include "Tiling.h"
@@ -9,7 +10,7 @@ using namespace std;
 
 Map::Map() {
     map = NULL;
-    tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactable
+    tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactable, 4 = hasNPC
     mapWidth = 0;
     mapHeight = 0;
 }
@@ -28,6 +29,9 @@ void Map::freeMap() {
         delete[] map[i];
     }
     delete[] map;
+    for (unsigned int i = 0; i < mapNPCs.size(); i++) {
+        delete mapNPCs[i];
+    }
 }
 
 void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {
@@ -64,6 +68,40 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
     mapTheme.loadMusic(musicPath, repeatP);
 }
 
+void Map::loadNPCs(const char* npcData) {
+    ifstream npcmap(npcData);
+    int i = 0;
+    string nextNPC;
+    while (i < 1) {
+        i++;
+        npcmap >> nextNPC;
+        if (nextNPC != "MAP_NEXT_NPC") {
+            break;
+        } else {
+            int npcX, npcY, face;
+            string npcTextPath;
+            npcmap >> npcX >> npcY >> face >> npcTextPath;
+
+            NPC* newNPC = new NPC;
+            newNPC->initNPC(npcX, npcY, face, npcTextPath.c_str());
+            
+            string dialogueSentence;
+            while (dialogueSentence != "NPC_DIALOGUE_END") {
+                getline(npcmap, dialogueSentence);
+                if (dialogueSentence != "NPC_DIALOGUE_END" and dialogueSentence != "") {
+                    newNPC->initDialogue(dialogueSentence);
+                }
+            }
+
+            mapNPCs.push_back(newNPC);
+
+            tilePropMap[npcY][npcX] = 4;
+            i--;
+        }
+    }
+    npcmap.close();
+}
+
 void Map::drawMap(gameCam* camera) {
     for (int i = 0; i < mapHeight; i++) {
         for (int j = 0; j < mapWidth; j++) {
@@ -76,6 +114,23 @@ void Map::drawMap(gameCam* camera) {
             dstRect.h = 64;
             SDL_RenderCopy(RenderWindow::renderer, mapSheet.getTileSheet(), drawTile.getClip(), &dstRect);
         }
+    }
+}
+
+void Map::drawNPCs(gameCam* camera) {
+    NPCsinFront.clear();
+    for (unsigned int i = 0; i < mapNPCs.size(); i++) {
+        if (camera->getCamY() + 64*5 < mapNPCs[i]->getY()*64) {
+            NPCsinFront.push_back(mapNPCs[i]);
+        } else {
+            mapNPCs[i]->drawNPC(camera->getCamX(), camera->getCamY());
+        }
+    }
+}
+
+void Map::drawFrontNPCs(gameCam* camera) {
+    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
+        NPCsinFront[i]->drawNPC(camera->getCamX(), camera->getCamY());
     }
 }
 
@@ -93,4 +148,27 @@ int Map::getMapHeight() {
 
 int** Map::getCollisionMap() {
     return tilePropMap;
+}
+
+NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
+    for (unsigned int i = 0; i < mapNPCs.size(); i++) {
+        switch (playerFace) {
+        case 0:
+            if (mapNPCs[i]->getY() == pCY + 1 and mapNPCs[i]->getX() == pCX) return mapNPCs[i];
+            break;
+        case 1:
+            if (mapNPCs[i]->getX() == pCX + 1 and mapNPCs[i]->getY() == pCY) return mapNPCs[i];
+            break;
+        case 2:
+            if (mapNPCs[i]->getY() == pCY - 1 and mapNPCs[i]->getX() == pCX) return mapNPCs[i];
+            break;
+        case 3:
+            if (mapNPCs[i]->getX() == pCX - 1 and mapNPCs[i]->getY() == pCY) return mapNPCs[i];
+            break;
+        default:
+            break;
+        }
+    }
+    
+    return NULL;
 }
