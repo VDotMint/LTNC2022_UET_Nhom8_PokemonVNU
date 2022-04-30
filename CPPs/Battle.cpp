@@ -3,18 +3,28 @@
 
 
 void battle(Pokemon my,Pokemon op) {
-	bool battleState = true;
-	// int turn = 0;
+	bool isKO = false;
+	int turn = 0;
 	int input;
 	// cout << "Turn: " << turn << '\n';
-	cout << setw(12) << setfill(' ') << left << my.name << setw(50) << setfill(' ') << right << op.name << '\n';
-	cout << setw(12) << setfill(' ') << left << my.hp << setw(50) << setfill(' ') << right << op.hp << '\n';
-	while (battleState) {
-		// turn++;
-		// cout<<"Turn: "<<turn<<'\n';
+	updateTerminal(my,op);
+	while (true) {
+		turn++;
+		cout<<"Turn: "<<turn<<'\n';
 		input=selectMove(my);
 		if (input==-1) continue;
-		battleState=useMove(input,my,op);
+		isKO=useMove(input,my,op);
+		updateTerminal(my,op);
+		if (isKO) {
+			cout<<"You win!\n";
+			break;
+		}
+		isKO=useMove(rand()%2,op,my);
+		updateTerminal(my,op);
+		if (isKO) {
+			cout<<"You lose!\n";
+			break;
+		};
 	}
 };
 
@@ -41,10 +51,6 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	cout<<my.name<<" used "<<my.move[input]->name<<'\n';
 	op.hp-=my.move[input]->power*my.atk/op.def/2;
 	if (op.hp<0) op.hp=0;
-	updateTerminal(my,op);
-	if (!op.hp) {
-			cout<<"You win\n";
-			return false;
-	}
-	return true;
+	if (!op.hp) return true;
+	return false;
 }

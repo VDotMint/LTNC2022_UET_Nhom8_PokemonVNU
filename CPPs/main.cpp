@@ -35,7 +35,7 @@ Move moves[]=
 Pokemon pokemon[]=
 {
 	{"Charmander",99,65,55,{moves,moves+1}},
-	{"Pikachu",95,55,55,{moves,moves+2}}
+	{"Pikachu",95,55,55,{moves+1,moves+2}}
 };
 
 
@@ -233,7 +233,7 @@ void gameLoop() {
 
             renderWindow.display(); // DISPLAY THE CONTENT TO THE WINDOW
 
-            SDL_Delay(1000 / 60); // PRIMITIVE CAP FRAME RATE AT 60 FPS
+            SDL_Delay(1000 / 60); // PRIMITIVE CAP FRAME RATE
 
         }
     }
