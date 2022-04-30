@@ -19,8 +19,10 @@ class Pokemon {
 		Move* move[2];
 };
 
-extern Pokemon pokemon[];
-extern Move moves[];
-
-
 void battle(Pokemon my,Pokemon op);
+
+void updateTerminal(Pokemon &my, Pokemon &op);
+
+int selectMove(Pokemon &my);
+
+bool useMove(int input, Pokemon &my, Pokemon &op);
