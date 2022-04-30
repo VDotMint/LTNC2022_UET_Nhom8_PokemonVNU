@@ -24,18 +24,39 @@ Map g2Map;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
+string Type[]= {
+	"Normal",
+	"Fire",
+	"Water",
+	"Electric",
+	"Grass",
+	"Ice",
+	"Fighting",
+	"Poison",
+	"Ground",
+	"Flying",
+	"Psychic",
+	"Bug",
+	"Rock",
+	"Ghost",
+	"Dragon",
+	"Dark",
+	"Steel",
+	"Fairy"
+};
+
 Move moves[]=
 {
-	{"flamethrower",90},
-	{"tackle",40},
-    {"thunderbolt",90},
-    {"surf",90},
-    {"earthquake",100}
+	{"flamethrower",90,1},
+	{"tackle",40,0},
+    {"thunderbolt",90,3},
+    {"surf",90,2},
+    {"earthquake",100,8}
 };
 Pokemon pokemon[]=
 {
-	{"Charmander",99,65,55,{moves,moves+1}},
-	{"Pikachu",95,55,55,{moves+1,moves+2}}
+	{"Charmander",1,99,65,55,{moves,moves+1}},
+	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
 };
 
 

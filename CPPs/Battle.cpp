@@ -36,7 +36,7 @@ void updateTerminal(Pokemon &my, Pokemon &op) {
 int selectMove(Pokemon &my) {
 	cout<<"Choose your move\n";
 	for (int i=0;i<2;i++) {
-		cout<<i<<". "<<my.move[i]->name<<" power: "<<my.move[i]->power<<'\n';
+		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.move[i]->name<<" power: "<<my.move[i]->power<<" Type: "<<Type[my.move[i]->type]<<'\n';
 	}
 	int input;
 	cin>>input;
