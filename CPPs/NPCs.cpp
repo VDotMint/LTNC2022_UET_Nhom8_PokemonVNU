@@ -1,5 +1,6 @@
 #include "NPCs.h"
 #include "RenderWindow.h"
+#include "otherGraphics.h"
 #include <iostream>
 
 static unsigned int NPCsen = 0;

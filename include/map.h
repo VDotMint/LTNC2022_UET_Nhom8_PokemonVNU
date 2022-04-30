@@ -9,8 +9,23 @@
 #include "camera.h"
 #include "Tiling.h"
 
+class WarpTile {
+    private:
+        int tileX, tileY;
+        int destMap;
+        int destX, destY;
+    public:
+        WarpTile(int _tileX, int _tileY, int _destMap, int _destX, int _destY);
+        ~WarpTile();
+        void activateWarpTile();
+        int getDestMap() {return destMap;}
+        int getDestX() {return destX;}
+        int getDestY() {return destY;}
+};
+
 class Map {
     private:
+        int mapID;
         int** map; //Tile map
         int** tilePropMap; //Collision, Events Map
         int mapWidth;
@@ -18,6 +33,7 @@ class Map {
         TileSheet mapSheet;
         std::vector<NPC*> mapNPCs;
         std::vector<NPC*> NPCsinFront; // Only used for rendering NPCs that are in front of the players
+        std::vector<WarpTile*> warpTiles;
     public:
         Map();
         ~Map();
@@ -29,6 +45,7 @@ class Map {
         void drawNPCs(gameCam* camera);
         void drawFrontNPCs(gameCam* camera);
         void playMapTheme();
+        int getMapID() {return mapID;}
         int getMapWidth();
         int getMapHeight();
         int** getCollisionMap();

@@ -32,26 +32,34 @@ void Map::freeMap() {
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
+    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
+        delete mapNPCs[i];
+    }
 }
 
-void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {
+void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {    
     // Load the level
     ifstream inputmap(path);
     string temp;
+    inputmap >> mapID;
     inputmap >> mapHeight;
     inputmap >> mapWidth;
 
+    // Load in the tile texture data
     map = new int*[mapHeight];
     for (int i = 0; i < mapHeight; i++) {
         map[i] = new int[mapWidth];
     }
-
     for (int i = 0; i < mapHeight; i++) {
         for (int j = 0; j < mapWidth; j++) {
             inputmap >> map[i][j];
         }
     }
+
+    // Flush the end tile texture flag
     inputmap >> temp;
+
+    // Load in the tile collision data
     tilePropMap = new int*[mapHeight];
     for (int i = 0; i < mapHeight; i++) {
         tilePropMap[i] = new int[mapWidth];
@@ -61,33 +69,29 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             inputmap >> tilePropMap[i][j];
         }
     }
-    inputmap.close();
 
-    // Load the map's tilesheet
-    mapSheet.loadTileSheet(sheetPath);
-    mapTheme.loadMusic(musicPath, repeatP);
-}
+    // Flush the tile collision flag
+    inputmap >> temp;
 
-void Map::loadNPCs(const char* npcData) {
-    ifstream npcmap(npcData);
+    // Reads the NPC data
     int i = 0;
     string nextNPC;
     while (i < 1) {
         i++;
-        npcmap >> nextNPC;
-        if (nextNPC != "MAP_NEXT_NPC") {
+        inputmap >> nextNPC;
+        if (nextNPC != "MAP_NEXT_NPC" or nextNPC == "NPC_DATA_STOP") {
             break;
         } else {
             int npcX, npcY, face;
             string npcTextPath;
-            npcmap >> npcX >> npcY >> face >> npcTextPath;
+            inputmap >> npcX >> npcY >> face >> npcTextPath;
 
             NPC* newNPC = new NPC;
             newNPC->initNPC(npcX, npcY, face, npcTextPath.c_str());
             
             string dialogueSentence;
             while (dialogueSentence != "NPC_DIALOGUE_END") {
-                getline(npcmap, dialogueSentence);
+                getline(inputmap, dialogueSentence);
                 if (dialogueSentence != "NPC_DIALOGUE_END" and dialogueSentence != "") {
                     newNPC->initDialogue(dialogueSentence);
                 }
@@ -99,7 +103,15 @@ void Map::loadNPCs(const char* npcData) {
             i--;
         }
     }
-    npcmap.close();
+
+    inputmap >> temp;
+    cout << temp << endl;
+
+    inputmap.close();
+
+    // Load the map's tilesheet
+    mapSheet.loadTileSheet(sheetPath);
+    mapTheme.loadMusic(musicPath, repeatP);
 }
 
 void Map::drawMap(gameCam* camera) {
@@ -171,4 +183,24 @@ NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
     }
     
     return NULL;
+}
+
+WarpTile::WarpTile(int _tileX, int _tileY, int _destMap, int _destX, int _destY) {
+    tileX = _tileX;
+    tileY = _tileY;
+    destMap = _destMap;
+    destX = _destX;
+    destY = _destY;
+}
+
+WarpTile::~WarpTile() {
+    tileX = 0;
+    tileY = 0;
+    destMap = 0;
+    destX = 0;
+    destY = 0;
+}
+
+void WarpTile::activateWarpTile() {
+
 }

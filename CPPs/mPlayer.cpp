@@ -11,7 +11,7 @@ static int moveFrame = 0, walkFrame = 0;
 mPlayer::mPlayer() {
     gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
     name = "NO NAME";
-    currentMap = -1;
+    currentMap = 0; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = G2 INTERIOR, 3 = E3 INTERIOR, 4 -> 9 = CHALLENGE ROOMS
     xCoords = 11, yCoords = 22;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;
@@ -93,9 +93,10 @@ void mPlayer::initPlayerTexture() {
     }
 }
 
-void mPlayer::setPlayerCoords(int x, int y) {
+void mPlayer::setPlayerCoords(int x, int y, int mapID) {
     xCoords = x;
     yCoords = y;
+    currentMap = mapID;
 }
 
 void mPlayer::changeFacingDirect(int direct) {

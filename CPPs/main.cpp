@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
+#include <vector>
 
 #include "titleScreen.h"
 #include "RenderWindow.h"
@@ -19,6 +20,10 @@ RenderWindow renderWindow;
 
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
+
+vector<Map*> gameMaps = {};
+
+Map currentMap;
 
 Map g2Map;
 mPlayer mainPlayer;
@@ -78,8 +83,8 @@ void initSystem() {
     gameTitleScreen.initTitleScreen(hasSaveFile);
     gameTitleScreen.tsButtonInit();
 
-    g2Map.loadMap("res/map/g2.map", "res/tileset/g2o_tiles.png", "res/music/overworldMusic.mp3", 8.85);
-    g2Map.loadNPCs("res/map/g2.npc");
+    g2Map.loadMap("res/map/e3.map", "res/tileset/e3o_tiles.png", "res/music/overworldMusic.mp3", 8.85);
+    // g2Map.loadNPCs("res/map/g2.npc");
 
     blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
@@ -200,7 +205,7 @@ void gameLoop() {
                 mainCamera.finishIllegalPos(g2Map.getMapWidth(), g2Map.getMapHeight());
             }
 
-            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5); // UPDATE THE PLAYER COORDINATES
+            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5, g2Map.getMapID()); // UPDATE THE PLAYER COORDINATES
 
             renderWindow.drawColor(0, 0, 0); // PRPARE THE RENDERING SCREEN
             renderWindow.clear();

@@ -29,7 +29,7 @@ class mPlayer {
         void initPlayerTexture();
         SDL_Texture* getPlayerTexture();
         SDL_Rect* getCurrentFrame();
-        void setPlayerCoords(int x, int y);
+        void setPlayerCoords(int x, int y, int mapID);
         void renderStandingPlayer();
         void renderMovingPlayer();
         void renderRunningPlayer();
