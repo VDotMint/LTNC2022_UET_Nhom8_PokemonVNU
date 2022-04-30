@@ -3,6 +3,9 @@
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Battle.h"
+
+extern Pokemon pokemon[];
 
 class mPlayer {
     private:
@@ -17,6 +20,7 @@ class mPlayer {
     public:
         mPlayer();
         ~mPlayer();
+        Pokemon party[2];
         bool loadPlayerData();
         bool savePlayerData();
         int getGender();
