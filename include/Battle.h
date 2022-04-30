@@ -30,7 +30,9 @@ class Trainer {
 		Pokemon party[2];
 };
 
-void battle(Pokemon my,Pokemon op);
+void battle (Pokemon my[],Pokemon op[]);
+
+bool battle(Pokemon &my,Pokemon &op);
 
 void updateTerminal(Pokemon &my, Pokemon &op);
 

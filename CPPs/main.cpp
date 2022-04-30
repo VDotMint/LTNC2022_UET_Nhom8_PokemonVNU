@@ -58,7 +58,12 @@ Pokemon pokemon[]=
 	{"Charmander",1,99,65,55,{moves,moves+1}},
 	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
 };
-
+//              Test
+Pokemon opParty[]={
+	{"Charmander",1,99,65,55,{moves,moves+1}},
+	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
+};
+//              
 
 bool tsToMapTransition;
 static int transitionTransparency = 0;
@@ -76,7 +81,6 @@ void initSystem();
 void gameLoop();
 void titleScreenInputProcess(SDL_Event* e);
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY);
-void battle(Pokemon my, Pokemon op);
 
 int main(int argc, char *argv[]) {
     initSystem();
@@ -119,7 +123,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             g2Map.mapTheme.manualSkip(70.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) { // START A BATTLE
-            battle(pokemon[0], pokemon[1]);
+            battle(pokemon,opParty);
         } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) {
             NPC* selNPC = g2Map.getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
@@ -181,7 +185,7 @@ void gameLoop() {
     SDL_Event e;
 
     while (quit == false) {
-        if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN. AGAIN, MOSTLY FINSIHED, DO NOT TOUCH
+        if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN. AGAIN, MOSTLY FINISHED, DO NOT TOUCH
         {
             titleScreenInputProcess(&e);
             

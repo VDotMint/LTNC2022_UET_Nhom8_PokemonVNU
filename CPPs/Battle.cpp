@@ -1,30 +1,42 @@
 #include "Battle.h"
 
+void battle (Pokemon my[],Pokemon op[]) {
+	int i=0,j=0;
+	while (i<2&&j<2) {
+		if(battle(my[i],op[j])) {
+			j++;
+		}
+		else i++;
+	}
+	if (i==3) cout<<"You lost!\n";
+	else cout<<"You won!\n";
+}
 
-
-void battle(Pokemon my,Pokemon op) {
+bool battle(Pokemon &my,Pokemon &op) {
 	bool isKO = false;
-	int turn = 0;
+	// int turn = 0;
 	int input;
 	// cout << "Turn: " << turn << '\n';
 	updateTerminal(my,op);
 	while (true) {
-		turn++;
-		cout<<"Turn: "<<turn<<'\n';
+		// turn++;
+		// cout<<"Turn: "<<turn<<'\n';
+		cout<<setw(62)<<setfill('-')<<'\n';
 		input=selectMove(my);
 		if (input==-1) continue;
 		isKO=useMove(input,my,op);
 		updateTerminal(my,op);
 		if (isKO) {
-			cout<<"You win!\n";
-			break;
+			cout<<"Opposing "<<op.name<<" fainted!\n";
+			return true;
 		}
+		cout<<"Opposing ";
 		isKO=useMove(rand()%2,op,my);
 		updateTerminal(my,op);
 		if (isKO) {
-			cout<<"You lose!\n";
-			break;
-		};
+			cout<<my.name<<" fainted!\n";
+			return false;
+		}
 	}
 };
 
