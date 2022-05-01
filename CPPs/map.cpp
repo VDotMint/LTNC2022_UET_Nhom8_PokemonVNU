@@ -30,17 +30,18 @@ void Map::freeMap() {
     }
     delete[] map;
     map = NULL;
-    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
-        delete NPCsinFront[i];
-    }
-    NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
     mapNPCs.clear();
+    for (unsigned int i = 0; i < mapWarpTiles.size(); i++) {
+        delete mapWarpTiles[i];
+    }
+    mapWarpTiles.clear();
     mapWidth = 0;
     mapHeight = 0;
     mapSheet.freeTileSheet();
+    mapTheme.freeMusic();
 }
 
 void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {    
@@ -106,6 +107,25 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             mapNPCs.push_back(newNPC);
 
             tilePropMap[npcY][npcX] = 4;
+            i--;
+        }
+    }
+
+    i = 0;
+    string nextWarpTile;
+    while (i < 1) {
+        i++;
+        inputmap >> nextWarpTile;
+        if (nextWarpTile != "WARP_NEXT_TILE" or nextWarpTile == "WARP_DATA_STOP") {
+            break;
+        } else {
+            int tileX, tileY, destMap, destX, destY;
+            inputmap >> tileX >> tileY >> destMap >> destX >> destY;
+
+            WarpTile* newWarpTile = new WarpTile(tileX, tileY, destMap, destX, destY);
+            
+            mapWarpTiles.push_back(newWarpTile);
+            tilePropMap[tileY][tileX] = 2;
             i--;
         }
     }
@@ -189,7 +209,26 @@ NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
 }
 
 WarpTile* Map::getNearbyWarpTile(int pCX, int pCY, int playerFace) {
-
+    for (unsigned int i = 0; i < mapWarpTiles.size(); i++) {
+        switch (playerFace) {
+        case 0:
+            if (mapWarpTiles[i]->getY() == pCY + 1 and mapWarpTiles[i]->getX() == pCX) return mapWarpTiles[i];
+            break;
+        case 1:
+            if (mapWarpTiles[i]->getX() == pCX + 1 and mapWarpTiles[i]->getY() == pCY) return mapWarpTiles[i];
+            break;
+        case 2:
+            if (mapWarpTiles[i]->getY() == pCY - 1 and mapWarpTiles[i]->getX() == pCX) return mapWarpTiles[i];
+            break;
+        case 3:
+            if (mapWarpTiles[i]->getX() == pCX - 1 and mapWarpTiles[i]->getY() == pCY) return mapWarpTiles[i];
+            break;
+        default:
+            break;
+        }
+    }
+    
+    return NULL;
 }
 
 

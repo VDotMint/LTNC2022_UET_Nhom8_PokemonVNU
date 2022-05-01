@@ -80,6 +80,8 @@ Pokemon opParty[]={
 // GAME STATES
 
 bool tsToMapTransition;
+bool beginMapToMapTransition;
+bool finishMapToMapTransition;
 static int transitionTransparency = 0;
 
 bool hasSaveFile = true;
@@ -134,23 +136,33 @@ void initSystem() {
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
     while (SDL_PollEvent(e)) {
-        if (e->type == SDL_QUIT) {
+        if (e->type == SDL_QUIT)
+        {
             mainPlayer.savePlayerData();
             delete playerMap;
             quit = true;
-        } else if (e->type == SDL_MOUSEBUTTONDOWN) {
+        }
+        else if (e->type == SDL_MOUSEBUTTONDOWN)
+        {
             cerr << e->motion.x << " " << e->motion.y << endl;
             // playerMap->mapTheme.manualSkip(70.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
-        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) { // START A BATTLE
+        }
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
+        { 
             battle(pokemon,opParty);
-        } else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) {
+        } 
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
+        {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
                 if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) inDialogue = true;
                 else inDialogue = false;
             }
-        } else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false) { // BEGIN MOVEMENT
+        } 
+        else if 
+        (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false) // BEGIN MOVEMENT
+        { 
             switch (e->key.keysym.sym) {
                 case SDLK_s:
                     mainPlayer.changeFacingDirect(0);
@@ -167,14 +179,22 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 default:
                     break;
             }
-            mainCamera.beginMovement(e, pCX, pCY, playerMap->getCollisionMap());
-        } else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) { // STOP MOVEMENT 
+            WarpTile* selWarpTile = playerMap->getNearbyWarpTile(pCX, pCY, mainPlayer.getFacingDirection());
+            if (selWarpTile == NULL) {
+                mainCamera.beginMovement(e, pCX, pCY, playerMap->getCollisionMap());
+            } else {
+                beginMapToMapTransition = true;
+            }
+        } 
+        else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) // STOP MOVEMENT 
+        { 
             mainCamera.stopMovement(e);
         }
     }
 }
 
-void titleScreenInputProcess(SDL_Event* e) { // ALREADY MOSTLY FINISHED. DO NOT TOUCH.
+void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TOUCH.
+{ 
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             quit = true;
@@ -241,22 +261,29 @@ void gameLoop() {
             if (currentKeyStates[SDL_SCANCODE_Z]) {mainCamera.speedUp(); playerIsRunning = true;} // TOGGLE RUNNING STATE
             else {mainCamera.slowDown(); playerIsRunning = false;}
 
-            if (mainCamera.getFinishingState() == true) { // MOVE THE CAMERA
+            // MOVE THE CAMERA
+            if (mainCamera.getFinishingState() == true)
+            { 
                 mainCamera.finishMovement();
-            } else {
+            } 
+            else 
+            {
                 mainCamera.moveCamera(pCX, pCY, playerMap->getCollisionMap());
                 mainCamera.finishIllegalPos(playerMap->getMapWidth(), playerMap->getMapHeight());
             }
 
-            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5, playerMap->getMapID()); // UPDATE THE PLAYER COORDINATES
+            // UPDATE THE PLAYER COORDINATES
+            mainPlayer.setPlayerCoords(mainCamera.getCamX() / 64 + 6, mainCamera.getCamY() / 64 + 5, playerMap->getMapID()); 
 
-            renderWindow.drawColor(0, 0, 0); // PRPARE THE RENDERING SCREEN
+            // PRPARE THE RENDERING SCREEN
+            renderWindow.drawColor(0, 0, 0); 
             renderWindow.clear();
 
             playerMap->drawMap(&mainCamera); // DRAW THE MAP
             playerMap->drawNPCs(&mainCamera); // DRAW THE MAP'S NPC
 
-            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer(); // DRAW THE PLAYER 
+            // DRAW THE PLAYER
+            if (mainCamera.getMovementState() == false) mainPlayer.renderStandingPlayer();  
             else {
                 if (playerIsRunning == true) mainPlayer.renderRunningPlayer(); 
                 else mainPlayer.renderMovingPlayer();
@@ -264,7 +291,8 @@ void gameLoop() {
 
             playerMap->drawFrontNPCs(&mainCamera); // DRAW NPCs THAT ARE IN FRONT OF THE PLAYER
             
-            if (tsToMapTransition == true) { // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
+            // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
+            if (tsToMapTransition == true) { 
                 if (transitionTransparency > 0) {
                     transitionTransparency -= 17;
                 } else if (transitionTransparency <= 0) {
@@ -274,8 +302,38 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
-            playerMap->playMapTheme();
+            // MAP TO MAP TRANSITION HANDLING
+            if (beginMapToMapTransition == true) {
+                Mix_FadeOutMusic(1500);
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 17;
+                } else if (transitionTransparency >= 255) {
+                    WarpTile* selWarpTile = playerMap->getNearbyWarpTile(pCX, pCY, mainPlayer.getFacingDirection());
+                    int tdM = selWarpTile->getDestMap(), tdX = selWarpTile->getDestX(), tdY = selWarpTile->getDestY();
+                    beginMapToMapTransition = false;
+                    finishMapToMapTransition = true;
+                    playerMap->mapTheme.resetChord();
+                    playerMap->freeMap();
+                    playerMap->loadMap(gameMaps[tdM].c_str(), gameTileSets[tdM].c_str(), "res/music/overworldMusic.mp3", 8.85);
+                    mainPlayer.setPlayerCoords(tdX, tdY, tdM);
+                    mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
 
+            if (finishMapToMapTransition == true) {
+                if (transitionTransparency > 0) {
+                    transitionTransparency -= 17;
+                } else if (transitionTransparency <= 0) {
+                    finishMapToMapTransition = false;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            if (beginMapToMapTransition == false) playerMap->playMapTheme(); // PLAY THE MAP'S THEME
+            
             renderWindow.display(); // DISPLAY THE CONTENT TO THE WINDOW
 
             SDL_Delay(1000 / 60); // PRIMITIVE CAP FRAME RATE

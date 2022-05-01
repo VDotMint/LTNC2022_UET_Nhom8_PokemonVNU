@@ -104,3 +104,10 @@ Pokemons, moves, they got it all covered for you.
 And it's all free!
 NPC_DIALOGUE_END
 NPC_DATA_STOP
+WARP_NEXT_TILE
+6 21 1 30 21
+WARP_NEXT_TILE
+6 22 1 30 22
+WARP_NEXT_TILE
+6 23 1 30 23
+WARP_DATA_STOP

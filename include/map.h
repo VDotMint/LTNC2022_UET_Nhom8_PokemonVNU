@@ -25,6 +25,19 @@ class WarpTile {
         int getDestY() {return destY;}
 };
 
+class InterTile {
+    private:
+        int tileX, tileY;
+        std::vector<std::string> dialogueTexts;
+    public:
+        InterTile();
+        ~InterTile();
+        int getX() {return tileX;}
+        int getY() {return tileY;}
+        void initTileDialogue(std::string nextSentence);
+        void talkTile();
+};
+
 class Map {
     private:
         int mapID;
@@ -35,10 +48,10 @@ class Map {
         TileSheet mapSheet;
         std::vector<NPC*> mapNPCs;
         std::vector<NPC*> NPCsinFront; // Only used for rendering NPCs that are in front of the players
-        std::vector<WarpTile*> warpTiles;
+        std::vector<WarpTile*> mapWarpTiles;
+        std::vector<InterTile*> mapInterTiles;
     public:
         Music mapTheme;
-
         Map();
         ~Map();
         void freeMap();
