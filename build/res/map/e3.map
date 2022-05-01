@@ -79,4 +79,10 @@ Do spare a thought for the young 3 developers of this game.
 Discrete Math, Calculus and General Physics swallowed them whole!
 NPC_DIALOGUE_END
 NPC_DATA_STOP
-reached safely
+WARP_NEXT_TILE
+31 21 0 7 21
+WARP_NEXT_TILE
+31 22 0 7 22
+WARP_NEXT_TILE
+31 23 0 7 23
+WARP_NEXT_TILE

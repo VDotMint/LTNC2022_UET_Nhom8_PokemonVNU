@@ -24,17 +24,23 @@ void Map::freeMap() {
         delete[] tilePropMap[i];
     }
     delete[] tilePropMap;
-
+    tilePropMap = NULL;
     for (int i = 0; i < mapHeight; i++) {
         delete[] map[i];
     }
     delete[] map;
+    map = NULL;
+    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
+        delete NPCsinFront[i];
+    }
+    NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
-    for (unsigned int i = 0; i < NPCsinFront.size(); i++) {
-        delete mapNPCs[i];
-    }
+    mapNPCs.clear();
+    mapWidth = 0;
+    mapHeight = 0;
+    mapSheet.freeTileSheet();
 }
 
 void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {    
@@ -103,9 +109,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             i--;
         }
     }
-
-    inputmap >> temp;
-    cout << temp << endl;
 
     inputmap.close();
 
@@ -184,6 +187,13 @@ NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {
     
     return NULL;
 }
+
+WarpTile* Map::getNearbyWarpTile(int pCX, int pCY, int playerFace) {
+
+}
+
+
+
 
 WarpTile::WarpTile(int _tileX, int _tileY, int _destMap, int _destX, int _destY) {
     tileX = _tileX;
