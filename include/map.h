@@ -17,7 +17,6 @@ class WarpTile {
     public:
         WarpTile(int _tileX, int _tileY, int _destMap, int _destX, int _destY);
         ~WarpTile();
-        void activateWarpTile();
         int getX() {return tileX;}
         int getY() {return tileY;}
         int getDestMap() {return destMap;}
@@ -30,12 +29,12 @@ class InterTile {
         int tileX, tileY;
         std::vector<std::string> dialogueTexts;
     public:
-        InterTile();
+        InterTile(int _tileX, int _tileY);
         ~InterTile();
         int getX() {return tileX;}
         int getY() {return tileY;}
         void initTileDialogue(std::string nextSentence);
-        void talkTile();
+        bool talkTile();
 };
 
 class Map {
@@ -43,6 +42,7 @@ class Map {
         int mapID;
         int** map; //Tile map
         int** tilePropMap; //Collision, Events Map
+        int** tileOverlayMap; // Stuffs that are drawn on top of players and NPCs
         int mapWidth;
         int mapHeight;
         TileSheet mapSheet;
@@ -55,16 +55,19 @@ class Map {
         Map();
         ~Map();
         void freeMap();
-        void loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP = 0.0);
-        void loadNPCs(const char* npcData);
+        void loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP = 0.0, bool hasOverlay = false);
         void drawMap(gameCam* camera);
         void drawNPCs(gameCam* camera);
         void drawFrontNPCs(gameCam* camera);
         void playMapTheme();
+        void initOverlayElements(const char* path);
+        void freeOverlayElements();
+        void drawOverlay(gameCam* camera);
         int getMapID() {return mapID;}
         int getMapWidth();
         int getMapHeight();
         int** getCollisionMap();
         NPC* getNearbyNPC(int pCX, int pCY, int playerFace);
         WarpTile* getNearbyWarpTile(int pCX, int PCY, int playerFace);
+        InterTile* getNearbyInterTile(int pCX, int PCY, int playerFace);
 };

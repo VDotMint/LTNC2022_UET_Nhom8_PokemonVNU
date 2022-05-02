@@ -110,4 +110,18 @@ WARP_NEXT_TILE
 6 22 1 30 22
 WARP_NEXT_TILE
 6 23 1 30 23
+WARP_NEXT_TILE
+32 16 3 27 34
+WARP_NEXT_TILE
+33 16 3 28 34
 WARP_DATA_STOP
+INTER_NEXT_TILE
+48 22
+Sorry, but access to the rest of VNU is currently unavailable. -Pokemon UET Creators.
+INTER_DIALOGUE_END
+INTER_NEXT_TILE
+37 20
+G2 Building.
+This game's ultimate Pokemon battle zone!
+INTER_DIALOGUE_END
+INTER_DATA_STOP

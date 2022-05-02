@@ -8,6 +8,8 @@
 
 using namespace std;
 
+TileSheet overlayElements;
+
 Map::Map() {
     map = NULL;
     tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactable, 4 = hasNPC
@@ -29,7 +31,15 @@ void Map::freeMap() {
         delete[] map[i];
     }
     delete[] map;
+    if (tileOverlayMap != NULL) {
+        for (int i = 0; i < mapHeight; i++) {
+            delete[] tileOverlayMap[i];
+        }
+        delete[] tileOverlayMap;
+        tileOverlayMap = NULL;
+    }
     map = NULL;
+    NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
@@ -38,13 +48,17 @@ void Map::freeMap() {
         delete mapWarpTiles[i];
     }
     mapWarpTiles.clear();
+    for (unsigned int i = 0; i < mapInterTiles.size(); i++) {
+        delete mapInterTiles[i];
+    }
+    mapInterTiles.clear();
     mapWidth = 0;
     mapHeight = 0;
     mapSheet.freeTileSheet();
     mapTheme.freeMusic();
 }
 
-void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP) {    
+void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP, bool hasOverlay) {    
     // Load the level
     ifstream inputmap(path);
     string temp;
@@ -79,6 +93,22 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
 
     // Flush the tile collision flag
     inputmap >> temp;
+
+    // Reads the tile overlay map if it exists
+    if (hasOverlay == true) {
+        tileOverlayMap = new int*[mapHeight];
+        for (int i = 0; i < mapHeight; i++) {
+            tileOverlayMap[i] = new int[mapWidth];
+        }
+        for (int i = 0; i < mapHeight; i++) {
+            for (int j = 0; j < mapWidth; j++) {
+                inputmap >> tileOverlayMap[i][j];
+            }
+        }
+
+        // Flush the tile overlay flag
+        inputmap >> temp;
+    }
 
     // Reads the NPC data
     int i = 0;
@@ -130,6 +160,34 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
         }
     }
 
+
+    i = 0;
+    string nextInterTile;
+    while (i < 1) {
+        i++;
+        inputmap >> nextInterTile;
+        if (nextInterTile != "INTER_NEXT_TILE" or nextInterTile == "INTER_DATA_STOP") {
+            break;
+        } else {
+            int tileX, tileY;
+            inputmap >> tileX >> tileY;
+
+            InterTile* newInterTile = new InterTile(tileX, tileY);
+
+            string interSentence;
+            while (interSentence != "INTER_DIALOGUE_END") {
+                getline(inputmap, interSentence);
+                if (interSentence != "INTER_DIALOGUE_END" and interSentence != "") {
+                    newInterTile->initTileDialogue(interSentence);
+                }
+            }
+
+            mapInterTiles.push_back(newInterTile);
+            tilePropMap[tileY][tileX] = 3;
+            i--;
+        }
+    }
+
     inputmap.close();
 
     // Load the map's tilesheet
@@ -171,6 +229,31 @@ void Map::drawFrontNPCs(gameCam* camera) {
 
 void Map::playMapTheme() {
     mapTheme.play();
+}
+
+void Map::initOverlayElements(const char* path) {
+    overlayElements.loadTileSheet(path);
+}
+
+void Map::freeOverlayElements() {
+    overlayElements.freeTileSheet();
+}
+
+void Map::drawOverlay(gameCam* camera) {
+    for (int i = 0; i < mapHeight; i++) {
+        for (int j = 0; j < mapWidth; j++) {
+            if (tileOverlayMap[i][j] != -1) {
+                Tile overlayTile;
+                overlayTile.defineTile(&overlayElements, tileOverlayMap[i][j]);
+                SDL_Rect dstRect;
+                dstRect.x = j*64 - camera->getCamX();
+                dstRect.y = i*64 - camera->getCamY();
+                dstRect.w = 64;
+                dstRect.h = 64;
+                SDL_RenderCopy(RenderWindow::renderer, overlayElements.getTileSheet(), overlayTile.getClip(), &dstRect);
+            }
+        }
+    }
 }
 
 int Map::getMapWidth() {
@@ -231,8 +314,30 @@ WarpTile* Map::getNearbyWarpTile(int pCX, int pCY, int playerFace) {
     return NULL;
 }
 
+InterTile* Map::getNearbyInterTile(int pCX, int pCY, int playerFace) {
+    for (unsigned int i = 0; i < mapInterTiles.size(); i++) {
+        switch (playerFace) {
+        case 0:
+            if (mapInterTiles[i]->getY() == pCY + 1 and mapWarpTiles[i]->getX() == pCX) return mapInterTiles[i];
+            break;
+        case 1:
+            if (mapInterTiles[i]->getX() == pCX + 1 and mapInterTiles[i]->getY() == pCY) return mapInterTiles[i];
+            break;
+        case 2:
+            if (mapInterTiles[i]->getY() == pCY - 1 and mapInterTiles[i]->getX() == pCX) return mapInterTiles[i];
+            break;
+        case 3:
+            if (mapInterTiles[i]->getX() == pCX - 1 and mapInterTiles[i]->getY() == pCY) return mapInterTiles[i];
+            break;
+        default:
+            break;
+        }
+    }
+    
+    return NULL;
+}
 
-
+// WARP TILE CONFIGS
 
 WarpTile::WarpTile(int _tileX, int _tileY, int _destMap, int _destX, int _destY) {
     tileX = _tileX;
@@ -250,6 +355,36 @@ WarpTile::~WarpTile() {
     destY = 0;
 }
 
-void WarpTile::activateWarpTile() {
+// INTER TILE CONFIGS
 
+static unsigned int INTERsen = 0;
+
+InterTile::InterTile(int _tileX, int _tileY) {
+    tileX = _tileX;
+    tileY = _tileY;
+}
+
+InterTile::~InterTile() {
+    tileX = 0;
+    tileY = 0;
+    dialogueTexts.clear();
+}
+
+void InterTile::initTileDialogue(std::string nextSentence) {
+    dialogueTexts.push_back(nextSentence);
+}
+
+bool InterTile::talkTile() {
+    if (INTERsen < dialogueTexts.size()) {
+        std::cout << dialogueTexts[INTERsen] << std::endl;
+        if (INTERsen + 1 == dialogueTexts.size()) {
+            INTERsen = 0;
+            return false;
+        } else {
+            INTERsen++;
+            return true;
+        }
+    } else {
+        return false;
+    }
 }
