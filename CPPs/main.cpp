@@ -213,7 +213,8 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         } 
         else if 
         (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false) // BEGIN MOVEMENT
-        { 
+        {
+            // cout << e->key.keysym.sym << " clicked down at game tick: " << SDL_GetTicks() << endl;
             switch (e->key.keysym.sym) {
                 case SDLK_s:
                     mainPlayer.changeFacingDirect(0);

@@ -129,6 +129,18 @@ END_COLLISION_MAP
 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 END_OVERLAY_MAP
+MAP_NEXT_NPC
+28 21 0
+res/npcsprite/npcSprite6.png
+NPC_DIALOGUE_END
+MAP_NEXT_NPC
+28 22 0
+res/npcsprite/npcSpriteblank.png
+Hello there student.
+This is G2 building, where all the battling takes place.
+Make sure you've got all your Pokemons ready.
+Head up the staircase to begin the challenge!
+NPC_DIALOGUE_END
 NPC_DATA_STOP
 WARP_NEXT_TILE
 27 35 0 32 17
