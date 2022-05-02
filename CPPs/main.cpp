@@ -59,22 +59,20 @@ string Type[]= {
 
 Move moves[]=
 {
-	{"flamethrower",90,1},
-	{"tackle",40,0},
-    {"thunderbolt",90,3},
-    {"surf",90,2},
-    {"earthquake",100,8}
+	{"flamethrower",1,90,15},
+	{"tackle",0,40,35},
+    {"thunderbolt",3,90,15},
+    {"surf",2,90,15},
+    {"earthquake",8,100,10}
 };
-Pokemon pokemon[]=
+PokemonData pokemonData[]=
 {
 	{"Charmander",1,99,65,55,{moves,moves+1}},
 	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
 };
 //              Test
-Pokemon opParty[]={
-	{"Charmander",1,99,65,55,{moves,moves+1}},
-	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
-};
+Pokemon pokemon[]={0,1};
+Pokemon opParty[]={0,1};
 //              
 
 // GAME STATES
