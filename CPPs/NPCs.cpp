@@ -13,6 +13,7 @@ NPC::NPC() {
 NPC::~NPC() {
     SDL_DestroyTexture(npcTexture);
     npcTexture = NULL;
+    dialogueTexts.clear();
 }
 
 void NPC::initNPC(int x, int y, int face, const char* texturePath, bool canBattle) {

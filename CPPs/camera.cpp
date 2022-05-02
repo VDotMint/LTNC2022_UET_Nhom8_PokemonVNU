@@ -1,7 +1,5 @@
 #include <camera.h>
 
-// VERY PRIMITIVE STANDALONE CAMERA. LINKING WITH PLAYER TO BE IMPLEMENTED LATER.
-
 gameCam::gameCam() {
     camera = {0, 0, 64*13, 64*11};
     isMoving = 0, finishMove = 0, moveUp = 0, moveLeft = 0, moveDown = 0, moveRight = 0;
@@ -53,25 +51,33 @@ void gameCam::stopMovement(SDL_Event *e) {
 
 void gameCam::moveCamera(int x, int y, int** colMap) {
     if (moveRight == true) {
-        if (colMap[y][x+1] != 0) finishMovement();
+        if (colMap[y][x+1] != 0) {
+            finishMovement();
+        }
         else {
             isMoving = true; 
             camera.x += movementSpeed;
         }
     } else if (moveLeft == true) {
-        if (colMap[y][x-1] != 0) finishMovement();
+        if (colMap[y][x-1] != 0) {
+            finishMovement();
+        }
         else {
             isMoving = true; 
             camera.x -= movementSpeed;
         } 
     } else if (moveUp == true) {
-        if (colMap[y-1][x] != 0) finishMovement();
+        if (colMap[y-1][x] != 0) {
+            finishMovement();
+        }
         else {
             isMoving = true; 
             camera.y -= movementSpeed;
         }
     } else if (moveDown == true) {
-        if (colMap[y+1][x] != 0) finishMovement();
+        if (colMap[y+1][x] != 0) {
+            finishMovement();
+        }
         else {
             isMoving = true; 
             camera.y += movementSpeed;

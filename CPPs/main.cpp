@@ -21,14 +21,42 @@ RenderWindow renderWindow;
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 
+Mix_Chunk* changeMap;
+Mix_Chunk* aButton;
+
 std::string gameMaps[] = {
     "res/map/g2.map",
-    "res/map/e3.map"
+    "res/map/e3.map",
+    "res/map/e3i.map",
+    "res/map/g2i.map"
 };
 
 std::string gameTileSets[] = {
     "res/tileset/g2o_tiles.png",
-    "res/tileset/e3o_tiles.png"
+    "res/tileset/e3o_tiles.png",
+    "res/tileset/e3i_tiles.png",
+    "res/tileset/g2i_tiles.png",
+};
+
+std::string gameThemes[] = {
+    "res/music/g2o_theme.mp3",
+    "res/music/e3o_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+};
+
+double themeRepeats[] = {
+    8.85,
+    30.555,
+    0.77,
+    0.77,
+};
+
+bool mapOverlays[] = {
+    false,
+    false,
+    true,
+    true,
 };
 
 Map* playerMap;
@@ -97,6 +125,7 @@ void initSystem();
 void gameLoop();
 void titleScreenInputProcess(SDL_Event* e);
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY);
+void freeMainAssets();
 
 int main(int argc, char *argv[]) {
     initSystem();
@@ -126,10 +155,27 @@ void initSystem() {
 
     // INIT THE PLAYER'S CURRENT MAP
     playerMap = new Map;
-    playerMap->loadMap(gameMaps[mainPlayer.getCurrentMap()].c_str(), gameTileSets[mainPlayer.getCurrentMap()].c_str(), "res/music/overworldMusic.mp3", 8.85);
+    playerMap->loadMap(gameMaps[mainPlayer.getCurrentMap()].c_str(), gameTileSets[mainPlayer.getCurrentMap()].c_str(), gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()], mapOverlays[mainPlayer.getCurrentMap()]);
 
+    // INIT THE OVERLAY ELEMENTS TEXTURE
+    playerMap->initOverlayElements("res/tileset/overlaying_tiles.png");
+
+    // LOAD TRANSITION EFFECT
     blackTransitionTexture = renderWindow.loadTexture("res/otherassets/blacktransition.png");
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
+
+    // INIT THE SOUND EFFECTS
+    changeMap = Mix_LoadWAV("res/sfx/change_map.wav");
+    aButton = Mix_LoadWAV("res/sfx/a_button.wav");
+}
+
+void freeMainAssets() {
+    playerMap->freeOverlayElements();
+    delete playerMap;
+    SDL_DestroyTexture(blackTransitionTexture);
+    blackTransitionTexture = NULL;
+    Mix_FreeChunk(changeMap);
+    Mix_FreeChunk(aButton);
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
@@ -137,14 +183,13 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         if (e->type == SDL_QUIT)
         {
             mainPlayer.savePlayerData();
-            delete playerMap;
             quit = true;
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
             cerr << e->motion.x << " " << e->motion.y << endl;
-            // playerMap->mapTheme.manualSkip(70.03); // MUSIC TESTING
-            cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << endl;
+            // playerMap->mapTheme.manualSkip(57.03); // MUSIC TESTING
+            cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
         }
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         { 
@@ -156,6 +201,12 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             if (selNPC != NULL) {
                 if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) inDialogue = true;
                 else inDialogue = false;
+            } else {
+                InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
+                if (selInterTile != NULL) {
+                    if (selInterTile->talkTile() == true) inDialogue = true;
+                    else inDialogue = false;
+                }
             }
         } 
         else if 
@@ -178,10 +229,10 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                     break;
             }
             WarpTile* selWarpTile = playerMap->getNearbyWarpTile(pCX, pCY, mainPlayer.getFacingDirection());
-            if (selWarpTile == NULL) {
-                mainCamera.beginMovement(e, pCX, pCY, playerMap->getCollisionMap());
-            } else {
+            if (selWarpTile != NULL and (e->key.keysym.sym == SDLK_w or e->key.keysym.sym == SDLK_a or e->key.keysym.sym == SDLK_s or e->key.keysym.sym == SDLK_d)) {
                 beginMapToMapTransition = true;
+            } else {
+                mainCamera.beginMovement(e, pCX, pCY, playerMap->getCollisionMap());
             }
         } 
         else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) // STOP MOVEMENT 
@@ -200,18 +251,21 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
         if (gameTitleScreen.acceptInputState() == true) {
             gameTitleScreen.doButtonEvents(e);
             if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
+                Mix_PlayChannel(-1, aButton, 0);
                 gameTitleScreen.tsButtons[0].resetClickState();
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;
             } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
+                Mix_PlayChannel(-1, aButton, 0);
                 gameTitleScreen.tsButtons[1].resetClickState();
                 mPlayer newTempPlayer;
                 mainPlayer = newTempPlayer;
                 mainPlayer.initPlayerTexture();
                 mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 gameTitleScreen.stopInputState();
-                tsToMapTransition = true;                
+                tsToMapTransition = true;
             } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
+                Mix_PlayChannel(-1, aButton, 0);
                 quit = true;
                 gameTitleScreen.freeTitleScreen();
             } 
@@ -288,6 +342,11 @@ void gameLoop() {
             }
 
             playerMap->drawFrontNPCs(&mainCamera); // DRAW NPCs THAT ARE IN FRONT OF THE PLAYER
+
+            // DRAW THE OVERLAYING ELEMENTS IF THE MAP HAS THEM
+            if (mapOverlays[mainPlayer.getCurrentMap()] == true) {
+                playerMap->drawOverlay(&mainCamera);
+            }
             
             // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
             if (tsToMapTransition == true) { 
@@ -305,6 +364,7 @@ void gameLoop() {
                 Mix_FadeOutMusic(1500);
                 if (transitionTransparency < 255) {
                     transitionTransparency += 17;
+                    if (transitionTransparency == 51) Mix_PlayChannel(-1, changeMap, 0);
                 } else if (transitionTransparency >= 255) {
                     WarpTile* selWarpTile = playerMap->getNearbyWarpTile(pCX, pCY, mainPlayer.getFacingDirection());
                     int tdM = selWarpTile->getDestMap(), tdX = selWarpTile->getDestX(), tdY = selWarpTile->getDestY();
@@ -312,7 +372,7 @@ void gameLoop() {
                     finishMapToMapTransition = true;
                     playerMap->mapTheme.resetChord();
                     playerMap->freeMap();
-                    playerMap->loadMap(gameMaps[tdM].c_str(), gameTileSets[tdM].c_str(), "res/music/overworldMusic.mp3", 8.85);
+                    playerMap->loadMap(gameMaps[tdM].c_str(), gameTileSets[tdM].c_str(), gameThemes[tdM].c_str(), themeRepeats[tdM], mapOverlays[tdM]);
                     mainPlayer.setPlayerCoords(tdX, tdY, tdM);
                     mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 }
@@ -320,6 +380,7 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
+            // FINISH THE MAP TRANSITION EFFECT
             if (finishMapToMapTransition == true) {
                 if (transitionTransparency > 0) {
                     transitionTransparency -= 17;
