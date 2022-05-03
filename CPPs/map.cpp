@@ -238,7 +238,7 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
     mapSheet.loadTileSheet(sheetPath);
     mapTheme.loadMusic(musicPath, repeatP);
 
-    if (mapDebug == true) cerr << "Everything loaded\n----------------------------------------------";
+    if (mapDebug == true) cerr << "Everything loaded\n----------------------------------------------\n";
 }
 
 void Map::drawMap(gameCam* camera) {
