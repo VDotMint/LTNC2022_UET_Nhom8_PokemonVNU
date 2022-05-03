@@ -16,6 +16,8 @@
 #include "Battle.h"
 #include "NPCs.h"
 
+bool debugMode = false;
+
 RenderWindow renderWindow;
 
 TitleScreen gameTitleScreen;
@@ -131,6 +133,7 @@ int main(int argc, char *argv[]) {
     initSystem();
     gameLoop();
     freeMainAssets();
+    cerr << "All assets freed nicely\n";
     renderWindow.close();
     return 0;
 }
@@ -172,11 +175,14 @@ void initSystem() {
 
 void freeMainAssets() {
     playerMap->freeOverlayElements();
+    cerr << "Overlay Elements Freed\n";
     delete playerMap;
+    cerr << "Player Map Freed In Main\n";
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
     Mix_FreeChunk(changeMap);
     Mix_FreeChunk(aButton);
+    cerr << "Surely this is good\n";
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {

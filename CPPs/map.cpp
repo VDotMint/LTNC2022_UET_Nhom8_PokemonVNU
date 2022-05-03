@@ -21,16 +21,23 @@ Map::~Map() {
     freeMap();
 }
 
-void Map::freeMap() {   
+void Map::freeMap(bool debug) {   
     for (int i = 0; i < mapHeight; i++) {
         delete[] tilePropMap[i];
     }
     delete[] tilePropMap;
     tilePropMap = NULL;
+
+    if (debug == true) cerr << "Collision Map Freed Properly\n";
+
     for (int i = 0; i < mapHeight; i++) {
         delete[] map[i];
     }
     delete[] map;
+    map = NULL;
+
+    if (debug == true) cerr << "Texture Map Freed Properly\n";
+
     if (tileOverlayMap != NULL) {
         for (int i = 0; i < mapHeight; i++) {
             delete[] tileOverlayMap[i];
@@ -38,24 +45,42 @@ void Map::freeMap() {
         delete[] tileOverlayMap;
         tileOverlayMap = NULL;
     }
-    map = NULL;
+
+    if (debug == true) cerr << "Overlay Map Freed Properly\n";
+
     NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
     mapNPCs.clear();
+
+    if (debug == true) cerr << "Map NPCs Freed Properly\n";
+
     for (unsigned int i = 0; i < mapWarpTiles.size(); i++) {
         delete mapWarpTiles[i];
     }
     mapWarpTiles.clear();
+
+    if (debug == true) cerr << "Map Warp Tiles Freed Properly\n";
+
     for (unsigned int i = 0; i < mapInterTiles.size(); i++) {
         delete mapInterTiles[i];
     }
     mapInterTiles.clear();
+
+    if (debug == true) cerr << "Map Inter Tiles Freed Properly\n";
+
     mapWidth = 0;
     mapHeight = 0;
     mapSheet.freeTileSheet();
+
+    if (debug == true) cerr << "Tilesheet Freed Successfully\n";
+
     mapTheme.freeMusic();
+
+    if (debug == true) cerr << "Music Freed Successfully\n";
+
+    if (debug == true) cerr << "Map Freed Successfully\n";
 }
 
 void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP, bool hasOverlay) {    
