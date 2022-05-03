@@ -54,7 +54,7 @@ class Map {
         Music mapTheme;
         Map();
         ~Map();
-        void freeMap(bool debug = true);
+        void freeMap();
         void loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP = 0.0, bool hasOverlay = false);
         void drawMap(gameCam* camera);
         void drawNPCs(gameCam* camera);

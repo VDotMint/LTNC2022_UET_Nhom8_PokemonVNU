@@ -176,7 +176,7 @@ void initSystem() {
 void freeMainAssets() {
     playerMap->freeOverlayElements();
     cerr << "Overlay Elements Freed\n";
-    delete playerMap;
+    playerMap->freeMap();
     cerr << "Player Map Freed In Main\n";
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
