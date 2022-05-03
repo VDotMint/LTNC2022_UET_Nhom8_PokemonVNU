@@ -130,6 +130,7 @@ void freeMainAssets();
 int main(int argc, char *argv[]) {
     initSystem();
     gameLoop();
+    freeMainAssets();
     renderWindow.close();
     return 0;
 }
@@ -201,16 +202,18 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             if (selNPC != NULL) {
                 if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) inDialogue = true;
                 else inDialogue = false;
+                Mix_PlayChannel(-1, aButton, 0);
             } else {
                 InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
                 if (selInterTile != NULL) {
                     if (selInterTile->talkTile() == true) inDialogue = true;
                     else inDialogue = false;
+                    Mix_PlayChannel(-1, aButton, 0);
                 }
             }
         } 
         else if 
-        (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false) // BEGIN MOVEMENT
+        (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
         {
             // cout << e->key.keysym.sym << " clicked down at game tick: " << SDL_GetTicks() << endl;
             switch (e->key.keysym.sym) {

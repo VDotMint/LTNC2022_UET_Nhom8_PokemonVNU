@@ -318,7 +318,7 @@ InterTile* Map::getNearbyInterTile(int pCX, int pCY, int playerFace) {
     for (unsigned int i = 0; i < mapInterTiles.size(); i++) {
         switch (playerFace) {
         case 0:
-            if (mapInterTiles[i]->getY() == pCY + 1 and mapWarpTiles[i]->getX() == pCX) return mapInterTiles[i];
+            if (mapInterTiles[i]->getY() == pCY + 1 and mapInterTiles[i]->getX() == pCX) return mapInterTiles[i];
             break;
         case 1:
             if (mapInterTiles[i]->getX() == pCX + 1 and mapInterTiles[i]->getY() == pCY) return mapInterTiles[i];

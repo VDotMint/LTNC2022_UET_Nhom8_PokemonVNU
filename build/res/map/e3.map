@@ -88,3 +88,9 @@ WARP_NEXT_TILE
 WARP_NEXT_TILE
 20 9 2 29 17
 WARP_DATA_STOP
+INTER_NEXT_TILE
+23 11
+E3 Building.
+Preparation zone, nerds' lobby and the final lingering academical aspect of the university.
+INTER_DIALOGUE_END
+INTER_DATA_STOP
