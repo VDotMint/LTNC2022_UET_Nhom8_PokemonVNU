@@ -1,4 +1,6 @@
 #pragma once
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
@@ -36,6 +38,16 @@ class Trainer {
 	public:
 		string name;
 		Pokemon party[2];
+};
+
+class BattleScreen {
+	private:
+		SDL_Texture* battleBackground;
+	public:
+		BattleScreen();
+		~BattleScreen();
+		void initBattleScreen();
+		void freeBattleScreen();
 };
 
 void battle (Pokemon my[],Pokemon op[]);

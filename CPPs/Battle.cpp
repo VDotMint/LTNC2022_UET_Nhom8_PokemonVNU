@@ -12,6 +12,22 @@ Pokemon::Pokemon() {
 	data=NULL;
 };
 
+BattleScreen::BattleScreen() {
+
+}
+
+BattleScreen::~BattleScreen() {
+	
+}
+
+void BattleScreen::initBattleScreen() {
+
+}
+
+void BattleScreen::freeBattleScreen() {
+	SDL_DestroyTexture(battleBackground);
+}
+
 void battle (Pokemon my[],Pokemon op[]) {
 	int i=0,j=0;
 	while (i<2&&j<2) {

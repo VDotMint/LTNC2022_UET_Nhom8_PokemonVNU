@@ -72,6 +72,7 @@ bool NPC::talkNPC(int playerFace) {
     if (NPCsen < dialogueTexts.size()) {
         std::cout << dialogueTexts[NPCsen] << std::endl;
         if (NPCsen + 1 == dialogueTexts.size()) {
+            std::cout << "-----------------------------\n";
             NPCsen = 0;
             return false;
         } else {

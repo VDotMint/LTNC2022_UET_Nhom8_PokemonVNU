@@ -51,7 +51,7 @@ class Map {
         std::vector<WarpTile*> mapWarpTiles;
         std::vector<InterTile*> mapInterTiles;
     public:
-        Music mapTheme;
+        // Music mapTheme;
         Map();
         ~Map();
         void freeMap();
@@ -59,7 +59,7 @@ class Map {
         void drawMap(gameCam* camera);
         void drawNPCs(gameCam* camera);
         void drawFrontNPCs(gameCam* camera);
-        void playMapTheme();
+        // void playMapTheme();
         void initOverlayElements(const char* path);
         void freeOverlayElements();
         void drawOverlay(gameCam* camera);

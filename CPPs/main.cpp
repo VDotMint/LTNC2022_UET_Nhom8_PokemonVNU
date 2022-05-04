@@ -62,6 +62,7 @@ bool mapOverlays[] = {
 };
 
 Map* playerMap;
+Music gameMusic;
 
 mPlayer mainPlayer;
 gameCam mainCamera;
@@ -107,18 +108,23 @@ Pokemon opParty[]={0,1};
 
 // GAME STATES
 
-bool tsToMapTransition;
-bool beginMapToMapTransition;
-bool finishMapToMapTransition;
+bool tsToMapTransition = false;
+bool beginMapToMapTransition = false;
+bool finishMapToMapTransition = false;
 static int transitionTransparency = 0;
+
+bool beginMapToBattleTransition = false;
+bool finishMapToBattleTransition = false;
+bool beginBattleToMapTransition = false;
+bool finishBattleToMapTransition = false;
 
 bool hasSaveFile = true;
 bool quit = false;
 
 bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
+bool inBattle = false;
 
 bool inDialogue = false;
-bool inBattle = false;
 bool playerIsRunning = false;
 
 // CORE GAME FUNCTIONS
@@ -126,6 +132,7 @@ bool playerIsRunning = false;
 void initSystem();
 void gameLoop();
 void titleScreenInputProcess(SDL_Event* e);
+void battleInputProcess(SDL_Event *e);
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY);
 void freeMainAssets();
 
@@ -168,6 +175,7 @@ void initSystem() {
     SDL_SetTextureBlendMode(blackTransitionTexture, SDL_BLENDMODE_BLEND);
 
     // INIT THE SOUND EFFECTS
+    gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
     changeMap = Mix_LoadWAV("res/sfx/change_map.wav");
     aButton = Mix_LoadWAV("res/sfx/a_button.wav");
 }
@@ -177,6 +185,7 @@ void freeMainAssets() {
     playerMap->freeMap();
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
+    gameMusic.freeMusic();
     Mix_FreeChunk(changeMap);
     changeMap = NULL;
     Mix_FreeChunk(aButton);
@@ -250,13 +259,27 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
     }
 }
 
+void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
+{
+    while (SDL_PollEvent(e)) {
+        if (e->type == SDL_QUIT) {
+            quit = true;
+        }
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_m)
+        {
+
+        }
+    }
+}
+
 void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TOUCH.
 { 
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             quit = true;
         }
-        if (gameTitleScreen.acceptInputState() == true) {
+        if (gameTitleScreen.acceptInputState() == true)
+        {
             gameTitleScreen.doButtonEvents(e);
             if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
                 Mix_PlayChannel(-1, aButton, 0);
@@ -311,8 +334,13 @@ void gameLoop() {
             SDL_Delay(1000/60);
         }
         
+        else if (inBattle == true) // PLAYER IN BATTLE
+        {
+            
+        }
+
         else // PLAYER IN THE MAP
-        
+
         {
             int pCX = mainPlayer.getXCoords(), pCY = mainPlayer.getYCoords(); // GET PLAYER COORDS
             overworldInputProcess(&e, pCX, pCY); // INPUT PROCESS
@@ -369,7 +397,7 @@ void gameLoop() {
 
             // MAP TO MAP TRANSITION HANDLING
             if (beginMapToMapTransition == true) {
-                Mix_FadeOutMusic(1500);
+                // Mix_FadeOutMusic(500);
                 if (transitionTransparency < 255) {
                     transitionTransparency += 17;
                     if (transitionTransparency == 51) Mix_PlayChannel(-1, changeMap, 0);
@@ -378,7 +406,12 @@ void gameLoop() {
                     int tdM = selWarpTile->getDestMap(), tdX = selWarpTile->getDestX(), tdY = selWarpTile->getDestY();
                     beginMapToMapTransition = false;
                     finishMapToMapTransition = true;
-                    playerMap->mapTheme.resetChord();
+                    if (gameThemes[tdM] != gameThemes[mainPlayer.getCurrentMap()]) {
+                        Mix_FadeOutMusic(500);
+                        gameMusic.freeMusic();
+                        gameMusic.loadMusic(gameThemes[tdM].c_str(), themeRepeats[tdM]);
+                        gameMusic.resetChord();
+                    }
                     playerMap->freeMap();
                     playerMap->loadMap(gameMaps[tdM].c_str(), gameTileSets[tdM].c_str(), gameThemes[tdM].c_str(), themeRepeats[tdM], mapOverlays[tdM]);
                     mainPlayer.setPlayerCoords(tdX, tdY, tdM);
@@ -399,12 +432,21 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
-            if (beginMapToMapTransition == false) playerMap->playMapTheme(); // PLAY THE MAP'S THEME
+            // MAP TO BATTLE TRANSITION HANDLING
+            if (beginMapToBattleTransition == true) {
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 10;
+                } else if (transitionTransparency >= 255) {
+                    transitionTransparency = 255;
+                    
+                }
+            }
+
+            if (beginMapToMapTransition == false) gameMusic.play(); // PLAY THE MAP'S THEME
             
             renderWindow.display(); // DISPLAY THE CONTENT TO THE WINDOW
 
             SDL_Delay(1000 / 60); // PRIMITIVE CAP FRAME RATE
-
         }
     }
 }

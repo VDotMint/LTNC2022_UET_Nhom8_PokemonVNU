@@ -81,7 +81,7 @@ void Map::freeMap() {
 
     if (mapDebug == true) cerr << "Tilesheet Freed Successfully\n";
 
-    mapTheme.freeMusic();
+    // mapTheme.freeMusic();
 
     if (mapDebug == true) cerr << "Music Freed Successfully\n";
 
@@ -236,7 +236,7 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
 
     // Load the map's tilesheet
     mapSheet.loadTileSheet(sheetPath);
-    mapTheme.loadMusic(musicPath, repeatP);
+    // mapTheme.loadMusic(musicPath, repeatP);
 
     if (mapDebug == true) cerr << "Everything loaded\n----------------------------------------------\n";
 }
@@ -273,9 +273,9 @@ void Map::drawFrontNPCs(gameCam* camera) {
     }
 }
 
-void Map::playMapTheme() {
-    mapTheme.play();
-}
+// void Map::playMapTheme() {
+//     mapTheme.play();
+// }
 
 void Map::initOverlayElements(const char* path) {
     overlayElements.loadTileSheet(path);
@@ -424,6 +424,7 @@ bool InterTile::talkTile() {
     if (INTERsen < dialogueTexts.size()) {
         std::cout << dialogueTexts[INTERsen] << std::endl;
         if (INTERsen + 1 == dialogueTexts.size()) {
+            std::cout << "-----------------------------\n";
             INTERsen = 0;
             return false;
         } else {
