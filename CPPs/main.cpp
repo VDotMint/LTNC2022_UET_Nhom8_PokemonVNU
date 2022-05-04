@@ -123,8 +123,8 @@ bool quit = false;
 
 bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 bool inBattle = false;
-
 bool inDialogue = false;
+
 bool playerIsRunning = false;
 
 // CORE GAME FUNCTIONS
@@ -204,6 +204,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cerr << e->motion.x << " " << e->motion.y << endl;
             // playerMap->mapTheme.manualSkip(57.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
+            cout << boolalpha << beginMapToBattleTransition << " " << finishMapToBattleTransition << " " << beginBattleToMapTransition << " " << finishBattleToMapTransition << endl;
         }
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         { 
@@ -225,8 +226,11 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 }
             }
         } 
-        else if 
-        (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n)
+        {
+            beginMapToBattleTransition = true;
+        }
+        else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
         {
             // cout << e->key.keysym.sym << " clicked down at game tick: " << SDL_GetTicks() << endl;
             switch (e->key.keysym.sym) {
@@ -267,7 +271,11 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         }
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_m)
         {
-
+            beginBattleToMapTransition = true;
+        }
+        else if (e->type == SDL_MOUSEBUTTONDOWN)
+        {
+            gameMusic.manualSkip(120);
         }
     }
 }
@@ -336,7 +344,40 @@ void gameLoop() {
         
         else if (inBattle == true) // PLAYER IN BATTLE
         {
-            
+            battleInputProcess(&e);
+
+            renderWindow.drawColor(255, 0, 255);
+            renderWindow.clear();
+
+            if (finishMapToBattleTransition == true) {
+                if (transitionTransparency > 0) {
+                    transitionTransparency -= 5;
+                } else if (transitionTransparency <= 0) {
+                    transitionTransparency = 0;
+                    finishMapToBattleTransition = false;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            if (beginBattleToMapTransition == true) {
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 5;
+                } else if (transitionTransparency >= 255) {
+                    transitionTransparency = 255;
+                    inBattle = false;
+                    beginBattleToMapTransition = false;
+                    finishBattleToMapTransition = true;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            gameMusic.play();
+
+            renderWindow.display();
+
+            SDL_Delay(1000 / 60);
         }
 
         else // PLAYER IN THE MAP
@@ -434,12 +475,35 @@ void gameLoop() {
 
             // MAP TO BATTLE TRANSITION HANDLING
             if (beginMapToBattleTransition == true) {
+                gameMusic.freeMusic();
+                gameMusic.resetChord();
+                gameMusic.loadMusic("res/music/battleMusic.mp3", 19.9);
                 if (transitionTransparency < 255) {
-                    transitionTransparency += 10;
+                    transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
                     transitionTransparency = 255;
-                    
+                    inBattle = true;
+                    beginMapToBattleTransition = false;
+                    finishMapToBattleTransition = true;
                 }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            // FINISHING BATTLE TRANSITION HANDLING
+            if (finishBattleToMapTransition == true) {
+                gameMusic.freeMusic();
+                gameMusic.resetChord();
+                gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
+
+                if (transitionTransparency > 0) {
+                    transitionTransparency -= 5;
+                } else if (transitionTransparency <= 0) {
+                    transitionTransparency = 0;
+                    finishBattleToMapTransition = false;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
             if (beginMapToMapTransition == false) gameMusic.play(); // PLAY THE MAP'S THEME
