@@ -35,6 +35,7 @@ class InterTile {
         int getY() {return tileY;}
         void initTileDialogue(std::string nextSentence);
         bool talkTile();
+        std::string getInterCurrentSentence();
 };
 
 class Map {
