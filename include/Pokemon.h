@@ -19,6 +19,7 @@ class PokemonData {
 		int hp;
 		int atk;
 		int def;
+		int speed;
 		Move* move[2];
 };
 
