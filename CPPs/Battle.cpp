@@ -55,7 +55,8 @@ bool battle(Pokemon &my,Pokemon &op) {
 				return true;
 			}
 		}
-};
+	}
+}
 
 void updateTerminal(Pokemon &my, Pokemon &op) {
 	cout<<setw(12)<<setfill(' ')<<left<<my.data->name<<setw(50)<<setfill(' ')<<right<<op.data->name<<'\n';
