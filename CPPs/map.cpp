@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool mapDebug = true;
+bool mapDebug = false;
 
 TileSheet overlayElements;
 
