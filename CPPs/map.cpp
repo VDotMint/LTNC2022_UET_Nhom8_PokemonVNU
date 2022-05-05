@@ -134,7 +134,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
 
     // Reads the tile overlay map if it exists
     if (hasOverlay == true) {
-        cerr << "this exists????\n";
         tileOverlayMap = new int*[mapHeight];
         for (int i = 0; i < mapHeight; i++) {
             tileOverlayMap[i] = new int[mapWidth];
