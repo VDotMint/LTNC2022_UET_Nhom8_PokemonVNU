@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -16,6 +17,7 @@
 #include "Battle.h"
 #include "NPCs.h"
 #include "Pokemon.h"
+#include "otherGraphics.h"
 
 bool debugMode = false;
 
@@ -23,6 +25,10 @@ RenderWindow renderWindow;
 
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
+
+SDL_Rect clip = { 0, 500, 832, 204 };
+dialogueBox d_box;
+Text d_text;
 
 Mix_Chunk* changeMap;
 Mix_Chunk* aButton;
@@ -150,6 +156,7 @@ int main(int argc, char *argv[]) {
 void initSystem() {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
+    TTF_Init();
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
 
@@ -430,6 +437,24 @@ void gameLoop() {
                 playerMap->drawOverlay(&mainCamera);
             }
             
+            // NPCDIALOGUE and INTERTILEDIALOGUE
+            if (inDialogue == true) {
+                d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
+                d_box.renderDialogueBox(RenderWindow::renderer, &clip);
+                NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
+                if (selNPC != NULL) {
+                    d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 32, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
+                    d_text.display(10, 590, RenderWindow::renderer);
+                }
+                else {
+                    InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
+                    if (selInterTile != NULL) {
+                        d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 30, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
+                        d_text.display(10, 590, RenderWindow::renderer);
+                    }
+                }
+            }
+
             // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
             if (tsToMapTransition == true) { 
                 if (transitionTransparency > 0) {

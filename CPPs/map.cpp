@@ -424,16 +424,15 @@ void InterTile::initTileDialogue(std::string nextSentence) {
 
 bool InterTile::talkTile() {
     if (INTERsen < dialogueTexts.size()) {
-        std::cout << dialogueTexts[INTERsen] << std::endl;
-        if (INTERsen + 1 == dialogueTexts.size()) {
-            std::cout << "-----------------------------\n";
-            INTERsen = 0;
-            return false;
-        } else {
-            INTERsen++;
-            return true;
-        }
-    } else {
+        INTERsen++;
+        return true;
+    }
+    else {
+        INTERsen = 0;
         return false;
     }
+}
+
+std::string InterTile::getInterCurrentSentence() {
+    return dialogueTexts[INTERsen - 1];
 }
