@@ -43,11 +43,15 @@ class Trainer {
 class BattleScreen {
 	private:
 		SDL_Texture* battleBackground;
+		SDL_Texture* battleCircle;
+		SDL_Rect playerCircle;
+		SDL_Rect opponentCircle;
 	public:
 		BattleScreen();
 		~BattleScreen();
 		void initBattleScreen();
 		void freeBattleScreen();
+		void drawBattleScreen(bool fMtB, bool fBtM);
 };
 
 void battle (Pokemon my[],Pokemon op[]);

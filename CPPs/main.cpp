@@ -67,6 +67,8 @@ Music gameMusic;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
+BattleScreen mainBattle;
+
 string Type[]= {
 	"Normal",
 	"Fire",
@@ -226,7 +228,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 }
             }
         } 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n)
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true)
         {
             beginMapToBattleTransition = true;
         }
@@ -269,7 +271,7 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         if (e->type == SDL_QUIT) {
             quit = true;
         }
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_m)
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_m && finishMapToBattleTransition != true && beginBattleToMapTransition != true)
         {
             beginBattleToMapTransition = true;
         }
@@ -348,6 +350,8 @@ void gameLoop() {
 
             renderWindow.drawColor(255, 0, 255);
             renderWindow.clear();
+
+            mainBattle.drawBattleScreen(finishMapToBattleTransition, beginBattleToMapTransition);
 
             if (finishMapToBattleTransition == true) {
                 if (transitionTransparency > 0) {
@@ -485,6 +489,7 @@ void gameLoop() {
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
+                    mainBattle.initBattleScreen();
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
@@ -501,6 +506,7 @@ void gameLoop() {
                 } else if (transitionTransparency <= 0) {
                     transitionTransparency = 0;
                     finishBattleToMapTransition = false;
+                    mainBattle.freeBattleScreen();
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
