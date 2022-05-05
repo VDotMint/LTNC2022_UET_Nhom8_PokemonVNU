@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "Battle.h"
 #include "NPCs.h"
+#include "Pokemon.h"
 
 bool debugMode = false;
 

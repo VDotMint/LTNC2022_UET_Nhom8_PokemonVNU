@@ -1,17 +1,5 @@
 #include "Battle.h"
 
-Pokemon::Pokemon(int i) {
-	data=pokemonData+i;
-	c_hp=data->hp;
-	for (int i=0;i<2;i++) {
-		c_pp[i]=data->move[i]->pp;
-	}
-}
-
-Pokemon::Pokemon() {
-	data=NULL;
-};
-
 BattleScreen::BattleScreen() {
 
 }
@@ -36,7 +24,7 @@ void battle (Pokemon my[],Pokemon op[]) {
 		}
 		else i++;
 	}
-	if (i==3) cout<<"You lost!\n";
+	if (i==2) cout<<"You lost!\n";
 	else cout<<"You won!\n";
 }
 
