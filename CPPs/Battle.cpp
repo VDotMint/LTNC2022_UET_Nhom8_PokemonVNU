@@ -25,21 +25,38 @@ bool battle(Pokemon &my,Pokemon &op) {
 		cout<<'-'<<setw(61)<<setfill('-')<<'-'<<endl;
 		input=selectMove(my);
 		if (input==-1) continue;
-		isKO=useMove(input,my,op);
-		updateTerminal(my,op);
-		if (isKO) {
-			cout<<"Opposing "<<op.data->name<<" fainted!\n";
-			return true;
+		if (my.data->speed>=op.data->speed) {
+			isKO=useMove(input,my,op);
+			updateTerminal(my,op);
+			if (isKO) {
+				cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				return true;
+			}
+			cout<<"Opposing ";
+			isKO=useMove(rand()%2,op,my);
+			updateTerminal(my,op);
+			if (isKO) {
+				cout<<my.data->name<<" fainted!\n";
+				return false;
+			}
 		}
-		cout<<"Opposing ";
-		isKO=useMove(rand()%2,op,my);
-		updateTerminal(my,op);
-		if (isKO) {
-			cout<<my.data->name<<" fainted!\n";
-			return false;
+		else {
+			cout<<"Opposing ";
+			isKO=useMove(rand()%2,op,my);
+			updateTerminal(my,op);
+			if (isKO) {
+				cout<<my.data->name<<" fainted!\n";
+				return false;
+			}
+			isKO=useMove(input,my,op);
+			updateTerminal(my,op);
+			if (isKO) {
+				cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				return true;
+			}
 		}
 	}
-};
+}
 
 void updateTerminal(Pokemon &my, Pokemon &op) {
 	cout<<setw(12)<<setfill(' ')<<left<<my.data->name<<setw(50)<<setfill(' ')<<right<<op.data->name<<'\n';
@@ -69,6 +86,7 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
 	my.c_pp[input]--;
 	if (op.c_hp<0) op.c_hp=0;
+	
 	if (!op.c_hp) return true;
 	return false;
 }
@@ -79,7 +97,6 @@ static double pCirX = 0;
 static double oCirX = 0;
 
 BattleScreen::BattleScreen() {
-
 }
 
 BattleScreen::~BattleScreen() {

@@ -107,8 +107,8 @@ Move moves[]=
 };
 PokemonData pokemonData[]=
 {
-	{"Charmander",1,99,65,55,{moves,moves+1}},
-	{"Pikachu",3,95,55,55,{moves+1,moves+2}}
+	{"Charmander",1,99,61,52,70,{moves,moves+1}},
+	{"Pikachu",3,105,83,60,125,{moves+1,moves+2}}
 };
 //              Test
 Pokemon pokemon[]={0,1};
