@@ -42,7 +42,7 @@ class Map {
         int mapID;
         int** map; //Tile map
         int** tilePropMap; //Collision, Events Map
-        int** tileOverlayMap; // Stuffs that are drawn on top of players and NPCs
+        int** tileOverlayMap = NULL; // Stuffs that are drawn on top of players and NPCs
         int mapWidth;
         int mapHeight;
         TileSheet mapSheet;

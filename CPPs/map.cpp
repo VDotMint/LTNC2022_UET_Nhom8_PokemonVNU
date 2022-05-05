@@ -15,6 +15,7 @@ TileSheet overlayElements;
 Map::Map() {
     map = NULL;
     tilePropMap = NULL; // 0 = walkable, 1 = not walkable, 2 = warp tile, 3 = interactable, 4 = hasNPC
+    tileOverlayMap = NULL;
     mapWidth = 0;
     mapHeight = 0;
 }
@@ -49,9 +50,9 @@ void Map::freeMap() {
         }
         delete[] tileOverlayMap;
         tileOverlayMap = NULL;
-    }
 
-    if (mapDebug == true) cerr << "Overlay Map Freed Properly\n";
+        if (mapDebug == true) cerr << "Overlay Map Freed Properly\n";
+    }
 
     NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
@@ -133,6 +134,7 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
 
     // Reads the tile overlay map if it exists
     if (hasOverlay == true) {
+        cerr << "this exists????\n";
         tileOverlayMap = new int*[mapHeight];
         for (int i = 0; i < mapHeight; i++) {
             tileOverlayMap[i] = new int[mapWidth];
