@@ -35,7 +35,7 @@ SDL_Texture* Text::loadFont(SDL_Renderer* renderer, const char* fontPath, int fo
 		cout << "Failed to load font" << endl;
 	}
 
-	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(textFont, message, color, 832);
+	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(textFont, message, color, 753);
 	//SDL_FreeSurface(textSurface);
 	if (!textSurface) {
 		cout << "textSurface failed" << endl;

@@ -26,7 +26,7 @@ RenderWindow renderWindow;
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 
-SDL_Rect clip = { 0, 500, 832, 204 };
+SDL_Rect dBoxClip = { 10, 515, 812, 179 };
 dialogueBox d_box;
 Text d_text;
 
@@ -188,6 +188,9 @@ void initSystem() {
     gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
     changeMap = Mix_LoadWAV("res/sfx/change_map.wav");
     aButton = Mix_LoadWAV("res/sfx/a_button.wav");
+
+    // INIT THE DIALOGUE BOX TEXTURE
+    d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
 }
 
 void freeMainAssets() {
@@ -196,6 +199,7 @@ void freeMainAssets() {
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
     gameMusic.freeMusic();
+    d_box.~dialogueBox();
     Mix_FreeChunk(changeMap);
     changeMap = NULL;
     Mix_FreeChunk(aButton);
@@ -236,7 +240,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 }
             }
         } 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true)
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true && inDialogue == false)
         {
             beginMapToBattleTransition = true;
         }
@@ -439,18 +443,17 @@ void gameLoop() {
             
             // NPCDIALOGUE and INTERTILEDIALOGUE
             if (inDialogue == true) {
-                d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
-                d_box.renderDialogueBox(RenderWindow::renderer, &clip);
+                d_box.renderDialogueBox(RenderWindow::renderer, &dBoxClip);
                 NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
                 if (selNPC != NULL) {
-                    d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 32, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
-                    d_text.display(10, 590, RenderWindow::renderer);
+                    d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 38, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
+                    d_text.display(48, 547, RenderWindow::renderer);
                 }
                 else {
                     InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
                     if (selInterTile != NULL) {
-                        d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 30, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
-                        d_text.display(10, 590, RenderWindow::renderer);
+                        d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 38, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
+                        d_text.display(48, 547, RenderWindow::renderer);
                     }
                 }
             }
