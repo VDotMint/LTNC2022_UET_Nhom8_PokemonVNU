@@ -70,20 +70,22 @@ bool NPC::talkNPC(int playerFace) {
     }
 
     if (NPCsen < dialogueTexts.size()) {
-        std::cout << dialogueTexts[NPCsen] << std::endl;
-        if (NPCsen + 1 == dialogueTexts.size()) {
-            std::cout << "-----------------------------\n";
-            NPCsen = 0;
-            return false;
-        } else {
-            NPCsen++;
-            return true;
-        }
-    } else {
+        //std::cout << dialogueTexts[NPCsen] << std::endl;
+        NPCsen++;
+        return true;
+    }
+    else {
+        NPCsen = 0;
         return false;
     }
 }
 
 void NPC::initDialogue(std::string nextSentence) {
     dialogueTexts.push_back(nextSentence);
+}
+
+
+std::string NPC::getCurrentSentence()
+{
+    return dialogueTexts[NPCsen - 1];
 }

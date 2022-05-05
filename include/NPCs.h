@@ -28,4 +28,5 @@ public:
     int getBattleStatus() {return hasBattled;}
     void startBattle();
     void initDialogue(std::string nextSentence);
+    std::string getCurrentSentence();
 };
