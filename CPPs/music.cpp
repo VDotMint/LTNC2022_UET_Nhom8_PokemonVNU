@@ -13,6 +13,7 @@ Music::~Music() {
 
 void Music::freeMusic() {
     Mix_FreeMusic(gameTheme);
+    gameTheme=NULL;
 }
 
 void Music::loadMusic(const char* path, double repeatP) {

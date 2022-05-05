@@ -49,7 +49,7 @@ bool battle(Pokemon &my,Pokemon &op) {
 	while (true) {
 		// turn++;
 		// cout<<"Turn: "<<turn<<'\n';
-		cout<<setw(63)<<setfill('-')<<'\n';
+		cout<<'-'<<setw(61)<<setfill('-')<<'-'<<endl;
 		input=selectMove(my);
 		if (input==-1) continue;
 		isKO=useMove(input,my,op);
@@ -76,7 +76,7 @@ void updateTerminal(Pokemon &my, Pokemon &op) {
 int selectMove(Pokemon &my) {
 	cout<<"Choose your move\n";
 	for (int i=0;i<2;i++) {
-		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.data->move[i]->name<<" power: "<<my.data->move[i]->power<<" Type: "<<Type[my.data->move[i]->type]<<'\n';
+		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.data->move[i]->name<<" power: "<<my.data->move[i]->power<<" Type: "<<setw(10)<<Type[my.data->move[i]->type]<<"PP: "<<my.c_pp[i]<<'\n';
 	}
 	int input;
 	cin>>input;
@@ -84,12 +84,17 @@ int selectMove(Pokemon &my) {
 			cout<<"invalid move\n";
 			return -1;
 	}
+	if (!my.c_pp[input]) {
+		cout<<"Out of PP\n";
+		return -1;
+	}
 	return input;
 };
 
 bool useMove(int input, Pokemon &my, Pokemon &op) {
 	cout<<my.data->name<<" used "<<my.data->move[input]->name<<'\n';
 	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
+	my.c_pp[input]--;
 	if (op.c_hp<0) op.c_hp=0;
 	if (!op.c_hp) return true;
 	return false;
