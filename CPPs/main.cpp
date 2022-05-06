@@ -195,6 +195,7 @@ void initSystem() {
 
     // INIT THE DIALOGUE BOX TEXTURE
     d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
+    d_text.createFont("res/font/gamefont.ttf", 38);
 }
 
 void freeMainAssets() {
@@ -232,13 +233,19 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
-                if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) inDialogue = true;
+                if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) {
+                    inDialogue = true;
+                    d_text.textInit(RenderWindow::renderer, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
+                }
                 else inDialogue = false;
                 Mix_PlayChannel(-1, aButton, 0);
             } else {
                 InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
                 if (selInterTile != NULL) {
-                    if (selInterTile->talkTile() == true) inDialogue = true;
+                    if (selInterTile->talkTile() == true) {
+                        inDialogue = true;
+                        d_text.textInit(RenderWindow::renderer, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
+                    }
                     else inDialogue = false;
                     Mix_PlayChannel(-1, aButton, 0);
                 }
@@ -450,13 +457,11 @@ void gameLoop() {
                 d_box.renderDialogueBox(RenderWindow::renderer, &dBoxClip);
                 NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
                 if (selNPC != NULL) {
-                    d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 38, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
                     d_text.display(48, 547, RenderWindow::renderer);
                 }
                 else {
                     InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
                     if (selInterTile != NULL) {
-                        d_text.textInit(RenderWindow::renderer, "res/font/gamefont.ttf", 38, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
                         d_text.display(48, 547, RenderWindow::renderer);
                     }
                 }
@@ -520,6 +525,7 @@ void gameLoop() {
                 } else if (transitionTransparency >= 255) {
                     Trainer tempoppo;
                     tempoppo.name = "Champion Cynthia";
+                    tempoppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;

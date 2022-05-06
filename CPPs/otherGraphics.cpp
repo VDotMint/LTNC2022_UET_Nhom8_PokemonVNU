@@ -6,12 +6,15 @@
 #include <iostream>
 #include <string>
 
-
-
 using namespace std;
-void Text::textInit(SDL_Renderer* renderer, const char* fontPath, int fontSize, const char* message, const SDL_Color& color) {
-	TextTexture = loadFont(renderer, fontPath, fontSize, message, color);
+
+void Text::textInit(SDL_Renderer* renderer, const char* message, const SDL_Color& color, int rightEdge) {
+	SDL_DestroyTexture(TextTexture);
+	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(textFont, message, color, 753);
+	TextTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+	SDL_FreeSurface(textSurface);
 	SDL_QueryTexture(TextTexture, nullptr, nullptr, &TextRect.w, &TextRect.h);
+	SDL_RenderCopy(renderer, TextTexture, nullptr, &TextRect);
 };
 
 Text::Text() {
@@ -19,8 +22,13 @@ Text::Text() {
 }
 
 Text::~Text() {
+	TTF_CloseFont(textFont);
 	SDL_DestroyTexture(TextTexture);
 	TextTexture = NULL;
+}
+
+void Text::createFont(const char* fontPath, int fontSize) {
+	textFont = TTF_OpenFont(fontPath, fontSize);
 }
 
 void Text::display(int x, int y, SDL_Renderer* renderer) {
@@ -29,25 +37,10 @@ void Text::display(int x, int y, SDL_Renderer* renderer) {
 	SDL_RenderCopy(renderer, TextTexture, nullptr, &TextRect);
 }
 
-SDL_Texture* Text::loadFont(SDL_Renderer* renderer, const char* fontPath, int fontSize, const char* message, const SDL_Color& color) {
-	TTF_Font* textFont = TTF_OpenFont(fontPath, fontSize);
-	if (!textFont) {
-		cout << "Failed to load font" << endl;
-	}
-
-	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(textFont, message, color, 753);
-	//SDL_FreeSurface(textSurface);
-	if (!textSurface) {
-		cout << "textSurface failed" << endl;
-	}
-
-	SDL_Texture* textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
-	if (!textTexture) {
-		cout << "textTexture1 failed" << endl;
-	}
-	SDL_FreeSurface(textSurface);
-	return textTexture;
-}
+// SDL_Texture* Text::loadFont(SDL_Renderer* renderer, const char* message, const SDL_Color& color, int rightEdge) {
+	
+// 	return textTexture;
+// }
 
 dialogueBox::dialogueBox() {
 	dialogueBoxTexture = NULL;
