@@ -172,8 +172,8 @@ NPC_DIALOGUE_END
 MAP_NEXT_NPC
 25 14 2
 res/npcsprite/npcSprite8.png
-Apparently you have a 20% chance of being healed after each room.
-But don't take it for granted. It is best to preserve your Pokemon's health still.
+Your Pokemon is healed after every battle, so don't hesitate to go all out!
+Though remember to press the healing button before entering the next room.
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
 6 17 1

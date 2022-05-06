@@ -4,19 +4,30 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
+
+#include "mPlayer.h"
 #include "Pokemon.h"
 
 using namespace std;
+
+class BattleScreenButtons {
+	private:
+
+	public:
+
+};
+
 class BattleScreen {
 	private:
 		SDL_Texture* battleBackground;
 		SDL_Texture* battleCircle;
-		SDL_Rect playerCircle;
-		SDL_Rect opponentCircle;
+		SDL_Texture* grayInputBox;
+		SDL_Rect playerCircle, opponentCircle, grayBoxRect;
 	public:
+		bool scrollingPlayer;
 		BattleScreen();
 		~BattleScreen();
-		void initBattleScreen();
+		void initBattleScreen(mPlayer* player, Trainer* opponent);
 		void freeBattleScreen();
 		void drawBattleScreen(bool fMtB, bool fBtM);
 };
