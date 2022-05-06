@@ -6,6 +6,8 @@
 #include <string>
 #include <iomanip>
 #include <vector>
+#include <cstdlib>
+#include <time.h>
 
 #include "titleScreen.h"
 #include "RenderWindow.h"
@@ -160,6 +162,7 @@ void initSystem() {
     TTF_Init();
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
     renderWindow.create("Pokémon VNU");
+    srand(time(0));
 
     // LOAD SAVE FILE
     if (!mainPlayer.loadPlayerData()) {

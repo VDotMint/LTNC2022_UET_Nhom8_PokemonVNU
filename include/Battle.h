@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
+#include <time.h>
 #include "Pokemon.h"
 
 using namespace std;
