@@ -293,7 +293,7 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
-            gameMusic.manualSkip(120);
+            cerr << e->motion.x << " " << e->motion.y << endl;
         }
     }
 }
@@ -518,11 +518,13 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
+                    Trainer tempoppo;
+                    tempoppo.name = "Champion Cynthia";
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    mainBattle.initBattleScreen();
+                    mainBattle.initBattleScreen(&mainPlayer, &tempoppo);
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

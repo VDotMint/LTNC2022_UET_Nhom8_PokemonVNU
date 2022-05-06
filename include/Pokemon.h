@@ -35,6 +35,7 @@ class Pokemon {
 class Trainer {
 	public:
 		string name;
+		string battleSpritePath;
 		Pokemon party[2];
 };
 

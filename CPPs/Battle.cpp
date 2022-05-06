@@ -95,3 +95,4 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	if (!op.c_hp) return true;
 	return false;
 }
+

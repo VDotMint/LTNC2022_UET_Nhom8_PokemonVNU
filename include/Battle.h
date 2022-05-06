@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <cstdlib>
 #include <time.h>
+
+#include "mPlayer.h"
 #include "Pokemon.h"
 
 using namespace std;
