@@ -15,6 +15,7 @@
 #include "mPlayer.h"
 #include "camera.h"
 #include "Battle.h"
+#include "BattleScreen.h"
 #include "NPCs.h"
 #include "Pokemon.h"
 #include "otherGraphics.h"
@@ -99,20 +100,20 @@ string Type[]= {
 
 Move moves[]=
 {
-	{"flamethrower",1,90,15},
 	{"tackle",0,40,35},
+	{"flamethrower",1,90,15},
     {"thunderbolt",3,90,15},
     {"surf",2,90,15},
     {"earthquake",8,100,10}
 };
 PokemonData pokemonData[]=
 {
-	{"Charmander",1,99,61,52,70,{moves,moves+1}},
-	{"Pikachu",3,105,83,60,125,{moves+1,moves+2}}
+	{"Snorlax",0,220,93,93,35,{moves,moves}},
+    {"Charmander",1,99,61,52,70,{moves,moves+1}},
+	{"Pikachu",3,105,83,60,125,{moves,moves+2}}
 };
 //              Test
 Pokemon pokemon[]={0,1};
-Pokemon opParty[]={0,1};
 //              
 
 // GAME STATES
@@ -222,7 +223,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         }
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         { 
-            battle(pokemon,opParty);
+            battle(pokemon);
         } 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
         {

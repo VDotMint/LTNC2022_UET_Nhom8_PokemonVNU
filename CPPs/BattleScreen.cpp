@@ -1,5 +1,5 @@
+#include "BattleScreen.h"
 #include "RenderWindow.h"
-#include "Battle.h"
 
 // BATTLE RENDERING
 
@@ -38,7 +38,6 @@ void BattleScreen::freeBattleScreen() {
 
 void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 	SDL_RenderCopy(RenderWindow::renderer, battleBackground, NULL, NULL);
-
 	if (fMtB == false) {
 		if (-0.1276*pCirX*pCirX+20.58*pCirX-320 < 462) {
 			playerCircle.x = int(0.1244*pCirX*pCirX-20.26*pCirX+832);

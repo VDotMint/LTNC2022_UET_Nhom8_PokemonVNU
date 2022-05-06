@@ -1,6 +1,11 @@
 #include "RenderWindow.h"
 #include "Battle.h"
 
+void battle(Pokemon my[]) {
+	Pokemon op[2]={rand()%3,rand()%3};
+	battle(my,op);
+}
+
 void battle (Pokemon my[],Pokemon op[]) {
 	int i=0,j=0;
 	while (i<2&&j<2) {
@@ -9,7 +14,7 @@ void battle (Pokemon my[],Pokemon op[]) {
 		}
 		else i++;
 	}
-	if (i==2) cout<<"You lost!\n";
+	if (i>=2) cout<<"You lost!\n";
 	else cout<<"You won!\n";
 }
 
