@@ -2,7 +2,7 @@
 #include "Battle.h"
 
 void battle(Pokemon my[]) {
-	Pokemon op[2]={rand()%3,rand()%3};
+	Pokemon op[2]={rand()%psize,rand()%psize};
 	battle(my,op);
 }
 
