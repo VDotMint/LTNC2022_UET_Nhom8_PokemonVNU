@@ -16,6 +16,7 @@ class PokemonData {
 	public:
 		string name;
 		int type;
+		int stype;
 		int hp;
 		int atk;
 		int def;
