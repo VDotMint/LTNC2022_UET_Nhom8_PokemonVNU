@@ -1,10 +1,15 @@
+#include <iostream>
 #include "BattleScreen.h"
 #include "RenderWindow.h"
 
 // BATTLE RENDERING
 
+static double BattleSen = 0;
+
 static double pCirX = 0;
 static double oCirX = 0;
+
+static int currentPlayerFrame = 0;
 
 BattleScreen::BattleScreen() {
 }
@@ -14,95 +19,212 @@ BattleScreen::~BattleScreen() {
 }
 
 void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
-    bd_Text.createFont("res/font/gamefont.ttf", 42);
+    battPlayer = player;
 
+    bd_Text.createFont("res/font/gamefont.ttf", 42);
+    playerPokeName.createFont("res/font/gamefont.ttf", 28);
+    oppoPokeName.createFont("res/font/gamefont.ttf", 28);
+
+    // LOAD THE MAIN BATTLE ASSETS
 	battleBackground = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/battlebackground0.png");
 	battleCircle = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/battlecircle0.png");
 	grayInputBox = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/graybox.png");
 	playerCircle = {832, 450, 320, 100};
 	opponentCircle = {-320, 200, 320, 100};
 	grayBoxRect = {0, 704, 832, 204};
-    playerSpriteBox = {832, 260, 240, 240};
-    opponentSpriteBox = {-320, 60, 240, 240};
 
+    // HP BAR TEXTURES;
+    playerHPBar = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/pHPBar.png");
+    oppoHPBar = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/oHPBar.png");
+    HPColor = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/HPColor.png");
+    playerHPRect = {548, 388, 284, 95};
+    oppoHPRect = {0, 66, 273, 78};
+    currPlayHP = {708, 443, 106, 7};
+    currOppoHP = {112, 119, 107, 7};
+
+    // CHARACTER SPRITE BOXES
+    playerSpriteBox = {832, 260, 240, 240};
+    opponentSpriteBox = {-320, 20, 240, 240};
+
+    // POKEMON SPRITE BOXES
+    playerPokeRect = {-240, 300, 240, 240};
+    oppoPokeRect = {832, 20, 240, 240};
+
+    // PLAYER SPRITE HANDLING
     for (int i = 0; i < 4; i++) playerTextureFrames[i] = {i*80, 0, 80, 80};
-    
-    if (player->getGender() == 0) {
-        playerTexture = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/malefrontsprite.png");
-    } else if (player->getGender() == 1) {
-        playerTexture = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/femalefrontsprite.png");
-    }
+    if (player->getGender() == 0) playerTexture = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/malefrontsprite.png");
+    else if (player->getGender() == 1) playerTexture = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/femalefrontsprite.png");
+
+    // OPPONENT SPRITE HANDLING
     opponentTexture = IMG_LoadTexture(RenderWindow::renderer, opponent->battleSpritePath.c_str());
 
-    std::string sen1 = "You are challenged by " + opponent->name;
+    // BATTLE DIALOGUE (FIRST 3 SENTENCES ONLY)
+    std::string sen1 = "You are challenged by " + opponent->name + "!";
     battleDialogues.push_back(sen1);
-
-    std::string sen2 = opponent->name + " sent out Garchomp";
+    std::string sen2 = opponent->name + " sent out Garchomp!";
     battleDialogues.push_back(sen2);
+    std::string sen3 = player->getPlayerName() + " sent out " + player->party[0].data->name + "!";
+    battleDialogues.push_back(sen3);
+
+    // STARTING POKEMON TEXTURE
+    playerPokeText = IMG_LoadTexture(RenderWindow::renderer, "res/pokemonassets/charizardback.png");
+    oppoPokeText = IMG_LoadTexture(RenderWindow::renderer, "res/pokemonassets/garchompfront.png");
 }
 
 void BattleScreen::freeBattleScreen() {
     bd_Text.~Text();
 
+    // MAIN BATTLE TEXTURES
 	SDL_DestroyTexture(battleBackground);
 	SDL_DestroyTexture(battleCircle);
 	SDL_DestroyTexture(grayInputBox);
     SDL_DestroyTexture(playerTexture);
     SDL_DestroyTexture(opponentTexture);
 
-	battleBackground = NULL;
+    battleBackground = NULL;
 	battleCircle = NULL;
 	grayInputBox = NULL;
     playerTexture = NULL;
     opponentTexture = NULL;
+
+    playerCircle = {832, 450, 320, 100};
+	opponentCircle = {-320, 200, 320, 100};
+	grayBoxRect = {0, 704, 832, 204};
+    playerSpriteBox = {872, 260, 240, 240};
+    opponentSpriteBox = {-320, 20, 240, 240};
+
+    // ON SCREEN POKEMANS
+    SDL_DestroyTexture(playerPokeText);
+    SDL_DestroyTexture(oppoPokeText);
+    playerPokeText = NULL;
+    oppoPokeText = NULL;
+    playerPokeRect = {-240, 300, 240, 240};
+    oppoPokeRect = {832, 20, 240, 240};
+
+    // HP Bars
+    playerHPRect = {548, 388, 284, 95};
+    oppoHPRect = {0, 66, 273, 78};
+    currPlayHP = {708, 443, 106, 7};
+    currOppoHP = {112, 119, 107, 7};
+
+    SDL_DestroyTexture(playerHPBar);
+    SDL_DestroyTexture(oppoHPBar);
+    SDL_DestroyTexture(HPColor);
+    playerHPBar = NULL;
+    oppoHPBar = NULL;
+    HPColor = NULL;
 
     battleDialogues.clear();
 
 	pCirX = 0;
 	oCirX = 0;
 
-	playerCircle = {832, 450, 320, 100};
-	opponentCircle = {-320, 200, 320, 100};
-	grayBoxRect = {0, 704, 832, 204};
-    playerSpriteBox = {872, 260, 240, 240};
-    opponentSpriteBox = {-320, 60, 240, 240};
-
-    pScroll1 = true;
-    pScroll2 = false;
+    inAnim0 = true;
+    showPHPBar = false, showOHPBar = false;
+    BattleSen = 0;
+    currentPlayerFrame = 0;
 }
 
 void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 	SDL_RenderCopy(RenderWindow::renderer, battleBackground, NULL, NULL);
 	if (fMtB == false) {
         if (-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462) {
-            opponentSpriteBox.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-340);
+            opponentSpriteBox.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-300);
 			opponentCircle.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-320);
 			oCirX++;
 		}
-		SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &opponentCircle);      
+		SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &opponentCircle);
+        SDL_RenderCopy(RenderWindow::renderer, opponentTexture, NULL, &opponentSpriteBox);            
 		if (-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462) {
 			playerCircle.x = int(0.1244*pCirX*pCirX-20.26*pCirX+832);
             playerSpriteBox.x = int(0.1244*pCirX*pCirX-20.26*pCirX+862);
             pCirX++;
             if (-0.1276*oCirX*oCirX+20.58*oCirX-320 > 430) {
-                pScroll1 = false;
+                inAnim0 = false;
             }
 		}
 		SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &playerCircle);
-        SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[0], &playerSpriteBox);  
+        SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[currentPlayerFrame], &playerSpriteBox);  
 	}
+
+    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText, NULL, &oppoPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, playerPokeText, NULL, &playerPokeRect);
 
 	if (grayBoxRect.y > 500) grayBoxRect.y -= 4;
 	SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
 
-    if (pScroll1 == false) {
-        bd_Text.textInit(RenderWindow::renderer, battleDialogues[0].c_str(), {255, 255, 255}, 800);
+    // the first battle sentence
+    if (fMtB == false and BattleSen == 0) {
+        bd_Text.textInit(RenderWindow::renderer, battleDialogues[BattleSen].c_str(), {255, 255, 255}, 800);
         bd_Text.display(32, 530, RenderWindow::renderer);
+    }
+
+    // opponent sending out the pokemons
+    if (BattleSen == 1) {
+        bd_Text.textInit(RenderWindow::renderer, battleDialogues[BattleSen].c_str(), {255, 255, 255}, 800);
+        bd_Text.display(32, 530, RenderWindow::renderer);
+        if (opponentSpriteBox.x < 860) {
+            opponentSpriteBox.x += 8;
+        }
+
+        if (opponentSpriteBox.x > 850) {
+            if (oppoPokeRect.x > 500) {
+                oppoPokeRect.x -= 8;
+                if (oppoPokeRect.x < 510) {
+                    inAnim0 = false;
+                    showOHPBar = true;
+                }
+            }
+        }
+    }
+
+    // player sending out the pokemons
+    if (BattleSen == 2) {
+        bd_Text.textInit(RenderWindow::renderer, battleDialogues[BattleSen].c_str(), {255, 255, 255}, 800);
+        bd_Text.display(32, 530, RenderWindow::renderer);
+        if (playerSpriteBox.x > -240) {
+            playerSpriteBox.x -= 8;
+            
+            if (playerSpriteBox.x == 70) currentPlayerFrame++;
+            if (playerSpriteBox.x == 22) currentPlayerFrame++;
+            if (playerSpriteBox.x == -26) currentPlayerFrame++;
+        }
+
+        if (playerSpriteBox.x < -230) {
+            if (playerPokeRect.x < 90) {
+                playerPokeRect.x += 8;
+                if (playerPokeRect.x > 80) {
+                    inAnim0 = false;
+                    showPHPBar = true;
+                }
+            }
+        }
+    }
+
+    if (showOHPBar == true) {
+        SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
+        SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);
+        oppoPokeName.textInit(RenderWindow::renderer, "Garchomp", {0, 0, 0});
+        oppoPokeName.display(4, 83, RenderWindow::renderer);
+    }
+
+    if (showPHPBar == true) {
+        SDL_RenderCopy(RenderWindow::renderer, playerHPBar, NULL, &playerHPRect);
+        SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currPlayHP);
+        playerPokeName.textInit(RenderWindow::renderer, (battPlayer->party[0].data->name).c_str(), {0, 0, 0});
+        playerPokeName.display(585, 407, RenderWindow::renderer);
     }
 }
 
 void BattleScreen::centralBattleProcess(SDL_Event* e) {
-    
+    if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && inAnim0 == false) {
+        if (BattleSen < battleDialogues.size()) {
+            inAnim0 = true;
+            BattleSen++;
+        } else {
+            fightScreen = true;
+        }
+    }
 }
 
 // BATTLE SCREEN BUTTONS

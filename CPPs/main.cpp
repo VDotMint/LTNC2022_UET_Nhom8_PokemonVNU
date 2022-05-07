@@ -71,14 +71,6 @@ bool mapOverlays[] = {
     true,
 };
 
-Map* playerMap;
-Music gameMusic;
-
-mPlayer mainPlayer;
-gameCam mainCamera;
-
-BattleScreen mainBattle;
-
 string Type[]= {
 	"Normal",
 	"Fire",
@@ -117,6 +109,14 @@ PokemonData pokemonData[]=
 //              Test
 Pokemon pokemon[]={0,1};
 //              
+
+Map* playerMap;
+Music gameMusic;
+
+mPlayer mainPlayer;
+gameCam mainCamera;
+
+BattleScreen mainBattle;
 
 // GAME STATES
 
@@ -235,7 +235,6 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             if (selNPC != NULL) {
                 if (selNPC->talkNPC(mainPlayer.getFacingDirection()) == true) {
                     inDialogue = true;
-                    d_text.textInit(RenderWindow::renderer, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
                 }
                 else inDialogue = false;
                 Mix_PlayChannel(-1, aButton, 0);
@@ -244,7 +243,6 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 if (selInterTile != NULL) {
                     if (selInterTile->talkTile() == true) {
                         inDialogue = true;
-                        d_text.textInit(RenderWindow::renderer, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
                     }
                     else inDialogue = false;
                     Mix_PlayChannel(-1, aButton, 0);
@@ -302,6 +300,7 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         {
             cerr << e->motion.x << " " << e->motion.y << endl;
         }
+        mainBattle.centralBattleProcess(e);
     }
 }
 
@@ -457,11 +456,13 @@ void gameLoop() {
                 d_box.renderDialogueBox(RenderWindow::renderer, &dBoxClip);
                 NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
                 if (selNPC != NULL) {
+                    d_text.textInit(RenderWindow::renderer, selNPC->getCurrentSentence().c_str(), { 0, 0, 0 });
                     d_text.display(48, 547, RenderWindow::renderer);
                 }
                 else {
                     InterTile* selInterTile = playerMap->getNearbyInterTile(pCX, pCY, mainPlayer.getFacingDirection());
                     if (selInterTile != NULL) {
+                        d_text.textInit(RenderWindow::renderer, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
                         d_text.display(48, 547, RenderWindow::renderer);
                     }
                 }
@@ -553,7 +554,7 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
-            if (beginMapToMapTransition == false) gameMusic.play(); // PLAY THE MAP'S THEME
+            if (beginMapToMapTransition == false and finishBattleToMapTransition == false) gameMusic.play(); // PLAY THE MAP'S THEME
             
             renderWindow.display(); // DISPLAY THE CONTENT TO THE WINDOW
 

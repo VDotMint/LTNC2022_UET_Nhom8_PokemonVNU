@@ -10,6 +10,7 @@ using namespace std;
 
 void Text::textInit(SDL_Renderer* renderer, const char* message, const SDL_Color& color, int rightEdge) {
 	SDL_DestroyTexture(TextTexture);
+	TextTexture = NULL;
 	SDL_Surface* textSurface = TTF_RenderText_Blended_Wrapped(textFont, message, color, 753);
 	TextTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 	SDL_FreeSurface(textSurface);
