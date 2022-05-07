@@ -72,6 +72,7 @@ bool mapOverlays[] = {
 };
 
 string Type[]= {
+    "NULL",
 	"Normal",
 	"Fire",
 	"Water",
@@ -102,9 +103,9 @@ Move moves[]=
 };
 PokemonData pokemonData[]=
 {
-	{"Snorlax",0,220,93,93,35,{moves,moves}},
-    {"Charmander",1,99,61,52,70,{moves,moves+1}},
-	{"Pikachu",3,105,83,60,125,{moves,moves+2}}
+	{"Snorlax",1,0,220,93,93,35,{moves,moves}},
+    {"Charmander",2,0,99,61,52,70,{moves,moves+1}},
+	{"Pikachu",4,0,105,83,60,125,{moves,moves+2}}
 };
 //              Test
 Pokemon pokemon[]={0,1};
