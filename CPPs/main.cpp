@@ -205,7 +205,6 @@ void freeMainAssets() {
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
     gameMusic.freeMusic();
-    d_box.~dialogueBox();
     Mix_FreeChunk(changeMap);
     changeMap = NULL;
     Mix_FreeChunk(aButton);

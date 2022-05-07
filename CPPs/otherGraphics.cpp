@@ -24,6 +24,7 @@ Text::Text() {
 
 Text::~Text() {
 	TTF_CloseFont(textFont);
+	textFont=NULL;
 	SDL_DestroyTexture(TextTexture);
 	TextTexture = NULL;
 }
