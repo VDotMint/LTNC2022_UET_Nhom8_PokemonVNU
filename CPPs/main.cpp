@@ -103,9 +103,45 @@ Move moves[]=
 };
 PokemonData pokemonData[]=
 {
-	{"Snorlax",1,0,220,93,93,35,{moves,moves}},
-    {"Charmander",2,0,99,61,52,70,{moves,moves+1}},
-	{"Pikachu",4,0,105,83,60,125,{moves,moves+2}}
+	//{"Snorlax",1,0,220,93,93,35,{moves,moves}},
+    //{"Charmander",2,0,99,61,52,70,{moves,moves+1}},
+	//{"Pikachu",4,0,105,83,60,125,{moves,moves+2}},
+    {"Tauros", 1, 0, 135, 105, 75, 115, {moves,moves}},
+    {"Snorlax", 1, 0, 220, 70, 115, 35, {moves,moves}},
+    {"Charizard", 2, 10, 138, 114, 83, 105, {moves,moves}},
+    {"Coalossal", 2, 13, 170, 85, 125, 25, {moves,moves}},
+    {"Greninga", 3, 16, 132, 108, 72, 127, {moves,moves}},
+    {"Miloctic", 3, 0, 155, 65, 130, 86,{moves,moves}},
+    {"Zeraora", 4, 0, 148, 117, 80, 148,{moves,moves}},
+    {"Magnezone", 4, 17, 130, 75, 120, 65, {moves,moves}},
+    {"Rillaboom", 5, 0, 160, 130, 75, 90, {moves,moves}},
+    {"Virizion", 5, 7, 151, 95, 134, 113, {moves,moves}},
+    {"Mr. Rime", 6, 11, 140, 115, 80, 75, {moves,moves}},
+    {"Lapras", 6, 3, 190, 90, 100, 65, {moves,moves}},
+    {"Lucario", 7, 17, 130, 120, 75, 95, {moves,moves}},
+    {"Bewear", 7, 1, 180, 130, 65, 65, {moves,moves}},
+    {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves}},
+    {"Venusaur", 8, 5, 140, 87, 105, 85, {moves,moves}},
+    {"Swamper", 9, 3, 160, 115, 95, 65, {moves,moves}},
+    {"Golem", 9, 13, 140, 60, 135, 50, {moves,moves}},
+    {"Archeops", 10, 13, 135, 145, 70, 115, {moves,moves}},
+    {"Togekiss", 10, 18, 145, 125, 100, 85, {moves,moves}},
+    {"Alakazam", 11, 0, 105, 140, 50, 125, {moves,moves}},
+    {"Mr. Mime", 11, 18, 100, 50, 125, 95, {moves,moves}},
+    {"Heracross", 12, 7, 140, 130, 80, 90, {moves,moves}},
+    {"Shuckle", 12, 13, 80, 15, 235, 10, {moves,moves}},
+    {"Crustle", 13, 12, 130, 70, 130, 50, {moves,moves}},
+    {"Sudowoodo", 13, 0, 130, 35, 120, 35, {moves,moves}},
+    {"Cursola", 14, 0, 120, 150, 55, 35, {moves,moves}},
+    {"Dusknoir", 14, 0, 105, 70, 140, 50, {moves,moves}},
+    {"Garchomp", 15, 9, 168, 135, 90, 107, {moves,moves}},
+    {"Dragonite", 15, 10, 151, 139, 100, 85, {moves,moves}},
+    {"Grimmsnarl", 16, 18, 155, 125, 70, 65, {moves,moves}},
+    {"Umbreon", 16, 0, 155, 65, 135, 70, {moves,moves}},
+    {"Excadrill", 17, 9, 170, 140, 65, 93, {moves,moves}},
+    {"Steelix", 17, 9, 135, 60, 205, 35, {moves,moves}},
+    {"Gardevoir", 18, 11, 128, 130, 70, 85, {moves,moves}},
+    {"Sylveon", 18, 0, 155, 70, 135, 65, {moves,moves}}
 };
 //              Test
 Pokemon pokemon[]={0,1};
