@@ -9,5 +9,9 @@ Pokemon::Pokemon(int i) {
 }
 
 Pokemon::Pokemon() {
-	data=NULL;
+	data=pokemonData+rand()%psize;
+	c_hp=data->hp;
+	for (int i=0;i<2;i++) {
+		c_pp[i]=data->move[i]->pp;
+	}
 };

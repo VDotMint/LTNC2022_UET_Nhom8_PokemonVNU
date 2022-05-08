@@ -38,10 +38,7 @@ extern Text d_text;
 
 extern Mix_Chunk* changeMap;
 extern Mix_Chunk* aButton;
-
-//              Test
-extern Pokemon pokemon[];
-//              
+            
 
 extern Map* playerMap;
 extern Music gameMusic;

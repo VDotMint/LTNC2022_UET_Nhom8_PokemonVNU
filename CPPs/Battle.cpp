@@ -8,13 +8,21 @@ void battle(Pokemon my[]) {
 
 void battle (Pokemon my[],Pokemon op[]) {
 	int i=0,j=0;
-	while (i<2&&j<2) {
+	int pkm_c=2;
+	while (j<2) {
 		if(battle(my[i],op[j])) {
 			j++;
 		}
-		else i++;
+		else {
+			pkm_c--;
+			if (pkm_c==0) {
+				cout<<"You lost!\n";
+				return;
+			}
+			i=selectPokemon(my);
+		}
 	}
-	if (i>=2) cout<<"You lost!\n";
+	if (pkm_c==0) cout<<"You lost!\n";
 	else cout<<"You won!\n";
 }
 
@@ -96,3 +104,21 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	return false;
 }
 
+void printParty(Pokemon my[]) {
+	for (int i=0;i<2;i++) {
+		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
+	}
+}
+
+int selectPokemon(Pokemon my[]) {
+	cout<<"Choose your pokemon\n";
+	printParty(my);
+	int input;
+	while (true) {
+		cin>>input;
+		if (my[input].c_hp==0) {
+			cout<<"invalid\n";
+		}
+		else return input;
+	}
+};

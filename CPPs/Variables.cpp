@@ -88,7 +88,7 @@ PokemonData pokemonData[]=
     {"Bewear", 7, 1, 180, 130, 65, 65, {moves,moves}},
     {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves}},
     {"Venusaur", 8, 5, 140, 87, 105, 85, {moves,moves}},
-    {"Swamper", 9, 3, 160, 115, 95, 65, {moves,moves}},
+    {"Swampert", 9, 3, 160, 115, 95, 65, {moves,moves}},
     {"Golem", 9, 13, 140, 60, 135, 50, {moves,moves}},
     {"Archeops", 10, 13, 135, 145, 70, 115, {moves,moves}},
     {"Togekiss", 10, 18, 145, 125, 100, 85, {moves,moves}},
@@ -118,10 +118,6 @@ Text d_text;
 
 Mix_Chunk* changeMap;
 Mix_Chunk* aButton;
-
-//              Test
-Pokemon pokemon[]={0,1};
-//              
 
 Map* playerMap;
 Music gameMusic;
