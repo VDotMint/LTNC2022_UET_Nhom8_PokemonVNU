@@ -41,3 +41,4 @@ class Trainer {
 };
 
 extern PokemonData pokemonData[];
+extern int psize;

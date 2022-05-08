@@ -19,9 +19,6 @@ mPlayer::mPlayer() {
     for (int i = 0; i < 32; i++) {
         walkFrames[i] = {i*64, 0, 64, 88};
     }
-    party[0]=pokemon[0];
-    party[1]=pokemon[1];
-
 }
 
 mPlayer::~mPlayer() {

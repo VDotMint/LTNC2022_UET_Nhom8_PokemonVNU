@@ -1,33 +1,24 @@
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_mixer.h>
-#include <SDL2/SDL_ttf.h>
-#include <iostream>
-#include <string>
-#include <iomanip>
-#include <vector>
-#include <cstdlib>
-#include <time.h>
 #include "Variables.h"
 
 // CORE GAME FUNCTIONS
 
-void initSystem();
+bool initSystem();
 void gameLoop();
 void titleScreenInputProcess(SDL_Event* e);
 void battleInputProcess(SDL_Event *e);
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY);
 void freeMainAssets();
 
+bool init=initSystem();
+
 int main(int argc, char *argv[]) {
-    initSystem();
     gameLoop();
     freeMainAssets();
     renderWindow.close();
     return 0;
 }
 
-void initSystem() {
+bool initSystem() {
     SDL_Init(SDL_INIT_EVERYTHING);
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
@@ -67,6 +58,7 @@ void initSystem() {
     // INIT THE DIALOGUE BOX TEXTURE
     d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
     d_text.createFont("res/font/gamefont.ttf", 38);
+    return true;
 }
 
 void freeMainAssets() {
@@ -97,7 +89,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         }
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         { 
-            battle(pokemon);
+            battle(mainPlayer.party);
         } 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
         {
