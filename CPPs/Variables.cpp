@@ -75,7 +75,6 @@ Move moves[]=
     {"Bug Buzz",12,90,10},
     {"Power Gem",13,80,20},
     {"Shadow Ball",14,80,20},
-    {"Shadow Ball",14,80,20},
     {"Dragon Pulse",15,85,10},
     {"Darkest Lariat",16,85,10},
     {"Iron Head",17,80,15},
