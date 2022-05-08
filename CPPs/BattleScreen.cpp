@@ -1,6 +1,7 @@
 #include <iostream>
 #include "BattleScreen.h"
 #include "RenderWindow.h"
+#include "Variables.h"
 
 // BATTLE RENDERING
 
@@ -69,11 +70,21 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     // STARTING POKEMON TEXTURE
     playerPokeText = IMG_LoadTexture(RenderWindow::renderer, "res/pokemonassets/charizardback.png");
     oppoPokeText = IMG_LoadTexture(RenderWindow::renderer, "res/pokemonassets/garchompfront.png");
+
+    // INIT THE FIGHT SCREEN BUTTONS
+    fightButton.initBSB("res/battleassets/fightbutton.png", 230, 527, 371, 150, 556, 224);
+    pokemonButton.initBSB("res/battleassets/pokemonbutton.png", 23, 559, 188, 86, 282, 130);
+    retireButton.initBSB("res/battleassets/retirebutton.png", 621, 559, 188, 86, 282, 130);
+
+    // INIT THE MOVE SCREEN BUTTONS
+    moveButtons[0].initBSB("res/battleassets/moveButton.png", 33, 519, 278, 72, 652, 167);
+    moveButtons[1].initBSB("res/battleassets/moveButton.png", 344, 519, 278, 72, 652, 167);
+    moveButtons[2].initBSB("res/battleassets/moveButton.png", 33, 611, 278, 72, 652, 167);
+    moveButtons[3].initBSB("res/battleassets/moveButton.png", 344, 611, 278, 72, 652, 167);
+    backButton.initBSB("res/battleassets/backbutton.png", 659, 620, 154, 60, 362, 139);
 }
 
 void BattleScreen::freeBattleScreen() {
-    bd_Text.~Text();
-
     // MAIN BATTLE TEXTURES
 	SDL_DestroyTexture(battleBackground);
 	SDL_DestroyTexture(battleCircle);
@@ -114,6 +125,14 @@ void BattleScreen::freeBattleScreen() {
     oppoHPBar = NULL;
     HPColor = NULL;
 
+    // Free the buttons
+    fightButton.~BattleScreenButton();
+    pokemonButton.~BattleScreenButton();
+    retireButton.~BattleScreenButton();
+
+    for (int i = 0; i < 4; i++) moveButtons[i].~BattleScreenButton();
+    backButton.~BattleScreenButton();
+
     battleDialogues.clear();
 
 	pCirX = 0;
@@ -122,6 +141,7 @@ void BattleScreen::freeBattleScreen() {
     inAnim0 = true;
     showPHPBar = false, showOHPBar = false;
     BattleSen = 0;
+    fightScreen = false, moveScreen = false;
     currentPlayerFrame = 0;
 }
 
@@ -214,6 +234,17 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
         playerPokeName.textInit(RenderWindow::renderer, (battPlayer->party[0].data->name).c_str(), {0, 0, 0});
         playerPokeName.display(585, 407, RenderWindow::renderer);
     }
+
+    if (fightScreen == true) {
+        fightButton.drawButton();
+        pokemonButton.drawButton();
+        retireButton.drawButton();
+    }
+
+    if (moveScreen == true) {
+        for (int i = 0; i < 4; i++) moveButtons[i].drawButton();
+        backButton.drawButton();
+    }
 }
 
 void BattleScreen::centralBattleProcess(SDL_Event* e) {
@@ -221,8 +252,37 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         if (BattleSen < battleDialogues.size()) {
             inAnim0 = true;
             BattleSen++;
+            if (BattleSen == 3) {
+                inAnim0 = false;
+                fightScreen = true;
+            }
         } else {
             fightScreen = true;
+        }
+    }
+
+    if (fightScreen == true) {
+        fightButton.buttonHandler(e);
+        pokemonButton.buttonHandler(e);
+        retireButton.buttonHandler(e);
+        if (fightButton.clickedOn == true) {
+            moveScreen = true;
+            fightScreen = false;
+            fightButton.clickedOn = false;
+        } else if (pokemonButton.clickedOn == true) {
+            pokemonButton.clickedOn = false;
+        } else if (retireButton.clickedOn == true) {
+            retireButton.clickedOn = false;
+            beginBattleToMapTransition = true;
+        }
+    }
+
+    if (moveScreen == true) {
+        backButton.buttonHandler(e);
+        if (backButton.clickedOn == true) {
+            backButton.clickedOn = false;
+            fightScreen = true;
+            moveScreen = false;
         }
     }
 }
@@ -241,17 +301,12 @@ BattleScreenButton::~BattleScreenButton() {
     clickedOn = false;
 }
 
-void BattleScreenButton::initBSB(const char* path, int BW, int BH) {
+void BattleScreenButton::initBSB(const char* path, int x, int y, int BW, int BH, int imgWidth, int imgHeight) {
     buttonTexture = IMG_LoadTexture(RenderWindow::renderer, path);
     for (int i = 0; i < 3; i++) {
-        buttonFrames[i] = {0, BH*i, BW, BH};
+        buttonFrames[i] = {0, imgHeight*i, imgWidth, imgHeight};
     }
-    buttonWidth = BW;
-    buttonHeight = BH;
-}
-
-void BattleScreenButton::setButtonDest(int x, int y) {
-    buttonDest = {x, y, buttonWidth, buttonHeight};
+    buttonDest = {x, y, BW, BH};
 }
 
 void BattleScreenButton::drawButton() {
@@ -266,9 +321,9 @@ void BattleScreenButton::buttonHandler(SDL_Event* e) {
 
         bool inside = true;
         if (x < buttonDest.x) inside = false;
-        else if (x > buttonDest.x + buttonWidth) inside = false;
+        else if (x > buttonDest.x + buttonDest.w) inside = false;
         else if (y < buttonDest.y) inside = false;
-        else if (y > buttonDest.y + buttonHeight) inside = false;
+        else if (y > buttonDest.y + buttonDest.h) inside = false;
 
         if (inside == false) {
             currentButtonFrame = 0;

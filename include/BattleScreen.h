@@ -13,16 +13,16 @@ class BattleScreenButton {
 		SDL_Texture* buttonTexture;
 		SDL_Rect buttonFrames[3];
 		SDL_Rect buttonDest;
-		int buttonWidth, buttonHeight;
 		int currentButtonFrame;
+		Text moveNames;
 	public:
 		bool clickedOn;
 		BattleScreenButton();
 		~BattleScreenButton();
-		void initBSB(const char* path, int BH, int BW);
-		void setButtonDest(int x, int y);
+		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight);
 		void drawButton();
         void buttonHandler(SDL_Event* e);
+		void moveButtonHandler(SDL_Event* e);
 };
 
 class BattleScreen {
@@ -51,7 +51,9 @@ class BattleScreen {
 		SDL_Rect playerTextureFrames[4];
 		SDL_Rect playerCircle, opponentCircle, grayBoxRect, playerSpriteBox, opponentSpriteBox;
 
-		BattleScreenButton fightButton, pokemonButton, retireButton;
+		BattleScreenButton fightButton, pokemonButton, retireButton, backButton;
+		BattleScreenButton moveButtons[4];
+
 		vector<std::string> battleDialogues;
 		Text bd_Text;
 	public:

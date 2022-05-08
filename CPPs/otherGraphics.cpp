@@ -15,7 +15,6 @@ void Text::textInit(SDL_Renderer* renderer, const char* message, const SDL_Color
 	TextTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
 	SDL_FreeSurface(textSurface);
 	SDL_QueryTexture(TextTexture, nullptr, nullptr, &TextRect.w, &TextRect.h);
-	SDL_RenderCopy(renderer, TextTexture, nullptr, &TextRect);
 };
 
 Text::Text() {
