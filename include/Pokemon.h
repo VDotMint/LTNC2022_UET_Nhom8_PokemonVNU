@@ -21,14 +21,14 @@ class PokemonData {
 		int atk;
 		int def;
 		int speed;
-		Move* move[2];
+		Move* move[4];
 };
 
 class Pokemon {
 	public:
 		PokemonData* data;
 		int c_hp;
-		int c_pp[2];
+		int c_pp[4];
 		Pokemon();
 		Pokemon(int i);
 };
@@ -37,7 +37,7 @@ class Trainer {
 	public:
 		string name;
 		string battleSpritePath;
-		Pokemon party[2];
+		Pokemon party[3];
 };
 
 extern PokemonData pokemonData[];
