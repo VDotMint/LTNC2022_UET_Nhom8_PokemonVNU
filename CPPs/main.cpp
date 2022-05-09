@@ -162,6 +162,7 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
             cerr << e->motion.x << " " << e->motion.y << endl;
         }
         mainBattle.centralBattleProcess(e);
+        
     }
 }
 

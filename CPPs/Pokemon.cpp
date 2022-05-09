@@ -1,4 +1,5 @@
 #include "Pokemon.h"
+#include <ctime>
 
 Pokemon::Pokemon(int i) {
 	data=pokemonData+i;

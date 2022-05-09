@@ -58,6 +58,7 @@ class BattleScreen {
 		Text bd_Text;
 	public:
 		bool inAnim0 = true, fightScreen = false, moveScreen = false, showPHPBar = false, showOHPBar = false;
+		int pressedMoveButton = -1;
 		BattleScreen();
 		~BattleScreen();
 		void initBattleScreen(mPlayer* player, Trainer* opponent);

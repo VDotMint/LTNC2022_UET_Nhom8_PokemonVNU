@@ -82,6 +82,8 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     moveButtons[2].initBSB("res/battleassets/moveButton.png", 33, 611, 278, 72, 652, 167);
     moveButtons[3].initBSB("res/battleassets/moveButton.png", 344, 611, 278, 72, 652, 167);
     backButton.initBSB("res/battleassets/backbutton.png", 659, 620, 154, 60, 362, 139);
+
+    pressedMoveButton = -1;
 }
 
 void BattleScreen::freeBattleScreen() {
@@ -137,6 +139,7 @@ void BattleScreen::freeBattleScreen() {
 
 	pCirX = 0;
 	oCirX = 0;
+    pressedMoveButton = -1;
 
     inAnim0 = true;
     showPHPBar = false, showOHPBar = false;
@@ -284,8 +287,14 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             fightScreen = true;
             moveScreen = false;
         }
+
+        if (moveButtons[0].clickedOn == true) {
+            
+        }
     }
 }
+
+
 
 // BATTLE SCREEN BUTTONS
 
