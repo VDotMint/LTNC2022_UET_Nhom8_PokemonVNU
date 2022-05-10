@@ -10,9 +10,12 @@ void battle(Pokemon my[]) {
 
 void battle (Pokemon my[],Pokemon op[]) {
 	int i=0,j=0;
+	int KO;
 	int pkm_c=3;
 	while (j<3) {
-		if(battle(my[i],op[j])) {
+		KO=battle(my[i],op[j]);
+		if (KO==-2) return;
+		if (KO) {
 			j++;
 		}
 		else {
@@ -28,7 +31,7 @@ void battle (Pokemon my[],Pokemon op[]) {
 	else cout<<"You won!\n";
 }
 
-bool battle(Pokemon &my,Pokemon &op) {
+int battle(Pokemon &my,Pokemon &op) {
 	bool isKO = false;
 	// int turn = 0;
 	int input;
@@ -43,38 +46,46 @@ bool battle(Pokemon &my,Pokemon &op) {
 	while (true) {
 		// turn++;
 		// cout<<"Turn: "<<turn<<'\n';
-		if (quit) return 0;
+		if (quit) return -2;
 		cout<<'-'<<setw(61)<<setfill('-')<<'-'<<endl;
-		mainBattle.battleInput(my);
-		input=selectMove(my);
+		printMoves(my);
+		input=mainBattle.menuInput(my);
 		if (input==-1) continue;
+		if (input==-2) return -2;
 		if (my.data->speed>=op.data->speed) {
 			isKO=useMove(input,my,op);
 			updateTerminal(my,op);
 			if (isKO) {
-				cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				// cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				mainBattle.printText("Opposing "+op.data->name+" fainted!\n");
 				return true;
 			}
-			cout<<"Opposing ";
+			// cout<<"Opposing ";
+			mainBattle.buffer="Opposing ";
 			isKO=useMove(rand()%2,op,my);
+			mainBattle.buffer="";
 			updateTerminal(my,op);
 			if (isKO) {
-				cout<<my.data->name<<" fainted!\n";
+				// cout<<my.data->name<<" fainted!\n";
+				mainBattle.printText(my.data->name+" fainted!\n");
 				return false;
 			}
 		}
 		else {
-			cout<<"Opposing ";
+			mainBattle.buffer="Opposing ";
 			isKO=useMove(rand()%2,op,my);
+			mainBattle.buffer="";
 			updateTerminal(my,op);
 			if (isKO) {
-				cout<<my.data->name<<" fainted!\n";
+				// cout<<my.data->name<<" fainted!\n";
+				mainBattle.printText(my.data->name+" fainted!\n");
 				return false;
 			}
 			isKO=useMove(input,my,op);
 			updateTerminal(my,op);
 			if (isKO) {
-				cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				// cout<<"Opposing "<<op.data->name<<" fainted!\n";
+				mainBattle.printText("Opposing "+op.data->name+" fainted!\n");
 				return true;
 			}
 		}
@@ -87,10 +98,7 @@ void updateTerminal(Pokemon &my, Pokemon &op) {
 };
 
 int selectMove(Pokemon &my) {
-	cout<<"Choose your move\n";
-	for (int i=0;i<4;i++) {
-		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.data->move[i]->name<<" power: "<<my.data->move[i]->power<<" Type: "<<setw(10)<<Type[my.data->move[i]->type]<<"PP: "<<my.c_pp[i]<<'\n';
-	}
+	printMoves(my);
 	int input;
 	cin>>input;
 	if (input>=4||input<0) {
@@ -105,7 +113,8 @@ int selectMove(Pokemon &my) {
 };
 
 bool useMove(int input, Pokemon &my, Pokemon &op) {
-	cout<<my.data->name<<" used "<<my.data->move[input]->name<<'\n';
+	//cout<<my.data->name<<" used "<<my.data->move[input]->name<<'\n';
+	mainBattle.printText(my.data->name+" used "+my.data->move[input]->name+'\n');
 	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
 	my.c_pp[input]--;
 	if (op.c_hp<0) op.c_hp=0;
@@ -119,6 +128,13 @@ void printParty(Pokemon my[]) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
 	}
 }
+
+void printMoves(Pokemon &my) {
+	cout<<"Choose your move\n";
+	for (int i=0;i<4;i++) {
+		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.data->move[i]->name<<" power: "<<my.data->move[i]->power<<" Type: "<<setw(10)<<Type[my.data->move[i]->type]<<"PP: "<<my.c_pp[i]<<'\n';
+	}
+};
 
 int selectPokemon(Pokemon my[]) {
 	cout<<"Choose your pokemon\n";

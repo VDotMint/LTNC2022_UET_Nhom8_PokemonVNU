@@ -13,7 +13,7 @@ using namespace std;
 
 void battle (Pokemon my[],Pokemon op[]);
 
-bool battle(Pokemon &my,Pokemon &op);
+int battle(Pokemon &my,Pokemon &op);
 
 void battle(Pokemon my[]);
 
@@ -22,6 +22,8 @@ void updateTerminal(Pokemon &my, Pokemon &op);
 void printParty(Pokemon my[]);
 
 int selectPokemon(Pokemon my[]);
+
+void printMoves(Pokemon &my);
 
 int selectMove(Pokemon &my);
 

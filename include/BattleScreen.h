@@ -59,6 +59,7 @@ class BattleScreen {
 	public:
 		bool inAnim0 = true, fightScreen = false, moveScreen = false, showPHPBar = false, showOHPBar = false;
 		int pressedMoveButton = -1;
+		string buffer;
 		BattleScreen();
 		~BattleScreen();
 		void initBattleScreen(mPlayer* player, Trainer* opponent);
@@ -67,5 +68,7 @@ class BattleScreen {
 		void centralBattleProcess(SDL_Event* e);
 		void init(mPlayer* player, Trainer* opponent);
 		void updateScreen(Pokemon &my, Pokemon &op);
-		int battleInput(Pokemon &my);
+		int menuInput(Pokemon &my);
+		int moveInput(Pokemon &my);
+		void printText(string s);
 };
