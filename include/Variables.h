@@ -68,3 +68,5 @@ extern bool inBattle;
 extern bool inDialogue;
 
 extern bool playerIsRunning;
+
+extern Trainer defaultOppo;

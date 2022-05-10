@@ -20,7 +20,8 @@ BattleScreen::~BattleScreen() {
 }
 
 void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
-    battPlayer = player;
+    battlePlayer = player;
+    battleOpponent = opponent;
 
     bd_Text.createFont("res/font/gamefont.ttf", 42);
     playerPokeName.createFont("res/font/gamefont.ttf", 28);
@@ -234,7 +235,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
     if (showPHPBar == true) {
         SDL_RenderCopy(RenderWindow::renderer, playerHPBar, NULL, &playerHPRect);
         SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currPlayHP);
-        playerPokeName.textInit(RenderWindow::renderer, (battPlayer->party[0].data->name).c_str(), {0, 0, 0});
+        playerPokeName.textInit(RenderWindow::renderer, (battlePlayer->party[0].data->name).c_str(), {0, 0, 0});
         playerPokeName.display(585, 407, RenderWindow::renderer);
     }
 
@@ -289,6 +290,18 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         }
 
         if (moveButtons[0].clickedOn == true) {
+            useMove(0, battlePlayer->party[0], battleOpponent->party[0]);
+        }
+
+        if (moveButtons[1].clickedOn == true) {
+            
+        }
+
+        if (moveButtons[2].clickedOn == true) {
+            
+        }
+
+        if (moveButtons[3].clickedOn == true) {
             
         }
     }
@@ -356,4 +369,8 @@ void BattleScreenButton::buttonHandler(SDL_Event* e) {
             }
         }
     }
+}
+
+void moveButtonHandler(SDL_Event* e) {
+    
 }

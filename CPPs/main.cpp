@@ -162,7 +162,6 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
             cerr << e->motion.x << " " << e->motion.y << endl;
         }
         mainBattle.centralBattleProcess(e);
-        
     }
 }
 
@@ -386,14 +385,15 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
-                    Trainer tempoppo;
-                    tempoppo.name = "Champion Cynthia";
-                    tempoppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
+                    defaultOppo.name = "Champion Cynthia";
+                    defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
+                    defaultOppo.party[0];
+
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    mainBattle.initBattleScreen(&mainPlayer, &tempoppo);
+                    mainBattle.initBattleScreen(&mainPlayer, &defaultOppo);
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

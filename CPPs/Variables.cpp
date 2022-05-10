@@ -160,3 +160,5 @@ bool inBattle = false;
 bool inDialogue = false;
 
 bool playerIsRunning = false;
+
+Trainer defaultOppo;

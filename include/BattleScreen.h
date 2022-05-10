@@ -27,7 +27,8 @@ class BattleScreenButton {
 
 class BattleScreen {
 	private:
-		mPlayer* battPlayer;
+		mPlayer* battlePlayer;
+		Trainer* battleOpponent;
 
 		SDL_Texture* battleBackground;
 		SDL_Texture* battleCircle;
@@ -53,10 +54,10 @@ class BattleScreen {
 
 		BattleScreenButton fightButton, pokemonButton, retireButton, backButton;
 		BattleScreenButton moveButtons[4];
-
-		vector<std::string> battleDialogues;
+		
 		Text bd_Text;
 	public:
+		vector<std::string> battleDialogues;
 		bool inAnim0 = true, fightScreen = false, moveScreen = false, showPHPBar = false, showOHPBar = false;
 		int pressedMoveButton = -1;
 		BattleScreen();
