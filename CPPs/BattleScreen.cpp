@@ -265,9 +265,9 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
     }
 
     if (fightScreen == true) {
-        fightButton.buttonHandler(e);
-        pokemonButton.buttonHandler(e);
-        retireButton.buttonHandler(e);
+        fightButton.buttonHandler();
+        pokemonButton.buttonHandler();
+        retireButton.buttonHandler();
         if (fightButton.clickedOn == true) {
             moveScreen = true;
             fightScreen = false;
@@ -281,7 +281,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
     }
 
     if (moveScreen == true) {
-        backButton.buttonHandler(e);
+        backButton.buttonHandler();
         if (backButton.clickedOn == true) {
             backButton.clickedOn = false;
             fightScreen = true;
@@ -322,9 +322,9 @@ void BattleScreenButton::drawButton() {
     SDL_RenderCopy(RenderWindow::renderer, buttonTexture, &buttonFrames[currentButtonFrame], &buttonDest);
 }
 
-void BattleScreenButton::buttonHandler(SDL_Event* e) {
+void BattleScreenButton::buttonHandler() {
     // 0: INSIDE, 1: HOVER, 2: CLICK
-    if (e->type == SDL_MOUSEMOTION or e->type == SDL_MOUSEBUTTONDOWN or e->type == SDL_MOUSEBUTTONUP) {
+    if (e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN or e.type == SDL_MOUSEBUTTONUP) {
         int x, y;
         SDL_GetMouseState(&x, &y);
 
@@ -337,7 +337,7 @@ void BattleScreenButton::buttonHandler(SDL_Event* e) {
         if (inside == false) {
             currentButtonFrame = 0;
         } else {
-            switch (e->type) {
+            switch (e.type) {
                 case SDL_MOUSEMOTION:
                 currentButtonFrame = 1;
                 break;
@@ -357,3 +357,84 @@ void BattleScreenButton::buttonHandler(SDL_Event* e) {
         }
     }
 }
+void BattleScreen::updateScreen(Pokemon &my, Pokemon &opponent) {
+    SDL_RenderCopy(RenderWindow::renderer, battleBackground, NULL, NULL);
+    SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &opponentCircle);
+    SDL_RenderCopy(RenderWindow::renderer, opponentTexture, NULL, &opponentSpriteBox);
+    SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &playerCircle);
+    SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[currentPlayerFrame], &playerSpriteBox);
+    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText, NULL, &oppoPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, playerPokeText, NULL, &playerPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
+    SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
+    SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);
+    oppoPokeName.textInit(RenderWindow::renderer, (my.data->name).c_str(), {0, 0, 0});
+    oppoPokeName.display(4, 83, RenderWindow::renderer);
+    SDL_RenderCopy(RenderWindow::renderer, playerHPBar, NULL, &playerHPRect);
+    SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currPlayHP);
+    playerPokeName.textInit(RenderWindow::renderer, (my.data->name).c_str(), {0, 0, 0});
+    playerPokeName.display(585, 407, RenderWindow::renderer);
+    renderWindow.display();
+};
+void BattleScreen::init(mPlayer* player, Trainer* opponent) {
+    initBattleScreen(player,opponent);
+    SDL_Event e;
+    while ((-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462)||(grayBoxRect.y > 500)) {
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+                return;
+            }
+            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                cerr << e.motion.x << " " << e.motion.y << endl;
+            }
+        }
+        if (grayBoxRect.y > 500) grayBoxRect.y -= 4;
+        opponentSpriteBox.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-300);
+		opponentCircle.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-320);
+		oCirX++;
+		playerCircle.x = int(0.1244*pCirX*pCirX-20.26*pCirX+832);
+        playerSpriteBox.x = int(0.1244*pCirX*pCirX-20.26*pCirX+862);
+        pCirX++;
+        if (-0.1276*oCirX*oCirX+20.58*oCirX-320 > 430) {
+            inAnim0 = false;
+        }
+        updateScreen(player->party[0],opponent->party[0]);
+        gameMusic.play();
+        SDL_Delay(1000/60);
+    }
+};
+
+int BattleScreen::battleInput(Pokemon &my) {
+    while (true) {
+        while (SDL_PollEvent(&e)) {
+            if (e.type == SDL_QUIT) {
+                quit = true;
+                return -1;
+            }
+            else if (e.type == SDL_MOUSEBUTTONDOWN) {
+                cerr << e.motion.x << " " << e.motion.y << endl;
+            }
+        }
+        fightButton.drawButton();
+        pokemonButton.drawButton();
+        retireButton.drawButton();
+        fightButton.buttonHandler();
+        pokemonButton.buttonHandler();
+        retireButton.buttonHandler();
+        if (fightButton.clickedOn == true) {
+            // moveScreen = true;
+            // fightScreen = false;
+            fightButton.clickedOn = false;
+            return 0;
+        } else if (pokemonButton.clickedOn == true) {
+            pokemonButton.clickedOn = false;
+        } else if (retireButton.clickedOn == true) {
+            retireButton.clickedOn = false;
+            beginBattleToMapTransition = true;
+        }
+        renderWindow.display();
+        gameMusic.play();
+        SDL_Delay(1000/60);
+    }
+};

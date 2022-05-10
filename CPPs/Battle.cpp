@@ -1,3 +1,4 @@
+#include "Variables.h"
 #include "RenderWindow.h"
 #include "Battle.h"
 
@@ -31,12 +32,20 @@ bool battle(Pokemon &my,Pokemon &op) {
 	bool isKO = false;
 	// int turn = 0;
 	int input;
+	Trainer tempoppo;
+	tempoppo.name = "Champion Cynthia";
+	tempoppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
+	mainBattle.init(&mainPlayer,&tempoppo);
+
 	// cout << "Turn: " << turn << '\n';
 	updateTerminal(my,op);
+	mainBattle.updateScreen(my,op);
 	while (true) {
 		// turn++;
 		// cout<<"Turn: "<<turn<<'\n';
+		if (quit) return 0;
 		cout<<'-'<<setw(61)<<setfill('-')<<'-'<<endl;
+		mainBattle.battleInput(my);
 		input=selectMove(my);
 		if (input==-1) continue;
 		if (my.data->speed>=op.data->speed) {
@@ -106,7 +115,7 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 }
 
 void printParty(Pokemon my[]) {
-	for (int i=0;i<4;i++) {
+	for (int i=0;i<3;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
 	}
 }

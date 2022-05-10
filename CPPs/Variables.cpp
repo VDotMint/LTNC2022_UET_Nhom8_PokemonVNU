@@ -4,6 +4,8 @@ bool debugMode=false;
 
 RenderWindow renderWindow;
 
+SDL_Event e;
+
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 

@@ -21,7 +21,7 @@ class BattleScreenButton {
 		~BattleScreenButton();
 		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight);
 		void drawButton();
-        void buttonHandler(SDL_Event* e);
+        void buttonHandler();
 		void moveButtonHandler(SDL_Event* e);
 };
 
@@ -65,4 +65,7 @@ class BattleScreen {
 		void freeBattleScreen();
 		void drawBattleScreen(bool fMtB, bool fBtM);
 		void centralBattleProcess(SDL_Event* e);
+		void init(mPlayer* player, Trainer* opponent);
+		void updateScreen(Pokemon &my, Pokemon &op);
+		int battleInput(Pokemon &my);
 };

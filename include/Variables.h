@@ -17,6 +17,7 @@ using namespace std;
 extern bool debugMode;
 
 extern RenderWindow renderWindow;
+extern SDL_Event e;
 
 extern TitleScreen gameTitleScreen;
 extern SDL_Texture* blackTransitionTexture;

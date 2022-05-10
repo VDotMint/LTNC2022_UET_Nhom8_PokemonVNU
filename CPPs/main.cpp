@@ -199,8 +199,6 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
 }
 
 void gameLoop() {
-    SDL_Event e;
-
     while (quit == false) {
         if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN. AGAIN, MOSTLY FINISHED, DO NOT TOUCH
         {

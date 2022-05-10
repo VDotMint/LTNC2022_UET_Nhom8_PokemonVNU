@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <cstdlib>
 #include <time.h>
+#include "BattleScreen.h"
 
 #include "mPlayer.h"
 #include "Pokemon.h"
@@ -28,3 +29,4 @@ bool useMove(int input, Pokemon &my, Pokemon &op);
 
 extern string Type[];
 extern int psize;
+extern BattleScreen mainBattle;
