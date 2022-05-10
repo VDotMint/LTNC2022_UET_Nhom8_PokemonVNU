@@ -20,7 +20,7 @@ class mPlayer {
     public:
         mPlayer();
         ~mPlayer();
-        Pokemon party[2];
+        Pokemon party[3];
         bool loadPlayerData();
         bool savePlayerData();
         int getGender();

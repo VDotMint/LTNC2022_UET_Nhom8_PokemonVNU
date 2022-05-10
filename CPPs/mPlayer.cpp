@@ -19,6 +19,10 @@ mPlayer::mPlayer() {
     for (int i = 0; i < 32; i++) {
         walkFrames[i] = {i*64, 0, 64, 88};
     }
+    srand(time(0));
+    for (int i=0;i<3;i++) {
+        party[i]=rand()%psize;
+    }
 }
 
 mPlayer::~mPlayer() {

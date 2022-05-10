@@ -2,14 +2,15 @@
 #include "Battle.h"
 
 void battle(Pokemon my[]) {
-	Pokemon op[2]={rand()%psize,rand()%psize};
+	srand(time(0));
+	Pokemon op[3]={rand()%psize,rand()%psize,rand()%psize};
 	battle(my,op);
 }
 
 void battle (Pokemon my[],Pokemon op[]) {
 	int i=0,j=0;
-	int pkm_c=2;
-	while (j<2) {
+	int pkm_c=3;
+	while (j<3) {
 		if(battle(my[i],op[j])) {
 			j++;
 		}
@@ -78,12 +79,12 @@ void updateTerminal(Pokemon &my, Pokemon &op) {
 
 int selectMove(Pokemon &my) {
 	cout<<"Choose your move\n";
-	for (int i=0;i<2;i++) {
+	for (int i=0;i<4;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my.data->move[i]->name<<" power: "<<my.data->move[i]->power<<" Type: "<<setw(10)<<Type[my.data->move[i]->type]<<"PP: "<<my.c_pp[i]<<'\n';
 	}
 	int input;
 	cin>>input;
-	if (input>=2||input<0) {
+	if (input>=4||input<0) {
 			cout<<"invalid move\n";
 			return -1;
 	}
@@ -105,7 +106,7 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 }
 
 void printParty(Pokemon my[]) {
-	for (int i=0;i<2;i++) {
+	for (int i=0;i<4;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
 	}
 }
