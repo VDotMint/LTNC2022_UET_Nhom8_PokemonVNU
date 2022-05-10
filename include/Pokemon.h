@@ -38,6 +38,7 @@ class Trainer {
 		string name;
 		string battleSpritePath;
 		Pokemon party[3];
+		Trainer();
 };
 
 extern PokemonData pokemonData[];

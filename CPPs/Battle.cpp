@@ -2,44 +2,39 @@
 #include "RenderWindow.h"
 #include "Battle.h"
 
-void battle(Pokemon my[]) {
-	srand(time(0));
-	Pokemon op[3]={rand()%psize,rand()%psize,rand()%psize};
-	battle(my,op);
-}
-
-void battle (Pokemon my[],Pokemon op[]) {
+void battle(mPlayer &my,Trainer &op) {
 	int i=0,j=0;
 	int KO;
 	int pkm_c=3;
+	mainBattle.init(&my,&op);
 	while (j<3) {
-		KO=battle(my[i],op[j]);
+		KO=battle(my.party[i],op.party[j]);
 		if (KO==-2) return;
 		if (KO) {
 			j++;
+			if (j==3) {
+				mainBattle.printText("You won!\n");
+				return;
+			}
+			mainBattle.printText(op.name+" sent out "+op.party[j].data->name);
 		}
 		else {
 			pkm_c--;
 			if (pkm_c==0) {
-				cout<<"You lost!\n";
+				// cout<<"You lost!\n";
+				mainBattle.printText("You lost!\n");
 				return;
 			}
-			i=selectPokemon(my);
+			i=selectPokemon(my.party);
+			mainBattle.printText(my.getPlayerName()+" sent out "+my.party[i].data->name);
 		}
 	}
-	if (pkm_c==0) cout<<"You lost!\n";
-	else cout<<"You won!\n";
-}
+};
 
 int battle(Pokemon &my,Pokemon &op) {
 	bool isKO = false;
 	// int turn = 0;
 	int input;
-	Trainer tempoppo;
-	tempoppo.name = "Champion Cynthia";
-	tempoppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
-	mainBattle.init(&mainPlayer,&tempoppo);
-
 	// cout << "Turn: " << turn << '\n';
 	updateTerminal(my,op);
 	mainBattle.updateScreen(my,op);

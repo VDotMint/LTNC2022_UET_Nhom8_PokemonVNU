@@ -11,11 +11,9 @@
 
 using namespace std;
 
-void battle (Pokemon my[],Pokemon op[]);
-
 int battle(Pokemon &my,Pokemon &op);
 
-void battle(Pokemon my[]);
+void battle(mPlayer &my,Trainer &op);
 
 void updateTerminal(Pokemon &my, Pokemon &op);
 

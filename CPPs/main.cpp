@@ -86,10 +86,11 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
             cout << boolalpha << beginMapToBattleTransition << " " << finishMapToBattleTransition << " " << beginBattleToMapTransition << " " << finishBattleToMapTransition << endl;
         }
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
-        { 
-            battle(mainPlayer.party);
-        } 
+        // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
+        // { 
+        //     Trainer op;
+        //     battle(mainPlayer,op);
+        // } 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
@@ -385,13 +386,13 @@ void gameLoop() {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
                     Trainer tempoppo;
-                    tempoppo.name = "Champion Cynthia";
-                    tempoppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    mainBattle.initBattleScreen(&mainPlayer, &tempoppo);
+                    battle(mainPlayer,tempoppo);
+                    inBattle=false;
+                    finishBattleToMapTransition = true;
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

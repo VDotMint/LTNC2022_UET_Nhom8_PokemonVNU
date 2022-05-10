@@ -17,3 +17,12 @@ Pokemon::Pokemon() {
 		c_pp[i]=data->move[i]->pp;
 	}
 };
+
+Trainer::Trainer() {
+	name = "Champion Cynthia";
+	battleSpritePath = "res/battleassets/opponentSprite1.png";
+	srand(time(0));
+    for (int i=0;i<3;i++) {
+        party[i]=rand()%psize;
+    }
+}
