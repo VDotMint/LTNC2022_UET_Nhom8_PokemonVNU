@@ -87,19 +87,19 @@ PokemonData pokemonData[]=
 	//{"Pikachu",4,0,105,83,60,125,{moves,moves+2}},
     {"Tauros", 1, 0, 135, 105, 75, 115, {moves,moves,moves,moves}}, 
     {"Snorlax", 1, 0, 220, 70, 115, 35, {moves,moves,moves,moves}},
-    {"Charizard", 2, 10, 138, 114, 83, 105, {moves,moves+1,moves,moves}},
-    {"Coalossal", 2, 13, 170, 85, 125, 25, {moves,moves+1,moves,moves}},
-    {"Greninga", 3, 16, 132, 108, 72, 127, {moves,moves+2,moves,moves}},
-    {"Miloctic", 3, 0, 155, 65, 130, 86,{moves,moves+2,moves,moves}},
-    {"Zeraora", 4, 0, 148, 117, 80, 148,{moves,moves+3,moves,moves}},
+    {"Charizard", 2, 10, 138, 114, 83, 105, {moves,moves+1,moves,moves}}, 
+    {"Coalossal", 2, 13, 170, 85, 125, 25, {moves,moves+1,moves,moves}}, //Gen 8th
+    {"Greninga", 3, 16, 132, 108, 72, 127, {moves,moves+2,moves,moves}}, //Gen 6th
+    {"Milotic", 3, 0, 155, 65, 130, 86,{moves,moves+2,moves,moves}}, 
+    {"Zeraora", 4, 0, 148, 117, 80, 148,{moves,moves+3,moves,moves}}, //Gen 7th
     {"Magnezone", 4, 17, 130, 75, 120, 65, {moves,moves+3,moves,moves}},
-    {"Rillaboom", 5, 0, 160, 130, 75, 90, {moves,moves+4,moves,moves}},
-    {"Virizion", 5, 7, 151, 95, 134, 113, {moves,moves+4,moves,moves}},
-    {"Mr. Rime", 6, 11, 140, 115, 80, 75, {moves,moves+5,moves,moves}},
+    {"Rillaboom", 5, 0, 160, 130, 75, 90, {moves,moves+4,moves,moves}}, //Gen 8th
+    {"Virizion", 5, 7, 151, 95, 134, 113, {moves,moves+4,moves,moves}}, 
+    {"Mr. Rime", 6, 11, 140, 115, 80, 75, {moves,moves+5,moves,moves}}, //Gen 8th
     {"Lapras", 6, 3, 190, 90, 100, 65, {moves,moves+5,moves,moves}},
     {"Lucario", 7, 17, 130, 120, 75, 95, {moves,moves+6,moves,moves}},
-    {"Bewear", 7, 1, 180, 130, 65, 65, {moves,moves+6,moves,moves}},
-    {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves+7,moves,moves}},
+    {"Bewear", 7, 1, 180, 130, 65, 65, {moves,moves+6,moves,moves}}, //Gen 7th
+    {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves+7,moves,moves}},  
     {"Venusaur", 8, 5, 140, 87, 105, 85, {moves,moves+7,moves,moves}},
     {"Swampert", 9, 3, 160, 115, 95, 65, {moves,moves+8,moves,moves}},
     {"Golem", 9, 13, 140, 60, 135, 50, {moves,moves+8,moves,moves}},
