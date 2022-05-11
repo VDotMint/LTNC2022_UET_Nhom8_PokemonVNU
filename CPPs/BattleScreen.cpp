@@ -13,6 +13,8 @@ static SDL_Rect halfOppoPokeRect = {96, 0, 96, 96};
 static int currentPlayerFrame = 0;
 static unsigned int BattleSen = 0;
 
+static int playerFaintedPokemons = 0, opponentFaintedPokemons = 0;
+
 static double pCirX = 0, oCirX = 0, playerPokemonMoveAnim = 0, opponentPokemonMoveAnim = 0, PokemonTransparency = 0;
 
 BattleScreen::BattleScreen() {
@@ -25,6 +27,9 @@ BattleScreen::~BattleScreen() {
 void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     battlePlayer = player;
     battleOpponent = opponent;
+
+    currentPlayerPokemon = &(player->party[0]);
+    currentOpponentPokemon = &(opponent->party[0]);
 
     bd_Text.createFont("res/font/gamefont.ttf", 42);
     playerPokeName.createFont("res/font/gamefont.ttf", 28);
@@ -44,8 +49,8 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     HPColor = IMG_LoadTexture(RenderWindow::renderer, "res/battleassets/HPColor.png");
     playerHPRect = {548, 388, 284, 95};
     oppoHPRect = {0, 66, 273, 78};
-    currPlayHP = {708, 443, 106, 7};
-    currOppoHP = {112, 119, 107, 7};
+    currPlayHP = {708, 443, int(106.0*(double(currentPlayerPokemon->c_hp)/double(currentPlayerPokemon->data->hp))), 7};
+    currOppoHP = {112, 119, int(107.0*(double(currentOpponentPokemon->c_hp)/double(currentOpponentPokemon->data->hp))), 7};
 
     // CHARACTER SPRITE BOXES
     playerSpriteBox = {832, 260, 240, 240};
@@ -67,20 +72,26 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     battleDialogues.clear();
     std::string sen1 = "You are challenged by " + opponent->name + "!";
     battleDialogues.push_back(sen1);
-    std::string sen2 = opponent->name + " sent out " + opponent->party[0].data->name + "!";
+    std::string sen2 = opponent->name + " sent out " + currentOpponentPokemon->data->name + "!";
     battleDialogues.push_back(sen2);
-    std::string sen3 = player->getPlayerName() + " sent out " + player->party[0].data->name + "!";
+    std::string sen3 = player->getPlayerName() + " sent out " + currentPlayerPokemon->data->name + "!";
     battleDialogues.push_back(sen3);
+
+    // BACK TO ONE POKEMON SPRITE METHOD
+    std::string imgPlayerPath = "res/pokemonassets/" + battlePlayer->party[0].data->name + ".png";
+    playerPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgPlayerPath.c_str());
+    std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[0].data->name + ".png";
+    opponentPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
 
     // STARTING POKEMON TEXTURE
     for (int i = 0; i < 3; i++) {
         std::string imgPlayerPath = "res/pokemonassets/" + battlePlayer->party[i].data->name + ".png";
         playerPokeText[i] = IMG_LoadTexture(RenderWindow::renderer, imgPlayerPath.c_str());
-        SDL_SetTextureBlendMode(playerPokeText[i], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(playerPokeTexture, SDL_BLENDMODE_BLEND);
 
         std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[i].data->name + ".png";
         oppoPokeText[i] = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
-        SDL_SetTextureBlendMode(oppoPokeText[i], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(opponentPokeTexture, SDL_BLENDMODE_BLEND);
     }
 
     // INIT THE FIGHT SCREEN BUTTONS
@@ -154,6 +165,10 @@ void BattleScreen::freeBattleScreen() {
 	oCirX = 0;
     playerPokemonMoveAnim = 0;
     opponentPokemonMoveAnim = 0;
+    PokemonTransparency = 0;
+
+    playerFaintedPokemons = 0;
+    opponentFaintedPokemons = 0;
 
     inAnim0 = true;
     showPHPBar = false, showOHPBar = false;
@@ -174,6 +189,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
         // I WAS BRAINDEAD WHILE CODING THIS PARTICULAR ANIMATION :(
         // HINH DUNG CAI PHUONG TRINH BAC 2 O DUOI LA 1 CAI PHEP ANH XA, OCIRX LA X
         // X CHAY TU 0 DEN 100. CAI PHUONG TRINH BAC 2 DAY NHU LA PHUONG TRINH CHUYEN DONG CUA MAY CAI SPRITE TREN MAN HINH THOI
+        // T DA THU REVERT LAI THANH OCIRX = 0 -> 100. NHMA IT BROKE THE ANIMATION SO BARE WITH IT PLZ
         
         if (-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462) {
             opponentSpriteBox.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-300);
@@ -195,8 +211,8 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 	}
 
     // RENDER THE 2 SIDE'S POKEMONS
-    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], &halfOppoPokeRect, &oppoPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], &halfPlayerPokeRect, &playerPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, opponentPokeTexture, &halfOppoPokeRect, &oppoPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, playerPokeTexture, &halfPlayerPokeRect, &playerPokeRect);
 
     // RENDER THE GRAY BOX CONTAINING THE DIALOGUE AND THE TEXT
 	if (grayBoxRect.y > 500) grayBoxRect.y -= 4;
@@ -254,7 +270,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
     if (showOHPBar == true) {
         SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
         SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);
-        oppoPokeName.textInit(RenderWindow::renderer, (battleOpponent->party[0].data->name).c_str(), {0, 0, 0});
+        oppoPokeName.textInit(RenderWindow::renderer, (currentOpponentPokemon->data->name).c_str(), {0, 0, 0});
         oppoPokeName.display(4, 83, RenderWindow::renderer);
     }
 
@@ -262,7 +278,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
     if (showPHPBar == true) {
         SDL_RenderCopy(RenderWindow::renderer, playerHPBar, NULL, &playerHPRect);
         SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currPlayHP);
-        playerPokeName.textInit(RenderWindow::renderer, (battlePlayer->party[0].data->name).c_str(), {0, 0, 0});
+        playerPokeName.textInit(RenderWindow::renderer, (currentPlayerPokemon->data->name).c_str(), {0, 0, 0});
         playerPokeName.display(585, 407, RenderWindow::renderer);
     }
 
@@ -279,7 +295,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
         backButton.drawButton();
     }
 
-    // HANDLING MOVE ANIMATION AND FLAGS
+    // HANDLING MOVE ANIMATION AND FLAGS AND BATTLE DIALOGUES 
     if (startingBattle == false and fightScreen == false and moveScreen == false) {
         bd_Text.textInit(RenderWindow::renderer, battleDialogues[BattleSen].c_str(), {255, 255, 255}, 800);
         bd_Text.display(32, 530, RenderWindow::renderer);
@@ -291,16 +307,18 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 playerPokemonMoveAnim++;
             } else if (playerPokemonMoveAnim == 21 and inAnim0 == true) {
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(oppoPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(opponentPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
                 } else if (PokemonTransparency >= 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(oppoPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(opponentPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     playerPokemonMoveAnim = 0;
                     PokemonTransparency = 0;
+                    currOppoHP.w = int(107.0*(double(currentOpponentPokemon->c_hp)/double(currentOpponentPokemon->data->hp)));
                     inAnim0 = false;
                 }
             }
         }
+
         else if (turnActionQueue[BattleSen] == "OPPONENT_USE_MOVE") // ANIMATE THE OPPONENT USING A MOVE
         {
             if (opponentPokemonMoveAnim < 21 and inAnim0 == true) {
@@ -308,16 +326,49 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 opponentPokemonMoveAnim++;
             } else if (opponentPokemonMoveAnim == 21 and inAnim0 == true) {
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(playerPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(playerPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
                 } else if (PokemonTransparency >= 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(playerPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(playerPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     opponentPokemonMoveAnim = 0;
                     PokemonTransparency = 0;
+                    currPlayHP.w = int(106.0*(double(currentPlayerPokemon->c_hp)/double(currentPlayerPokemon->data->hp)));
                     inAnim0 = false;
                 }
             }
         }
+
+        else if (turnActionQueue[BattleSen] == "OPPONENT_FAINT") 
+        {
+            if ((halfOppoPokeRect.h > 0 or oppoPokeRect.y < 260) and inAnim0 == true) {
+                halfOppoPokeRect.h -= 10;
+                oppoPokeRect.y += 24;
+                oppoPokeRect.h -= 24;
+            } else if (halfOppoPokeRect.h <= 0 and oppoPokeRect.y == 260 and inAnim0 == true) {
+                showOHPBar = false;
+                oppoPokeRect = {832, 20, 240, 240};
+                halfOppoPokeRect.h = 96;
+                inAnim0 = false;
+            }
+        }
+
+        else if (turnActionQueue[BattleSen] == "OPPONENT_NEXT_POKEMON") {
+            if (oppoPokeRect.x > 500) {
+                if (oppoPokeRect.x == 832) {
+                    SDL_DestroyTexture(opponentPokeTexture);
+                    std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[opponentFaintedPokemons].data->name + ".png";
+                    opponentPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
+                }
+                oppoPokeRect.x -= 8;
+                if (oppoPokeRect.x < 510) {
+                    currentOpponentPokemon = &(battleOpponent->party[opponentFaintedPokemons]);
+                    inAnim0 = false;
+                    showOHPBar = true;
+                    currOppoHP.w = int(107.0*(double(currentOpponentPokemon->c_hp)/double(currentOpponentPokemon->data->hp)));
+                }
+            }
+        }
+
         else
         {
             inAnim0 = false;
@@ -352,6 +403,10 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         }
     }
 
+    if (e->type == SDL_MOUSEBUTTONDOWN) {
+        
+    }
+
     // HANDLING THE SELECT MOVE SCREEN
     if (moveScreen == true) {
         backButton.buttonHandler();
@@ -359,6 +414,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             backButton.clickedOn = false;
             fightScreen = true;
             moveScreen = false;
+            return;
         }
 
         moveButtons[0].buttonHandler();
@@ -410,34 +466,54 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
 
 void BattleScreen::localTurnHandler(int move) {
     bool isKO;
-    if (battlePlayer->party[0].data->speed >= battleOpponent->party[0].data->speed) {
-        isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0],false);
+    if (currentPlayerPokemon->data->speed >= currentOpponentPokemon->data->speed) {
+        isKO = useMove(move, *currentPlayerPokemon, *currentOpponentPokemon, false);
         if (isKO) {
-            std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
+            std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("OPPONENT_FAINT");
+            opponentFaintedPokemons++;
+            if (opponentFaintedPokemons < 3) {
+                std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
+                battleDialogues.push_back(newSentence);
+                turnActionQueue.push_back("OPPONENT_NEXT_POKEMON");
+            } else {
+                std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name;
+                battleDialogues.push_back(newSentence);
+                turnActionQueue.push_back("OPPONENT_DEFEATED");
+            }
         }
         if (!isKO) {
-            isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0],true);
+            isKO = useMove(0, *currentOpponentPokemon, *currentPlayerPokemon, true);
             if (isKO) {
-                std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
+                std::string newSentence = currentPlayerPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("PLAYER_FAINT");
             }
         }
     } else {
-        isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0],true);
+        isKO = useMove(0, *currentOpponentPokemon, *currentPlayerPokemon, true);
         if (isKO) {
-            std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
+            std::string newSentence = currentPlayerPokemon->data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("PLAYER_FAINT");
         }
         if (!isKO) {
-            isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0],false);
-           if (isKO) {
-                std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
+            isKO = useMove(move, *currentPlayerPokemon, *currentOpponentPokemon, false);
+            if (isKO) {
+                std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("OPPONENT_FAINT");
+                opponentFaintedPokemons++;
+                if (opponentFaintedPokemons < 3) {
+                    std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
+                    battleDialogues.push_back(newSentence);
+                    turnActionQueue.push_back("OPPONENT_NEXT_POKEMON");
+                } else {
+                    std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name;
+                    battleDialogues.push_back(newSentence);
+                    turnActionQueue.push_back("OPPONENT_DEFEATED");
+                }
             }
         }
     }

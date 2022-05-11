@@ -160,7 +160,7 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
-            cerr << e->motion.x << " " << e->motion.y << endl;
+            // cerr << e->motion.x << " " << e->motion.y << endl;
         }
         mainBattle.centralBattleProcess(e);
     }
@@ -384,12 +384,21 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
-                    Trainer tempoppo;
+                    mainPlayer.party[0] = 22;
+                    mainPlayer.party[1] = 15;
+                    mainPlayer.party[2] = 14;
+
+                    defaultOppo.name = "Champion Cynthia";
+                    defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
+                    defaultOppo.party[0] = 34;
+                    defaultOppo.party[1] = 5;
+                    defaultOppo.party[2] = 12;
+
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    mainBattle.initBattleScreen(&mainPlayer,&tempoppo);
+                    mainBattle.initBattleScreen(&mainPlayer, &defaultOppo);
                     // battle(mainPlayer,tempoppo);
                     // inBattle=false;
                     // finishBattleToMapTransition = true;

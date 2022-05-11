@@ -9,9 +9,9 @@ static SDL_Rect halfPlayerPokeRect = {0, 0, 96, 96};
 static SDL_Rect halfOppoPokeRect = {96, 0, 96, 96};
 
 static int currentPlayerFrame = 0;
-static unsigned int BattleSen = 0;
+// static unsigned int BattleSen = 0;
 
-static double pCirX = 0, oCirX = 0, playerPokemonMoveAnim = 0, opponentPokemonMoveAnim = 0, PokemonTransparency = 0;
+static double pCirX = 0, oCirX = 0/*, playerPokemonMoveAnim = 0, opponentPokemonMoveAnim = 0, PokemonTransparency = 0*/;
 
 void BattleScreen::updateScreen(Pokemon &my, Pokemon &opponent) {
     SDL_RenderCopy(RenderWindow::renderer, battleBackground, NULL, NULL);
