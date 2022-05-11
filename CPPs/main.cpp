@@ -86,10 +86,11 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
             cout << boolalpha << beginMapToBattleTransition << " " << finishMapToBattleTransition << " " << beginBattleToMapTransition << " " << finishBattleToMapTransition << endl;
         }
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
-        { 
-            battle(mainPlayer.party);
-        } 
+        // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
+        // { 
+        //     Trainer op;
+        //     battle(mainPlayer,op);
+        // } 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
@@ -198,8 +199,6 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
 }
 
 void gameLoop() {
-    SDL_Event e;
-
     while (quit == false) {
         if (inTitleScreen == true) // PLAYER IN THE TITLE SCREEN. AGAIN, MOSTLY FINISHED, DO NOT TOUCH
         {
@@ -385,15 +384,15 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
-                    defaultOppo.name = "Champion Cynthia";
-                    defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
-                    defaultOppo.party[0];
-
+                    Trainer tempoppo;
                     transitionTransparency = 255;
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    mainBattle.initBattleScreen(&mainPlayer, &defaultOppo);
+                    mainBattle.initBattleScreen(&mainPlayer,&tempoppo);
+                    // battle(mainPlayer,tempoppo);
+                    // inBattle=false;
+                    // finishBattleToMapTransition = true;
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

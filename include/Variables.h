@@ -17,6 +17,7 @@ using namespace std;
 extern bool debugMode;
 
 extern RenderWindow renderWindow;
+extern SDL_Event e;
 
 extern TitleScreen gameTitleScreen;
 extern SDL_Texture* blackTransitionTexture;
@@ -31,7 +32,7 @@ extern string Type[];
 extern Move moves[];
 extern PokemonData pokemonData[];
 extern int psize;
-extern int typeEffectiveness[][19];
+extern double typeEffectiveness[][19];
 
 extern SDL_Rect dBoxClip;
 extern dialogueBox d_box;
