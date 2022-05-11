@@ -14,20 +14,21 @@ class BattleScreenButton {
 		SDL_Rect buttonFrames[3];
 		SDL_Rect buttonDest;
 		int currentButtonFrame;
-		Text moveNames;
 	public:
-		bool clickedOn;
+		Text moveNames;
+		bool clickedOn = false;
 		BattleScreenButton();
 		~BattleScreenButton();
 		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight);
 		void drawButton();
-        void buttonHandler(SDL_Event* e);
-		void moveButtonHandler(SDL_Event* e);
+        void buttonHandler();
+		void contextButtonHandler(SDL_Event* e);
 };
 
 class BattleScreen {
 	private:
-		mPlayer* battPlayer;
+		mPlayer* battlePlayer;
+		Trainer* battleOpponent;
 
 		SDL_Texture* battleBackground;
 		SDL_Texture* battleCircle;
@@ -44,8 +45,8 @@ class BattleScreen {
 		SDL_Texture* HPColor;
 		SDL_Rect currPlayHP, currOppoHP;
 
-		SDL_Texture* playerPokeText;
-		SDL_Texture* oppoPokeText;
+		SDL_Texture* playerPokeText[3];
+		SDL_Texture* oppoPokeText[3];
 		SDL_Rect playerPokeRect, oppoPokeRect;
 
 		SDL_Rect playerTextureFrames[4];
@@ -53,16 +54,27 @@ class BattleScreen {
 
 		BattleScreenButton fightButton, pokemonButton, retireButton, backButton;
 		BattleScreenButton moveButtons[4];
-
-		vector<std::string> battleDialogues;
+		
 		Text bd_Text;
 	public:
-		bool inAnim0 = true, fightScreen = false, moveScreen = false, showPHPBar = false, showOHPBar = false;
-		int pressedMoveButton = -1;
+		vector<std::string> battleDialogues;
+		vector<std::string> turnActionQueue;
+
+		bool inAnim0 = true, moveAnim = false,
+			fightScreen = false, moveScreen = false, 
+			showPHPBar = false, showOHPBar = false,
+			startingBattle = true;
+		string buffer;
 		BattleScreen();
 		~BattleScreen();
 		void initBattleScreen(mPlayer* player, Trainer* opponent);
 		void freeBattleScreen();
 		void drawBattleScreen(bool fMtB, bool fBtM);
 		void centralBattleProcess(SDL_Event* e);
+		void init(mPlayer* player, Trainer* opponent);
+		void updateScreen(Pokemon &my, Pokemon &op);
+		int menuInput(Pokemon &my);
+		int moveInput(Pokemon &my);
+		void printText(string s);
+		void localTurnHandler(int move);
 };

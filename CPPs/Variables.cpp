@@ -4,6 +4,8 @@ bool debugMode=false;
 
 RenderWindow renderWindow;
 
+SDL_Event e;
+
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 
@@ -182,3 +184,5 @@ bool inBattle = false;
 bool inDialogue = false;
 
 bool playerIsRunning = false;
+
+Trainer defaultOppo;
