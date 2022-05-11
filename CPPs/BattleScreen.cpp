@@ -354,35 +354,35 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
 
     // HANDLING THE SELECT MOVE SCREEN
     if (moveScreen == true) {
-        backButton.buttonHandler(e);
+        backButton.buttonHandler();
         if (backButton.clickedOn == true) {
             backButton.clickedOn = false;
             fightScreen = true;
             moveScreen = false;
         }
 
-        moveButtons[0].buttonHandler(e);
+        moveButtons[0].buttonHandler();
         if (moveButtons[0].clickedOn == true) {
             moveButtons[0].clickedOn = false;
             localTurnHandler(0);
             moveScreen = false;
         }
 
-        moveButtons[1].buttonHandler(e);
+        moveButtons[1].buttonHandler();
         if (moveButtons[1].clickedOn == true) {
             moveButtons[1].clickedOn = false;
             localTurnHandler(1);
             moveScreen = false;
         }
 
-        moveButtons[2].buttonHandler(e);
+        moveButtons[2].buttonHandler();
         if (moveButtons[2].clickedOn == true) {
             moveButtons[2].clickedOn = false;
             localTurnHandler(2);
             moveScreen = false;
         }
 
-        moveButtons[3].buttonHandler(e);
+        moveButtons[3].buttonHandler();
         if (moveButtons[3].clickedOn == true) {
             moveButtons[3].clickedOn = false;
             localTurnHandler(3);
@@ -411,14 +411,14 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
 void BattleScreen::localTurnHandler(int move) {
     bool isKO;
     if (battlePlayer->party[0].data->speed >= battleOpponent->party[0].data->speed) {
-        isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0], false);
+        isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0]);
         if (isKO) {
             std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("OPPONENT_FAINT");
         }
         if (!isKO) {
-            isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0], true);
+            isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0]);
             if (isKO) {
                 std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
@@ -426,14 +426,14 @@ void BattleScreen::localTurnHandler(int move) {
             }
         }
     } else {
-        isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0], true);
+        isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0]);
         if (isKO) {
             std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("PLAYER_FAINT");
         }
         if (!isKO) {
-            isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0], false);
+            isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0]);
             if (isKO) {
                 std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
@@ -510,8 +510,8 @@ void BattleScreen::updateScreen(Pokemon &my, Pokemon &opponent) {
     SDL_RenderCopy(RenderWindow::renderer, opponentTexture, NULL, &opponentSpriteBox);
     SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &playerCircle);
     SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[currentPlayerFrame], &playerSpriteBox);
-    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText, NULL, &oppoPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, playerPokeText, NULL, &playerPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], NULL, &oppoPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], NULL, &playerPokeRect);
     SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
     SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
     SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);
