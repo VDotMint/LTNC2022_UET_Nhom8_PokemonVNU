@@ -30,6 +30,9 @@ class BattleScreen {
 		mPlayer* battlePlayer;
 		Trainer* battleOpponent;
 
+		Pokemon* currentPlayerPokemon;
+		Pokemon* currentOpponentPokemon;
+
 		SDL_Texture* battleBackground;
 		SDL_Texture* battleCircle;
 		SDL_Texture* grayInputBox;
