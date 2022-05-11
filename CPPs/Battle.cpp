@@ -49,7 +49,7 @@ int battle(Pokemon &my,Pokemon &op) {
 		if (input==-1) return -1;
 		if (input==-2) return -2;
 		if (my.data->speed>=op.data->speed) {
-			isKO=useMove(input,my,op);
+			isKO=useMove(input,my,op, false);
 			updateTerminal(my,op);
 			if (isKO) {
 				// cout<<"Opposing "<<op.data->name<<" fainted!\n";
@@ -77,7 +77,7 @@ int battle(Pokemon &my,Pokemon &op) {
 				mainBattle.printText(my.data->name+" fainted!\n");
 				return false;
 			}
-			isKO=useMove(input,my,op);
+			isKO=useMove(input,my,op, false);
 			updateTerminal(my,op);
 			if (isKO) {
 				// cout<<"Opposing "<<op.data->name<<" fainted!\n";

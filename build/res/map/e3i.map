@@ -84,7 +84,7 @@ For the integrity of the competition, you must remain downstairs for the time be
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
 27 10 0
-res/npcsprite/npcSprite1.png
+res/npcsprite/npcSprite10.png
 In the real world, this is the "Phong Cong Tac Sinh Vien".
 But here in this game, this is where you go and assemble your Pokemon party.
 And unlike the real world, there is zero fees for doing all of this.
@@ -92,7 +92,7 @@ Get ratio'd.
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
 41 9 0
-res/npcsprite/npcSprite4.png
+res/npcsprite/npcSprite12.png
 This room here, in the real world, is the "Phong Dao Tao".
 In this game, this is supposed to be where you can teach your Pokemon moves.
 Unfortunately as other students have been abusing this room for illegal stuff, we had to close down.

@@ -14,20 +14,21 @@ class BattleScreenButton {
 		SDL_Rect buttonFrames[3];
 		SDL_Rect buttonDest;
 		int currentButtonFrame;
-		Text moveNames;
 	public:
-		bool clickedOn;
+		Text moveNames;
+		bool clickedOn = false;
 		BattleScreenButton();
 		~BattleScreenButton();
 		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight);
 		void drawButton();
         void buttonHandler();
-		void moveButtonHandler(SDL_Event* e);
+		void contextButtonHandler(SDL_Event* e);
 };
 
 class BattleScreen {
 	private:
-		mPlayer* battPlayer;
+		mPlayer* battlePlayer;
+		Trainer* battleOpponent;
 
 		SDL_Texture* battleBackground;
 		SDL_Texture* battleCircle;
@@ -53,12 +54,16 @@ class BattleScreen {
 
 		BattleScreenButton fightButton, pokemonButton, retireButton, backButton;
 		BattleScreenButton moveButtons[4];
-
-		vector<std::string> battleDialogues;
+		
 		Text bd_Text;
 	public:
-		bool inAnim0 = true, fightScreen = false, moveScreen = false, showPHPBar = false, showOHPBar = false;
-		int pressedMoveButton = -1;
+		vector<std::string> battleDialogues;
+		vector<std::string> turnActionQueue;
+
+		bool inAnim0 = true, moveAnim = false,
+			fightScreen = false, moveScreen = false, 
+			showPHPBar = false, showOHPBar = false,
+			startingBattle = true;
 		string buffer;
 		BattleScreen();
 		~BattleScreen();
@@ -71,4 +76,5 @@ class BattleScreen {
 		int menuInput(Pokemon &my);
 		int moveInput(Pokemon &my);
 		void printText(string s);
+		void localTurnHandler(int move);
 };

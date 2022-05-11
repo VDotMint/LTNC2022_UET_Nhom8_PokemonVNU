@@ -6,7 +6,7 @@
 class TitleScreenButton {
     private:
         SDL_Texture* buttonTexture;
-        bool clickedOn;
+        bool clickedOn = false;
         SDL_Rect buttonFrames[3];
         SDL_Rect buttonDest;
         int currentButtonFrame;
