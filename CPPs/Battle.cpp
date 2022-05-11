@@ -10,6 +10,7 @@ void battle(mPlayer &my,Trainer &op) {
 	while (j<3) {
 		KO=battle(my.party[i],op.party[j]);
 		if (KO==-2) return;
+		if (KO==-1) return;
 		if (KO) {
 			j++;
 			if (j==3) {
@@ -45,7 +46,7 @@ int battle(Pokemon &my,Pokemon &op) {
 		cout<<'-'<<setw(61)<<setfill('-')<<'-'<<endl;
 		printMoves(my);
 		input=mainBattle.menuInput(my);
-		if (input==-1) continue;
+		if (input==-1) return -1;
 		if (input==-2) return -2;
 		if (my.data->speed>=op.data->speed) {
 			isKO=useMove(input,my,op);
@@ -137,7 +138,7 @@ int selectPokemon(Pokemon my[]) {
 	int input;
 	while (true) {
 		cin>>input;
-		if (my[input].c_hp==0) {
+		if (my[input].c_hp==0||input>2) {
 			cout<<"invalid\n";
 		}
 		else return input;

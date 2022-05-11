@@ -429,7 +429,7 @@ int BattleScreen::menuInput(Pokemon &my) {
             pokemonButton.clickedOn = false;
         } else if (retireButton.clickedOn == true) {
             retireButton.clickedOn = false;
-            beginBattleToMapTransition = true;
+            return -1;
         }
         renderWindow.display();
         gameMusic.play();

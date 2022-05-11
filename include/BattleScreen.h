@@ -44,8 +44,8 @@ class BattleScreen {
 		SDL_Texture* HPColor;
 		SDL_Rect currPlayHP, currOppoHP;
 
-		SDL_Texture* playerPokeText;
-		SDL_Texture* oppoPokeText;
+		SDL_Texture* playerPokeText[3];
+		SDL_Texture* oppoPokeText[3];
 		SDL_Rect playerPokeRect, oppoPokeRect;
 
 		SDL_Rect playerTextureFrames[4];
