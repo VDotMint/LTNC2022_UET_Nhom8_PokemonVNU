@@ -1,3 +1,4 @@
+#include "Variables.h"
 #include "RenderWindow.h"
 #include "Battle.h"
 
@@ -40,14 +41,14 @@ bool battle(Pokemon &my,Pokemon &op) {
 		input=selectMove(my);
 		if (input==-1) continue;
 		if (my.data->speed>=op.data->speed) {
-			isKO=useMove(input,my,op);
+			isKO=useMove(input,my,op, false);
 			updateTerminal(my,op);
 			if (isKO) {
 				cout<<"Opposing "<<op.data->name<<" fainted!\n";
 				return true;
 			}
 			cout<<"Opposing ";
-			isKO=useMove(rand()%2,op,my);
+			isKO=useMove(rand()%2,op,my, true);
 			updateTerminal(my,op);
 			if (isKO) {
 				cout<<my.data->name<<" fainted!\n";
@@ -56,13 +57,13 @@ bool battle(Pokemon &my,Pokemon &op) {
 		}
 		else {
 			cout<<"Opposing ";
-			isKO=useMove(rand()%2,op,my);
+			isKO=useMove(rand()%2,op,my, true);
 			updateTerminal(my,op);
 			if (isKO) {
 				cout<<my.data->name<<" fainted!\n";
 				return false;
 			}
-			isKO=useMove(input,my,op);
+			isKO=useMove(input,my,op, false);
 			updateTerminal(my,op);
 			if (isKO) {
 				cout<<"Opposing "<<op.data->name<<" fainted!\n";
@@ -95,8 +96,15 @@ int selectMove(Pokemon &my) {
 	return input;
 };
 
-bool useMove(int input, Pokemon &my, Pokemon &op) {
-	cout<<my.data->name<<" used "<<my.data->move[input]->name<<'\n';
+bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent) {
+	std::string newBattleSentence;
+	if (isOpponent == true) newBattleSentence += "Opposing ";
+	newBattleSentence += my.data->name + " used " + (my.data->move[input])->name + "!";
+	mainBattle.battleDialogues.push_back(newBattleSentence);
+
+	if (isOpponent) mainBattle.turnActionQueue.push_back("OPPONENT_USE_MOVE");
+	else mainBattle.turnActionQueue.push_back("PLAYER_USE_MOVE");
+
 	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
 	my.c_pp[input]--;
 	if (op.c_hp<0) op.c_hp=0;
@@ -106,7 +114,7 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 }
 
 void printParty(Pokemon my[]) {
-	for (int i=0;i<4;i++) {
+	for (int i=0;i<3;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
 	}
 }

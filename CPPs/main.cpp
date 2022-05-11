@@ -385,9 +385,15 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
+                    mainPlayer.party[0] = 34;
+                    mainPlayer.party[1] = 15;
+                    mainPlayer.party[2] = 14;
+
                     defaultOppo.name = "Champion Cynthia";
                     defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
-                    defaultOppo.party[0];
+                    defaultOppo.party[0] = 5;
+                    defaultOppo.party[1] = 5;
+                    defaultOppo.party[2] = 12;
 
                     transitionTransparency = 255;
                     inBattle = true;
