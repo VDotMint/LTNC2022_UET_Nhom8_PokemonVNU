@@ -76,5 +76,7 @@ class BattleScreen {
 		int menuInput(Pokemon &my);
 		int moveInput(Pokemon &my);
 		void printText(string s);
+		void oSentPkm(Pokemon &my,Pokemon &op);
+		void pSentPkm(Pokemon &my,Pokemon &op);
 		void localTurnHandler(int move);
 };

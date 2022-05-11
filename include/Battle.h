@@ -25,6 +25,7 @@ void printMoves(Pokemon &my);
 
 int selectMove(Pokemon &my);
 
+bool useMove(int input, Pokemon &my, Pokemon &op);
 bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent);
 
 extern string Type[];

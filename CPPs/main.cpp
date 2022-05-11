@@ -389,9 +389,10 @@ void gameLoop() {
                     inBattle = true;
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
-                    battle(mainPlayer,tempoppo);
-                    inBattle=false;
-                    finishBattleToMapTransition = true;
+                    mainBattle.initBattleScreen(&mainPlayer,&tempoppo);
+                    // battle(mainPlayer,tempoppo);
+                    // inBattle=false;
+                    // finishBattleToMapTransition = true;
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

@@ -119,6 +119,23 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	return false;
 }
 
+bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent) {
+	std::string newBattleSentence;
+	if (isOpponent == true) newBattleSentence += "Opposing ";
+	newBattleSentence += my.data->name + " used " + (my.data->move[input])->name + "!";
+	mainBattle.battleDialogues.push_back(newBattleSentence);
+
+	if (isOpponent) mainBattle.turnActionQueue.push_back("OPPONENT_USE_MOVE");
+	else mainBattle.turnActionQueue.push_back("PLAYER_USE_MOVE");
+
+	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
+	my.c_pp[input]--;
+	if (op.c_hp<0) op.c_hp=0;
+	
+	if (!op.c_hp) return true;
+	return false;
+}
+
 void printParty(Pokemon my[]) {
 	for (int i=0;i<3;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
