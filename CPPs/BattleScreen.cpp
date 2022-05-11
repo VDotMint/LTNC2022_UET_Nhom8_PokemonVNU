@@ -13,6 +13,8 @@ static SDL_Rect halfOppoPokeRect = {96, 0, 96, 96};
 static int currentPlayerFrame = 0;
 static unsigned int BattleSen = 0;
 
+static int playerFaintedPokemons = 0, opponentFaintedPokemons = 0;
+
 static double pCirX = 0, oCirX = 0, playerPokemonMoveAnim = 0, opponentPokemonMoveAnim = 0, PokemonTransparency = 0;
 
 BattleScreen::BattleScreen() {
@@ -75,15 +77,21 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     std::string sen3 = player->getPlayerName() + " sent out " + currentPlayerPokemon->data->name + "!";
     battleDialogues.push_back(sen3);
 
+    // BACK TO ONE POKEMON SPRITE METHOD
+    std::string imgPlayerPath = "res/pokemonassets/" + battlePlayer->party[0].data->name + ".png";
+    playerPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgPlayerPath.c_str());
+    std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[0].data->name + ".png";
+    opponentPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
+
     // STARTING POKEMON TEXTURE
     for (int i = 0; i < 3; i++) {
         std::string imgPlayerPath = "res/pokemonassets/" + battlePlayer->party[i].data->name + ".png";
         playerPokeText[i] = IMG_LoadTexture(RenderWindow::renderer, imgPlayerPath.c_str());
-        SDL_SetTextureBlendMode(playerPokeText[i], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(playerPokeTexture, SDL_BLENDMODE_BLEND);
 
         std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[i].data->name + ".png";
         oppoPokeText[i] = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
-        SDL_SetTextureBlendMode(oppoPokeText[i], SDL_BLENDMODE_BLEND);
+        SDL_SetTextureBlendMode(opponentPokeTexture, SDL_BLENDMODE_BLEND);
     }
 
     // INIT THE FIGHT SCREEN BUTTONS
@@ -159,6 +167,9 @@ void BattleScreen::freeBattleScreen() {
     opponentPokemonMoveAnim = 0;
     PokemonTransparency = 0;
 
+    playerFaintedPokemons = 0;
+    opponentFaintedPokemons = 0;
+
     inAnim0 = true;
     showPHPBar = false, showOHPBar = false;
     fightScreen = false, moveScreen = false;
@@ -200,8 +211,8 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 	}
 
     // RENDER THE 2 SIDE'S POKEMONS
-    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], &halfOppoPokeRect, &oppoPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], &halfPlayerPokeRect, &playerPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, opponentPokeTexture, &halfOppoPokeRect, &oppoPokeRect);
+    SDL_RenderCopy(RenderWindow::renderer, playerPokeTexture, &halfPlayerPokeRect, &playerPokeRect);
 
     // RENDER THE GRAY BOX CONTAINING THE DIALOGUE AND THE TEXT
 	if (grayBoxRect.y > 500) grayBoxRect.y -= 4;
@@ -296,10 +307,10 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 playerPokemonMoveAnim++;
             } else if (playerPokemonMoveAnim == 21 and inAnim0 == true) {
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(oppoPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(opponentPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
                 } else if (PokemonTransparency >= 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(oppoPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(opponentPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     playerPokemonMoveAnim = 0;
                     PokemonTransparency = 0;
                     currOppoHP.w = int(107.0*(double(currentOpponentPokemon->c_hp)/double(currentOpponentPokemon->data->hp)));
@@ -315,10 +326,10 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 opponentPokemonMoveAnim++;
             } else if (opponentPokemonMoveAnim == 21 and inAnim0 == true) {
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(playerPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(playerPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
                 } else if (PokemonTransparency >= 1170 and inAnim0 == true) {
-                    SDL_SetTextureAlphaMod(playerPokeText[0], int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
+                    SDL_SetTextureAlphaMod(playerPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     opponentPokemonMoveAnim = 0;
                     PokemonTransparency = 0;
                     currPlayHP.w = int(106.0*(double(currentPlayerPokemon->c_hp)/double(currentPlayerPokemon->data->hp)));
@@ -329,11 +340,32 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 
         else if (turnActionQueue[BattleSen] == "OPPONENT_FAINT") 
         {
-            if (halfOppoPokeRect.h > 0 and oppoPokeRect.y < 260 and inAnim0 == true) {
-                halfOppoPokeRect.h -= 9;
+            if ((halfOppoPokeRect.h > 0 or oppoPokeRect.y < 260) and inAnim0 == true) {
+                halfOppoPokeRect.h -= 10;
                 oppoPokeRect.y += 24;
-            } else if (halfOppoPokeRect.h == 0 and oppoPokeRect.y == 260) {
+                oppoPokeRect.h -= 24;
+            } else if (halfOppoPokeRect.h <= 0 and oppoPokeRect.y == 260 and inAnim0 == true) {
+                showOHPBar = false;
+                oppoPokeRect = {832, 20, 240, 240};
+                halfOppoPokeRect.h = 96;
                 inAnim0 = false;
+            }
+        }
+
+        else if (turnActionQueue[BattleSen] == "OPPONENT_NEXT_POKEMON") {
+            if (oppoPokeRect.x > 500) {
+                if (oppoPokeRect.x == 832) {
+                    SDL_DestroyTexture(opponentPokeTexture);
+                    std::string imgOppoPath = "res/pokemonassets/" + battleOpponent->party[opponentFaintedPokemons].data->name + ".png";
+                    opponentPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgOppoPath.c_str());
+                }
+                oppoPokeRect.x -= 8;
+                if (oppoPokeRect.x < 510) {
+                    currentOpponentPokemon = &(battleOpponent->party[opponentFaintedPokemons]);
+                    inAnim0 = false;
+                    showOHPBar = true;
+                    currOppoHP.w = int(107.0*(double(currentOpponentPokemon->c_hp)/double(currentOpponentPokemon->data->hp)));
+                }
             }
         }
 
@@ -371,6 +403,10 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         }
     }
 
+    if (e->type == SDL_MOUSEBUTTONDOWN) {
+        
+    }
+
     // HANDLING THE SELECT MOVE SCREEN
     if (moveScreen == true) {
         backButton.buttonHandler(e);
@@ -378,6 +414,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             backButton.clickedOn = false;
             fightScreen = true;
             moveScreen = false;
+            return;
         }
 
         moveButtons[0].buttonHandler(e);
@@ -435,6 +472,16 @@ void BattleScreen::localTurnHandler(int move) {
             std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("OPPONENT_FAINT");
+            opponentFaintedPokemons++;
+            if (opponentFaintedPokemons < 3) {
+                std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
+                battleDialogues.push_back(newSentence);
+                turnActionQueue.push_back("OPPONENT_NEXT_POKEMON");
+            } else {
+                std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name;
+                battleDialogues.push_back(newSentence);
+                turnActionQueue.push_back("OPPONENT_DEFEATED");
+            }
         }
         if (!isKO) {
             isKO = useMove(0, *currentOpponentPokemon, *currentPlayerPokemon, true);
@@ -457,6 +504,16 @@ void BattleScreen::localTurnHandler(int move) {
                 std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("OPPONENT_FAINT");
+                opponentFaintedPokemons++;
+                if (opponentFaintedPokemons < 3) {
+                    std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
+                    battleDialogues.push_back(newSentence);
+                    turnActionQueue.push_back("OPPONENT_NEXT_POKEMON");
+                } else {
+                    std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name;
+                    battleDialogues.push_back(newSentence);
+                    turnActionQueue.push_back("OPPONENT_DEFEATED");
+                }
             }
         }
     }

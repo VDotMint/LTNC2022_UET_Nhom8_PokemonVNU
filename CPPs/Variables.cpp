@@ -125,7 +125,7 @@ PokemonData pokemonData[]=
 
 int psize=sizeof(pokemonData)/sizeof(pokemonData[0]);
 
-int typeEffectiveness[19][19]={
+double typeEffectiveness[19][19]={
     {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
     {1,1,1,1,1,1,1,1,1,1,1,1,1,0.5,0,1,1,0.5,1},
     {1,1,0.5,0.5,1,2,2,1,1,1,1,1,2,0.5,1,0.5,1,2,1},
