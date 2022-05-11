@@ -411,14 +411,14 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
 void BattleScreen::localTurnHandler(int move) {
     bool isKO;
     if (battlePlayer->party[0].data->speed >= battleOpponent->party[0].data->speed) {
-        isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0]);
+        isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0],false);
         if (isKO) {
             std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("OPPONENT_FAINT");
         }
         if (!isKO) {
-            isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0]);
+            isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0],true);
             if (isKO) {
                 std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
@@ -426,14 +426,14 @@ void BattleScreen::localTurnHandler(int move) {
             }
         }
     } else {
-        isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0]);
+        isKO = useMove(0, battleOpponent->party[0], battlePlayer->party[0],true);
         if (isKO) {
             std::string newSentence = battlePlayer->party[0].data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("PLAYER_FAINT");
         }
         if (!isKO) {
-            isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0]);
+            isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0],false);
             if (isKO) {
                 std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
@@ -504,137 +504,6 @@ void BattleScreenButton::buttonHandler() {
         }
     }
 }
-void BattleScreen::updateScreen(Pokemon &my, Pokemon &opponent) {
-    SDL_RenderCopy(RenderWindow::renderer, battleBackground, NULL, NULL);
-    SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &opponentCircle);
-    SDL_RenderCopy(RenderWindow::renderer, opponentTexture, NULL, &opponentSpriteBox);
-    SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &playerCircle);
-    SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[currentPlayerFrame], &playerSpriteBox);
-    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], NULL, &oppoPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], NULL, &playerPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
-    SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
-    SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);
-    oppoPokeName.textInit(RenderWindow::renderer, (opponent.data->name).c_str(), {0, 0, 0});
-    oppoPokeName.display(4, 83, RenderWindow::renderer);
-    SDL_RenderCopy(RenderWindow::renderer, playerHPBar, NULL, &playerHPRect);
-    SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currPlayHP);
-    playerPokeName.textInit(RenderWindow::renderer, (my.data->name).c_str(), {0, 0, 0});
-    playerPokeName.display(585, 407, RenderWindow::renderer);
-    renderWindow.display();
-};
-void BattleScreen::init(mPlayer* player, Trainer* opponent) {
-    initBattleScreen(player,opponent);
-    SDL_Event e;
-    while ((-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462)||(grayBoxRect.y > 500)) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-                return;
-            }
-        }
-        if (grayBoxRect.y > 500) grayBoxRect.y -= 4;
-        if (-0.1276*oCirX*oCirX+20.58*oCirX-320 < 462) {
-            opponentSpriteBox.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-300);
-		    opponentCircle.x = int(-0.1276*oCirX*oCirX+20.58*oCirX-320);
-		    oCirX++;
-		    playerCircle.x = int(0.1244*pCirX*pCirX-20.26*pCirX+832);
-            playerSpriteBox.x = int(0.1244*pCirX*pCirX-20.26*pCirX+862);
-            pCirX++;
-        }
-        if (-0.1276*oCirX*oCirX+20.58*oCirX-320 > 430) {
-            inAnim0 = false;
-        }
-        updateScreen(player->party[0],opponent->party[0]);
-        gameMusic.play();
-        SDL_Delay(1000/60);
-    }
-};
-
-int BattleScreen::menuInput(Pokemon &my) {
-    while (true) {
-        int move;
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-                return -2;
-            }
-            fightButton.buttonHandler();
-            pokemonButton.buttonHandler();
-            retireButton.buttonHandler();
-        }
-        SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
-        fightButton.drawButton();
-        pokemonButton.drawButton();
-        retireButton.drawButton();
-        if (fightButton.clickedOn == true) {
-            fightButton.clickedOn = false;
-            move=moveInput(my);
-            if (move==-1) continue;
-            else return move;
-        } else if (pokemonButton.clickedOn == true) {
-            pokemonButton.clickedOn = false;
-        } else if (retireButton.clickedOn == true) {
-            retireButton.clickedOn = false;
-            return -1;
-        }
-        renderWindow.display();
-        gameMusic.play();
-        SDL_Delay(1000/60);
-    }
-};
-
-int BattleScreen::moveInput(Pokemon &my) {
-    while (true) {
-        SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-                return -2;
-            }
-            backButton.buttonHandler();
-            for (int i = 0; i < 4; i++) {
-                moveButtons[i].buttonHandler();
-            }
-        }      
-        for (int i = 0; i < 4; i++) moveButtons[i].drawButton();
-        backButton.drawButton();
-        if (backButton.clickedOn == true) {
-            backButton.clickedOn = false;
-            return -1;
-        }
-        for (int i = 0; i < 4; i++) {
-            if (moveButtons[i].clickedOn) {
-                moveButtons[i].clickedOn=false;
-                return i;
-            }
-        }
-        renderWindow.display();
-        gameMusic.play();
-        SDL_Delay(1000/60);
-    }
-};
-
-void BattleScreen::printText(string s) {
-    while (true) {
-        while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) {
-                quit = true;
-                return ;
-            }
-            if (e.type == SDL_MOUSEBUTTONDOWN) {
-                return;
-            }
-        }
-        SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
-        bd_Text.textInit(RenderWindow::renderer, (buffer+s).c_str(), {255, 255, 255}, 800);
-        bd_Text.display(32, 530, RenderWindow::renderer);
-        renderWindow.display();
-        gameMusic.play();
-        SDL_Delay(1000/60);
-    }
-}; 
-
 void BattleScreenButton::contextButtonHandler(SDL_Event* e) {
     
 }
