@@ -434,7 +434,10 @@ void BattleScreen::localTurnHandler(int move) {
         }
         if (!isKO) {
             isKO = useMove(move, battlePlayer->party[0], battleOpponent->party[0],false);
+           if (isKO) {
+                std::string newSentence = "The opposing " + battleOpponent->party[0].data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
+                turnActionQueue.push_back("OPPONENT_FAINT");
             }
         }
     }
