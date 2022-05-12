@@ -5,8 +5,8 @@
 #include "RenderWindow.h"
 #include "Variables.h"
 
-static SDL_Rect halfPlayerPokeRect = {0, 0, 96, 96};
-static SDL_Rect halfOppoPokeRect = {96, 0, 96, 96};
+// static SDL_Rect halfPlayerPokeRect = {0, 0, 96, 96};
+// static SDL_Rect halfOppoPokeRect = {96, 0, 96, 96};
 
 static int currentPlayerFrame = 0;
 // static unsigned int BattleSen = 0;
@@ -19,8 +19,8 @@ void BattleScreen::updateScreen(Pokemon &my, Pokemon &opponent) {
     SDL_RenderCopy(RenderWindow::renderer, opponentTexture, NULL, &opponentSpriteBox);
     SDL_RenderCopy(RenderWindow::renderer, battleCircle, NULL, &playerCircle);
     SDL_RenderCopy(RenderWindow::renderer, playerTexture, &playerTextureFrames[currentPlayerFrame], &playerSpriteBox);
-    SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], &halfOppoPokeRect, &oppoPokeRect);
-    SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], &halfPlayerPokeRect, &playerPokeRect);
+    // SDL_RenderCopy(RenderWindow::renderer, oppoPokeText[0], &halfOppoPokeRect, &oppoPokeRect);
+    // SDL_RenderCopy(RenderWindow::renderer, playerPokeText[0], &halfPlayerPokeRect, &playerPokeRect);
     SDL_RenderCopy(RenderWindow::renderer, grayInputBox, NULL, &grayBoxRect);
     SDL_RenderCopy(RenderWindow::renderer, oppoHPBar, NULL, &oppoHPRect);
     SDL_RenderCopy(RenderWindow::renderer, HPColor, NULL, &currOppoHP);

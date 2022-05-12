@@ -25,6 +25,37 @@ class BattleScreenButton {
 		void contextButtonHandler(SDL_Event* e);
 };
 
+class PokemonSelectionScreen {
+	private:
+		SDL_Texture* pokePartyScreenText;
+		SDL_Rect pokePartyScreenRect;
+
+		SDL_Texture* canBattleTexture;
+		SDL_Texture* cannotBattleTexture;
+
+		SDL_Texture* HPBarTexture;
+		SDL_Rect pokeBallRect[3];
+		SDL_Rect hpBarRect[3];
+
+		SDL_Texture* hpColor;
+		SDL_Rect pokemonHP[3];
+		Text pokeTextHPs[3];
+
+		Text whichPoke;
+		Text pokeNames[3];
+
+	public:
+		BattleScreenButton backButton;
+		BattleScreenButton pokemonSelectionButton[3];
+
+		PokemonSelectionScreen();
+		~PokemonSelectionScreen();
+		void freeSelectionScreen();
+		void initSelectionScreen(mPlayer* player);
+		void updateSelectionScreen(mPlayer* player);
+		void display();
+};
+
 class BattleScreen {
 	private:
 		mPlayer* battlePlayer;
@@ -51,8 +82,6 @@ class BattleScreen {
 		SDL_Texture* playerPokeTexture;
 		SDL_Texture* opponentPokeTexture;
 		
-		SDL_Texture* playerPokeText[3];
-		SDL_Texture* oppoPokeText[3];
 		SDL_Rect playerPokeRect, oppoPokeRect;
 
 		SDL_Rect playerTextureFrames[4];
@@ -62,12 +91,14 @@ class BattleScreen {
 		BattleScreenButton moveButtons[4];
 		
 		Text bd_Text;
+
+		PokemonSelectionScreen selScreen;
 	public:
 		vector<std::string> battleDialogues;
 		vector<std::string> turnActionQueue;
 
 		bool inAnim0 = true, moveAnim = false,
-			fightScreen = false, moveScreen = false, 
+			fightScreen = false, moveScreen = false, inSelectionScreen = false, 
 			showPHPBar = false, showOHPBar = false,
 			startingBattle = true;
 		string buffer;
@@ -77,6 +108,7 @@ class BattleScreen {
 		void freeBattleScreen();
 		void drawBattleScreen(bool fMtB, bool fBtM);
 		void centralBattleProcess(SDL_Event* e);
+
 		void init(mPlayer* player, Trainer* opponent);
 		void updateScreen(Pokemon &my, Pokemon &op);
 		int menuInput(Pokemon &my);
@@ -84,5 +116,7 @@ class BattleScreen {
 		void printText(string s);
 		void oSentPkm(Pokemon &my,Pokemon &op);
 		void pSentPkm(Pokemon &my,Pokemon &op);
-		void localTurnHandler(int move);
+
+		void localTurnHandler(int move); // HANDLES TURN OF ATTACKING BETWEEN POKEMONS
+		void localSwitchPokemonHandler(int selPoke); // HANDLES THE ACT OF PLAYER SWITCHING BETWEEN POKEMONS MID-BATTLE
 };
