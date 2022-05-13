@@ -21,6 +21,7 @@ class mPlayer {
         mPlayer();
         ~mPlayer();
         Pokemon party[3];
+        int activePokemonCount;
         bool loadPlayerData();
         bool savePlayerData();
         int getGender();

@@ -23,6 +23,7 @@ mPlayer::mPlayer() {
     for (int i=0;i<3;i++) {
         party[i]=rand()%psize;
     }
+    activePokemonCount=3;
 }
 
 mPlayer::~mPlayer() {
