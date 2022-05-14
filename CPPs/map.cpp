@@ -25,66 +25,58 @@ Map::~Map() {
 }
 
 void Map::freeMap() {   
-
-    if (mapDebug == true) cerr << "Freeing procedure started\n";
-
+    // FREEING THE COLLISION MAP
     for (int i = 0; i < mapHeight; i++) {
         delete[] tilePropMap[i];
     }
     delete[] tilePropMap;
     tilePropMap = NULL;
-
     if (mapDebug == true) cerr << "Collision Map Freed Properly\n";
 
+    // FREEING THE TEXTURE MAP
     for (int i = 0; i < mapHeight; i++) {
         delete[] map[i];
     }
     delete[] map;
     map = NULL;
-
     if (mapDebug == true) cerr << "Texture Map Freed Properly\n";
 
+    // FREEING THE OVERLAY MAP (IF THE MAP HAS ONE)
     if (tileOverlayMap != NULL) {
         for (int i = 0; i < mapHeight; i++) {
             delete[] tileOverlayMap[i];
         }
         delete[] tileOverlayMap;
         tileOverlayMap = NULL;
-
         if (mapDebug == true) cerr << "Overlay Map Freed Properly\n";
     }
 
+    // FREEING THE MAP'S NPCS
     NPCsinFront.clear();
     for (unsigned int i = 0; i < mapNPCs.size(); i++) {
         delete mapNPCs[i];
     }
     mapNPCs.clear();
-
     if (mapDebug == true) cerr << "Map NPCs Freed Properly\n";
 
+    // FREEING THE MAP'S WARPTILES
     for (unsigned int i = 0; i < mapWarpTiles.size(); i++) {
         delete mapWarpTiles[i];
     }
     mapWarpTiles.clear();
-
     if (mapDebug == true) cerr << "Map Warp Tiles Freed Properly\n";
 
+    // FREEING THE MAP'S INTERACTIBLE TILES
     for (unsigned int i = 0; i < mapInterTiles.size(); i++) {
         delete mapInterTiles[i];
     }
     mapInterTiles.clear();
-
     if (mapDebug == true) cerr << "Map Inter Tiles Freed Properly\n";
 
     mapWidth = 0;
     mapHeight = 0;
     mapSheet.freeTileSheet();
-
     if (mapDebug == true) cerr << "Tilesheet Freed Successfully\n";
-
-    // mapTheme.freeMusic();
-
-    if (mapDebug == true) cerr << "Music Freed Successfully\n";
 
     if (mapDebug == true) cerr << "Map Freed Successfully\n\n";
 }
@@ -110,7 +102,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             inputmap >> map[i][j];
         }
     }
-
     if (mapDebug == true) cerr << "Tile texture data loaded\n";
 
     // Flush the end tile texture flag
@@ -126,7 +117,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             inputmap >> tilePropMap[i][j];
         }
     }
-
     if (mapDebug == true) cerr << "Tile collision data loaded\n";
 
     // Flush the tile collision flag
@@ -143,7 +133,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
                 inputmap >> tileOverlayMap[i][j];
             }
         }
-
         if (mapDebug == true) cerr << "Tile overlay data loaded\n";
 
         // Flush the tile overlay flag
@@ -180,7 +169,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             i--;
         }
     }
-
     if (mapDebug == true) cerr << "NPC data loaded\n";
 
     i = 0;
@@ -201,7 +189,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             i--;
         }
     }
-
     if (mapDebug == true) cerr << "Warp tile data loaded\n";
 
     i = 0;
@@ -230,7 +217,6 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             i--;
         }
     }
-
     if (mapDebug == true) cerr << "Inter tile data loaded\n";
 
     inputmap.close();
@@ -273,10 +259,6 @@ void Map::drawFrontNPCs(gameCam* camera) {
         NPCsinFront[i]->drawNPC(camera->getCamX(), camera->getCamY());
     }
 }
-
-// void Map::playMapTheme() {
-//     mapTheme.play();
-// }
 
 void Map::initOverlayElements(const char* path) {
     overlayElements.loadTileSheet(path);

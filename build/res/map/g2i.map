@@ -173,11 +173,17 @@ MAP_NEXT_NPC
 25 14 2
 res/npcsprite/npcSprite8.png
 Your Pokemon is healed after every battle, so don't hesitate to go all out!
-Though remember to press the healing button before entering the next room.
+NPC_DIALOGUE_END
+MAP_NEXT_NPC
+38 23 3
+res/npcsprite/npcSprite13.png
+By default, your opponent's Pokemons will be completely random!
+Therefore, knowing type effectiveness and switching Pokemons in and out appropriately is crucial.
+The longer your win streak is, the more statisfying you know?
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
 6 17 1
-res/npcsprite/npcSprite9.png
+res/npcsprite/npcSprite11.png
 Hello student. My Discrete Math class is currently having their exams.
 They are an excellent group of students, so I think they will all score 10.
 Even if I made them prove quantum computing theorems using recursive algorithms.

@@ -91,10 +91,10 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     retireButton.initBSB("res/battleassets/retirebutton.png", 621, 559, 188, 86, 282, 130);
 
     // INIT THE MOVE SCREEN BUTTONS
-    moveButtons[0].initBSB("res/battleassets/moveButton.png", 33, 519, 278, 72, 652, 167);
-    moveButtons[1].initBSB("res/battleassets/moveButton.png", 344, 519, 278, 72, 652, 167);
-    moveButtons[2].initBSB("res/battleassets/moveButton.png", 33, 611, 278, 72, 652, 167);
-    moveButtons[3].initBSB("res/battleassets/moveButton.png", 344, 611, 278, 72, 652, 167);
+    moveButtons[0].initBSB("res/battleassets/moveButton.png", 33, 519, 278, 72, 652, 167, true);
+    moveButtons[1].initBSB("res/battleassets/moveButton.png", 344, 519, 278, 72, 652, 167, true);
+    moveButtons[2].initBSB("res/battleassets/moveButton.png", 33, 611, 278, 72, 652, 167, true);
+    moveButtons[3].initBSB("res/battleassets/moveButton.png", 344, 611, 278, 72, 652, 167, true);
     backButton.initBSB("res/battleassets/backbutton.png", 659, 620, 154, 60, 362, 139);
 
     // INIT THE POKEMON SELECTION SCREEN
@@ -286,7 +286,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 
     // DISPLAY THE MOVE SCREEN
     if (moveScreen == true) {
-        for (int i = 0; i < 4; i++) moveButtons[i].drawButton();
+        for (int i = 0; i < 4; i++) moveButtons[i].drawButton(true);
         backButton.drawButton();
     }
 
@@ -458,14 +458,16 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
                 turnActionQueue.clear();
             }
         }
+        return;
     }
 
-
+    // IN THE POKEMON SELECTION SCREEN
     if (inSelectionScreen == true) {
         // EXIT THE MENU WITH ESCAPE KEY
         if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_ESCAPE && turnActionQueue[BattleSen] != "FORCE_OPEN_PARTY") {
             inSelectionScreen = false;
             pokemonButton.buttonHandler();
+            return;
         }
 
         // EXIT THE MENU WITH BACK BUTTON
@@ -474,32 +476,20 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             selScreen.backButton.clickedOn = false;
             inSelectionScreen = false;
             pokemonButton.buttonHandler();
+            return;
         }
 
         // HANDLE THE POKEMON SELECTIONS
-        for (int i = 0; i < 3; i++) selScreen.pokemonSelectionButton[i].buttonHandler();
-
-        if (selScreen.pokemonSelectionButton[0].clickedOn) {
-            selScreen.pokemonSelectionButton[0].clickedOn = false;
-            pokemonButton.buttonHandler();
-            localSwitchPokemonHandler(0);
+        for (int i = 0; i < 3; i++) {
+            selScreen.pokemonSelectionButton[i].buttonHandler();
+            if (selScreen.pokemonSelectionButton[i].clickedOn) {
+                selScreen.pokemonSelectionButton[i].clickedOn = false;
+                pokemonButton.buttonHandler();
+                localSwitchPokemonHandler(i);
+                return;
+            }
         }
-
-        if (selScreen.pokemonSelectionButton[1].clickedOn) {
-            selScreen.pokemonSelectionButton[1].clickedOn = false;
-            pokemonButton.buttonHandler();
-            localSwitchPokemonHandler(1);
-        }
-
-        if (selScreen.pokemonSelectionButton[2].clickedOn) {
-            selScreen.pokemonSelectionButton[2].clickedOn = false;
-            pokemonButton.buttonHandler();
-            localSwitchPokemonHandler(2);
-        }
-        
-    }
-
-    
+    }    
 
     // HANDLING THE SELECT MOVE SCREEN
     if (moveScreen == true) {
@@ -511,32 +501,15 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             return;
         }
 
-        moveButtons[0].buttonHandler();
-        if (moveButtons[0].clickedOn == true) {
-            moveButtons[0].clickedOn = false;
-            localTurnHandler(0);
-            moveScreen = false;
-        }
-
-        moveButtons[1].buttonHandler();
-        if (moveButtons[1].clickedOn == true) {
-            moveButtons[1].clickedOn = false;
-            localTurnHandler(1);
-            moveScreen = false;
-        }
-
-        moveButtons[2].buttonHandler();
-        if (moveButtons[2].clickedOn == true) {
-            moveButtons[2].clickedOn = false;
-            localTurnHandler(2);
-            moveScreen = false;
-        }
-
-        moveButtons[3].buttonHandler();
-        if (moveButtons[3].clickedOn == true) {
-            moveButtons[3].clickedOn = false;
-            localTurnHandler(3);
-            moveScreen = false;
+        for (int i = 0; i < 4; i++) {
+            moveButtons[i].buttonHandler();
+            moveButtons[i].moveButtonHandler(i);
+            if (moveButtons[i].clickedOn == true) {
+                moveButtons[i].clickedOn = false;
+                localTurnHandler(i);
+                moveScreen = false;
+                return;
+            }
         }
     }
 
@@ -549,13 +522,17 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             moveScreen = true;
             fightScreen = false;
             fightButton.clickedOn = false;
+            for (int i = 0; i < 4; i++) moveButtons[i].moveButtonHandler(i);
+            return;
         } else if (pokemonButton.clickedOn == true) {
             pokemonButton.clickedOn = false;
             selScreen.updateSelectionScreen(battlePlayer);
             inSelectionScreen = true;
+            return;
         } else if (retireButton.clickedOn == true) {
             retireButton.clickedOn = false;
             beginBattleToMapTransition = true;
+            return;
         }
     }
 }
@@ -700,16 +677,22 @@ BattleScreenButton::~BattleScreenButton() {
     clickedOn = false;
 }
 
-void BattleScreenButton::initBSB(const char* path, int x, int y, int BW, int BH, int imgWidth, int imgHeight) {
+void BattleScreenButton::initBSB(const char* path, int x, int y, int BW, int BH, int imgWidth, int imgHeight, bool isMoveButton) {
     buttonTexture = IMG_LoadTexture(RenderWindow::renderer, path);
     for (int i = 0; i < 3; i++) {
         buttonFrames[i] = {0, imgHeight*i, imgWidth, imgHeight};
     }
     buttonDest = {x, y, BW, BH};
+    if (isMoveButton) {
+        moveNames.createFont("res/font/gamefont.ttf", 28);
+    }
 }
 
-void BattleScreenButton::drawButton() {
+void BattleScreenButton::drawButton(bool isMoveButton) {
     SDL_RenderCopy(RenderWindow::renderer, buttonTexture, &buttonFrames[currentButtonFrame], &buttonDest);
+    if (isMoveButton == true) {
+        moveNames.display(buttonDest.x + 12, buttonDest.y + 20, RenderWindow::renderer);
+    }
 }
 
 void BattleScreenButton::buttonHandler() {
@@ -748,8 +731,42 @@ void BattleScreenButton::buttonHandler() {
     }
 }
 
-void BattleScreenButton::contextButtonHandler(SDL_Event* e) {
-    
+void BattleScreenButton::moveButtonHandler(int buttonNum) {
+    if (e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN or e.type == SDL_MOUSEBUTTONUP) {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+
+        bool inside = true;
+        if (x < buttonDest.x) inside = false;
+        else if (x > buttonDest.x + buttonDest.w) inside = false;
+        else if (y < buttonDest.y) inside = false;
+        else if (y > buttonDest.y + buttonDest.h) inside = false;
+
+        if (inside == false) {
+            moveNames.textInit(RenderWindow::renderer, mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->name.c_str(), {0, 0, 0}, buttonDest.x + 278);
+            currentButtonFrame = 0;
+        } else {
+            std::string moveDesc;
+            switch (e.type) {
+                case SDL_MOUSEMOTION:
+                moveDesc = "PP: " + to_string(mainBattle.getCurrentPlayerPokemon()->c_pp[buttonNum]) + "/" + to_string(mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->pp);
+                moveNames.textInit(RenderWindow::renderer, moveDesc.c_str(), {0, 0, 0}, buttonDest.x + 278);
+                break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                
+                break;
+
+                case SDL_MOUSEBUTTONUP:
+                
+                break;
+
+                default:
+                moveNames.textInit(RenderWindow::renderer, mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->name.c_str(), {0, 0, 0}, buttonDest.x + 278);
+                break;
+            }
+        }
+    }
 }
 
 // POKEMON SELECTION SCREEN
@@ -839,16 +856,10 @@ void PokemonSelectionScreen::display() {
     for (int i = 0; i < 3; i++) {
         if (pokemonHP[i].w == 0) SDL_RenderCopy(RenderWindow::renderer, cannotBattleTexture, NULL, &pokeBallRect[i]);
         else SDL_RenderCopy(RenderWindow::renderer, canBattleTexture, NULL, &pokeBallRect[i]);
+
+        SDL_RenderCopy(RenderWindow::renderer, HPBarTexture, NULL, &hpBarRect[i]);
+        SDL_RenderCopy(RenderWindow::renderer, hpColor, NULL, &pokemonHP[i]);
     }
-
-    SDL_RenderCopy(RenderWindow::renderer, HPBarTexture, NULL, &hpBarRect[0]);
-    SDL_RenderCopy(RenderWindow::renderer, HPBarTexture, NULL, &hpBarRect[1]);
-    SDL_RenderCopy(RenderWindow::renderer, HPBarTexture, NULL, &hpBarRect[2]);
-
-    SDL_RenderCopy(RenderWindow::renderer, hpColor, NULL, &pokemonHP[0]);
-    SDL_RenderCopy(RenderWindow::renderer, hpColor, NULL, &pokemonHP[1]);
-    SDL_RenderCopy(RenderWindow::renderer, hpColor, NULL, &pokemonHP[2]);
-
     pokeTextHPs[0].display(500, 244, RenderWindow::renderer);
     pokeTextHPs[1].display(500, 322, RenderWindow::renderer);
     pokeTextHPs[2].display(500, 400, RenderWindow::renderer);

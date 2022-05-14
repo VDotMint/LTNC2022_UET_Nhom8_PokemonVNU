@@ -81,10 +81,8 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
-            cerr << e->motion.x << " " << e->motion.y << endl;
             // playerMap->mapTheme.manualSkip(57.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
-            cout << boolalpha << beginMapToBattleTransition << " " << finishMapToBattleTransition << " " << beginBattleToMapTransition << " " << finishBattleToMapTransition << endl;
         }
         // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         // { 
@@ -341,7 +339,6 @@ void gameLoop() {
 
             // MAP TO MAP TRANSITION HANDLING
             if (beginMapToMapTransition == true) {
-                // Mix_FadeOutMusic(500);
                 if (transitionTransparency < 255) {
                     transitionTransparency += 17;
                     if (transitionTransparency == 51) Mix_PlayChannel(-1, changeMap, 0);

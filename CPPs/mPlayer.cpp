@@ -12,7 +12,7 @@ static int moveFrame = 0, walkFrame = 0;
 mPlayer::mPlayer() {
     gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
     name = "NO NAME";
-    currentMap = 0; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 -> 9 = CHALLENGE ROOMS
+    currentMap = 0; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 = STUDENT BUTTON ROOM -> 9 = CHALLENGE ROOMS
     xCoords = 11, yCoords = 22;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;

@@ -16,13 +16,15 @@ class BattleScreenButton {
 		int currentButtonFrame;
 	public:
 		Text moveNames;
+		Text moveHover;
+
 		bool clickedOn = false;
 		BattleScreenButton();
 		~BattleScreenButton();
-		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight);
-		void drawButton();
+		void initBSB(const char* path, int x, int y, int BH, int BW, int imgWidth, int imgHeight, bool isMoveButton = false);
+		void drawButton(bool isMoveButton = false);
         void buttonHandler();
-		void contextButtonHandler(SDL_Event* e);
+		void moveButtonHandler(int buttonNum);
 };
 
 class PokemonSelectionScreen {
@@ -119,4 +121,5 @@ class BattleScreen {
 
 		void localTurnHandler(int move); // HANDLES TURN OF ATTACKING BETWEEN POKEMONS
 		void localSwitchPokemonHandler(int selPoke); // HANDLES THE ACT OF PLAYER SWITCHING BETWEEN POKEMONS MID-BATTLE
+		Pokemon* getCurrentPlayerPokemon() {return currentPlayerPokemon;}
 };

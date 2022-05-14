@@ -91,11 +91,11 @@ And unlike the real world, there is zero fees for doing all of this.
 Get ratio'd.
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
-41 9 0
+37 10 0
 res/npcsprite/npcSprite12.png
 This room here, in the real world, is the "Phong Dao Tao".
 In this game, this is supposed to be where you can teach your Pokemon moves.
-Unfortunately as other students have been abusing this room for illegal stuff, we had to close down.
+Unfortunately as other students have been abusing this room for illegal stuff, we stopped providing the service.
 If only we had enough time to implement a "CAM THI" mechanism.
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
@@ -135,6 +135,10 @@ WARP_NEXT_TILE
 29 18 1 20 10
 WARP_NEXT_TILE
 30 18 1 20 10
+WARP_NEXT_TILE
+31 8 4 13 22
+WARP_NEXT_TILE
+41 8 4 25 22
 WARP_DATA_STOP
 INTER_NEXT_TILE
 18 8

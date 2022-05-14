@@ -13,17 +13,20 @@ string gameMaps[] = {
     "res/map/g2.map",
     "res/map/e3.map",
     "res/map/e3i.map",
-    "res/map/g2i.map"
+    "res/map/g2i.map",
+    "res/map/e3i_2.map",
 };
 string gameTileSets[] = {
     "res/tileset/g2o_tiles.png",
     "res/tileset/e3o_tiles.png",
     "res/tileset/e3i_tiles.png",
     "res/tileset/g2i_tiles.png",
+    "res/tileset/e3i_2_tiles.png",
 };
 string gameThemes[] = {
     "res/music/g2o_theme.mp3",
     "res/music/e3o_theme.mp3",
+    "res/music/e3i_theme.mp3",
     "res/music/e3i_theme.mp3",
     "res/music/e3i_theme.mp3",
 };
@@ -32,10 +35,12 @@ double themeRepeats[] = {
     30.555,
     0.77,
     0.77,
+    0.77,
 };
 bool mapOverlays[] = {
     false,
     false,
+    true,
     true,
     true,
 };
