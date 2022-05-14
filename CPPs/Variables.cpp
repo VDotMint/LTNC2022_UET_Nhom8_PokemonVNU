@@ -95,17 +95,17 @@ PokemonData pokemonData[]=
     {"Tauros", 1, 0, 135, 105, 75, 115, {moves,moves,moves,moves}}, 
     {"Snorlax", 1, 0, 220, 70, 115, 35, {moves,moves,moves,moves}},
     {"Charizard", 2, 10, 138, 114, 83, 105, {moves,moves+1,moves,moves}}, 
-    {"Coalossal", 2, 13, 170, 85, 125, 25, {moves,moves+1,moves,moves}}, //Torkoal gen3
-    {"Greninga", 3, 16, 132, 108, 72, 127, {moves,moves+2,moves,moves}}, //Gyarados gen1
+    {"Torkoal", 2, 0, 130, 90, 145, 25, {moves,moves+1,moves,moves}}, 
+    {"Gyarados", 3, 10, 155, 130, 84, 86, {moves,moves+2,moves,moves}}, 
     {"Milotic", 3, 0, 155, 65, 130, 86,{moves,moves+2,moves,moves}}, 
-    {"Zeraora", 4, 0, 148, 117, 80, 148,{moves,moves+3,moves,moves}}, //Electivire gen4
+    {"Electivire", 4, 0, 135, 128, 72, 100,{moves,moves+3,moves,moves}}, 
     {"Magnezone", 4, 17, 130, 75, 120, 65, {moves,moves+3,moves,moves}},
-    {"Rillaboom", 5, 0, 160, 130, 75, 90, {moves,moves+4,moves,moves}}, //Exeggutor gen 1
+    {"Exeggutor", 5, 11, 155, 130, 80, 60, {moves,moves+4,moves,moves}},
     {"Virizion", 5, 7, 151, 95, 134, 113, {moves,moves+4,moves,moves}}, 
-    {"Mr. Rime", 6, 11, 140, 115, 80, 75, {moves,moves+5,moves,moves}}, //Mamoswine gen 4
+    {"Mamoswine", 6, 9, 170, 135, 65, 85, {moves,moves+5,moves,moves}},
     {"Lapras", 6, 3, 190, 90, 100, 65, {moves,moves+5,moves,moves}},
     {"Lucario", 7, 17, 130, 120, 75, 95, {moves,moves+6,moves,moves}},
-    {"Bewear", 7, 1, 180, 130, 65, 65, {moves,moves+6,moves,moves}}, //Infernape(atk) gen4
+    {"Infernape", 7, 3, 136, 109, 76, 113, {moves,moves+6,moves,moves}},
     {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves+7,moves,moves}},  
     {"Venusaur", 8, 5, 140, 87, 105, 85, {moves,moves+7,moves,moves}},
     {"Swampert", 9, 3, 160, 115, 95, 65, {moves,moves+8,moves,moves}},
@@ -118,16 +118,16 @@ PokemonData pokemonData[]=
     {"Shuckle", 12, 13, 80, 15, 235, 10, {moves,moves+11,moves,moves}},
     {"Crustle", 13, 12, 130, 70, 130, 50, {moves,moves+12,moves,moves}},
     {"Sudowoodo", 13, 0, 130, 35, 120, 35, {moves,moves+12,moves,moves}},
-    {"Cursola", 14, 0, 120, 150, 55, 35, {moves,moves+13,moves,moves}}, //Chandelure gen5
+    {"Chandelure", 14, 3, 120, 150, 60, 85, {moves,moves+13,moves,moves}},
     {"Dusknoir", 14, 0, 105, 105, 140, 50, {moves,moves+13,moves,moves}},
     {"Garchomp", 15, 9, 168, 135, 90, 107, {moves,moves+14,moves,moves}},
     {"Dragonite", 15, 10, 151, 139, 100, 85, {moves,moves+14,moves,moves}},
-    {"Grimmsnarl", 16, 18, 155, 125, 70, 65, {moves,moves+15,moves,moves}}, //Absol gen3
+    {"Absol", 16, 0, 125, 125, 70, 80, {moves,moves+15,moves,moves}},
     {"Umbreon", 16, 0, 155, 65, 135, 70, {moves,moves+15,moves,moves}},
     {"Excadrill", 17, 9, 170, 140, 65, 93, {moves,moves+16,moves,moves}},
     {"Steelix", 17, 9, 135, 60, 205, 35, {moves,moves+16,moves,moves}},
     {"Gardevoir", 18, 11, 128, 130, 70, 85, {moves,moves+17,moves,moves}},
-    {"Sylveon", 18, 0, 155, 70, 135, 65, {moves,moves+17,moves,moves}} //Clefable gen1
+    {"Clefable", 18, 0, 155, 100, 78, 65, {moves,moves+17,moves,moves}}
 };
 
 int psize=sizeof(pokemonData)/sizeof(pokemonData[0]);

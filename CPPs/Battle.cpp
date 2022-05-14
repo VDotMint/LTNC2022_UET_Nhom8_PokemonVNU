@@ -3,11 +3,12 @@
 #include "Battle.h"
 
 void battle(mPlayer &my,Trainer &op) {
+	if (my.activePokemonCount==0) return;
 	int i=0,j=0;
+	while (!my.party[i].c_hp) i++;
 	int KO;
-	int pkm_c=3;
 	mainBattle.init(&my,&op);
-	while (j<3) {
+	while (true) {
 		KO=battle(my.party[i],op.party[j]);
 		if (KO==-2) return;
 		if (KO==-1) return;
@@ -20,8 +21,8 @@ void battle(mPlayer &my,Trainer &op) {
 			mainBattle.printText(op.name+" sent out "+op.party[j].data->name);
 		}
 		else {
-			pkm_c--;
-			if (pkm_c==0) {
+			my.activePokemonCount--;
+			if (!my.activePokemonCount) {
 				// cout<<"You lost!\n";
 				mainBattle.printText("You lost!\n");
 				return;
@@ -49,7 +50,7 @@ int battle(Pokemon &my,Pokemon &op) {
 		if (input==-1) return -1;
 		if (input==-2) return -2;
 		if (my.data->speed>=op.data->speed) {
-			isKO=useMove(input,my,op, false);
+			isKO=useMove(input,my,op);
 			updateTerminal(my,op);
 			if (isKO) {
 				// cout<<"Opposing "<<op.data->name<<" fainted!\n";
@@ -77,7 +78,7 @@ int battle(Pokemon &my,Pokemon &op) {
 				mainBattle.printText(my.data->name+" fainted!\n");
 				return false;
 			}
-			isKO=useMove(input,my,op, false);
+			isKO=useMove(input,my,op);
 			updateTerminal(my,op);
 			if (isKO) {
 				// cout<<"Opposing "<<op.data->name<<" fainted!\n";
@@ -111,10 +112,15 @@ int selectMove(Pokemon &my) {
 bool useMove(int input, Pokemon &my, Pokemon &op) {
 	//cout<<my.data->name<<" used "<<my.data->move[input]->name<<'\n';
 	mainBattle.printText(my.data->name+" used "+my.data->move[input]->name+'\n');
-	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2;
+	float STAB=1;
+	if (my.data->move[input]->type==my.data->type||my.data->move[input]->type==my.data->stype) STAB=1.5;
+	float TE=typeEffectiveness[my.data->move[input]->type][op.data->type]*typeEffectiveness[my.data->move[input]->type][op.data->stype];
+	op.c_hp-=my.data->move[input]->power*my.data->atk/op.data->def/2*STAB*TE;
 	my.c_pp[input]--;
 	if (op.c_hp<0) op.c_hp=0;
-	
+	if (TE==0) mainBattle.printText("It has no effect");
+	else if (TE<1) mainBattle.printText("It is not very effcetive");
+	else if (TE>1) mainBattle.printText("It is very effective");
 	if (!op.c_hp) return true;
 	return false;
 }
