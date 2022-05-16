@@ -48,11 +48,16 @@ extern Music gameMusic;
 extern mPlayer mainPlayer;
 extern gameCam mainCamera;
 
+extern SetupScreen mainSetup;
 extern BattleScreen mainBattle;
 
 // GAME STATES
 
 extern bool tsToMapTransition;
+
+extern bool beginTSToMapTransition;
+extern bool tsToSetupScreenTransition;
+
 extern bool beginMapToMapTransition;
 extern bool finishMapToMapTransition;
 extern int transitionTransparency;
@@ -68,6 +73,7 @@ extern bool quit;
 extern bool inTitleScreen; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 extern bool inBattle;
 extern bool inDialogue;
+extern bool inSetupScreen;
 
 extern bool playerIsRunning;
 

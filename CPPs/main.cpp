@@ -7,6 +7,7 @@ void gameLoop();
 void titleScreenInputProcess(SDL_Event* e);
 void battleInputProcess(SDL_Event *e);
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY);
+void setupScreenInputProcess(SDL_Event *e);
 void freeMainAssets();
 
 bool init=initSystem();
@@ -58,6 +59,9 @@ bool initSystem() {
     d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
     d_text.createFont("res/font/gamefont.ttf", 38);
     return true;
+
+    // INIT THE SETUP SCREEN
+    mainSetup.initSetupScreen();
 }
 
 void freeMainAssets() {
@@ -164,6 +168,21 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
     }
 }
 
+void setupScreenInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
+{
+    while (SDL_PollEvent(e)) {
+        if (e->type == SDL_QUIT) {
+            quit = true;
+        }
+        
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x)
+        {
+            mainSetup.setupSEN++;
+            
+        }
+    }
+}
+
 void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TOUCH.
 { 
     while (SDL_PollEvent(e)) {
@@ -173,21 +192,22 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
         if (gameTitleScreen.acceptInputState() == true)
         {
             gameTitleScreen.doButtonEvents(e);
-            if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
+            if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) { // CONTINUE BUTTON 
                 Mix_PlayChannel(-1, aButton, 0);
                 gameTitleScreen.tsButtons[0].resetClickState();
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;
-            } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
+            } else if (gameTitleScreen.tsButtons[1].isClicked() == true) { // NEW GAME BUTTON
                 Mix_PlayChannel(-1, aButton, 0);
                 gameTitleScreen.tsButtons[1].resetClickState();
-                mPlayer newTempPlayer;
-                mainPlayer = newTempPlayer;
-                mainPlayer.initPlayerTexture();
-                mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
-                gameTitleScreen.stopInputState();
-                tsToMapTransition = true;
-            } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
+                // mPlayer newTempPlayer;
+                // mainPlayer = newTempPlayer;
+                // mainPlayer.initPlayerTexture();
+                // mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+                // gameTitleScreen.stopInputState();
+                inSetupScreen = true;
+                inTitleScreen = false; 
+            } else if (gameTitleScreen.tsButtons[3].isClicked() == true) { // QUIT BUTTON
                 Mix_PlayChannel(-1, aButton, 0);
                 quit = true;
                 gameTitleScreen.freeTitleScreen();
@@ -222,6 +242,18 @@ void gameLoop() {
             renderWindow.display();
 
             SDL_Delay(1000/60);
+        }
+
+        else if (inSetupScreen == true) // PLAYER IN BATTLE
+        {
+            setupScreenInputProcess(&e);
+
+            renderWindow.drawColor(255, 0, 255);
+            renderWindow.clear();
+
+            renderWindow.display();
+
+            SDL_Delay(1000 / 60);
         }
         
         else if (inBattle == true) // PLAYER IN BATTLE

@@ -165,6 +165,7 @@ Music gameMusic;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
+SetupScreen mainSetup;
 BattleScreen mainBattle;
 
 // GAME STATES
@@ -185,6 +186,7 @@ bool quit = false;
 bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 bool inBattle = false;
 bool inDialogue = false;
+bool inSetupScreen = false;
 
 bool playerIsRunning = false;
 

@@ -170,8 +170,7 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             i--;
         }
     }
-
-    if (mapID == 3 and (mainPlayer.party[0].data - pokemonData) == 0) { // EDGE CASE FOR E3 BUILDING. BLOCKS THE PLAYER FROM ENTERING IF THEY HAVE NO POKEMON
+    if (mapID == 3 and (mainPlayer.party[0].data - pokemonData) == 0) { // SPECIAL CASE FOR E3 BUILDING. BLOCKS THE PLAYER FROM ENTERING IF THEY HAVE NO POKEMON
         NPC* newNPC1 = new NPC;
         newNPC1->initNPC(27, 9, 0, "res/npcsprite/npcSprite6.png");
         newNPC1->initDialogue("I'm sorry, but you must first acquire some Pokemons before you may take the Pokemon UET Challenge.");

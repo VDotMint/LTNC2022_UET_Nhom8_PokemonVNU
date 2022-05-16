@@ -1,5 +1,7 @@
 #pragma once
 
+#include "otherGraphics.h"
+#include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -41,4 +43,16 @@ class TitleScreen {
         bool acceptInputState();
         void doButtonEvents(SDL_Event* e);
         void tsButtonInit(); // Place the buttons on the title screen
+};
+
+class SetupScreen {
+    private:
+        dialogueBox setupDBox;
+        Text setupText;
+    public:
+        int setupSEN = 0;
+        std::vector<std::string> setupDialogues;
+        SetupScreen();
+        ~SetupScreen();
+        void initSetupScreen();
 };

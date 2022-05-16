@@ -262,3 +262,22 @@ void TitleScreenButton::resetClickState() {
 SDL_Texture* TitleScreenButton::getButtonTexture() {
     return buttonTexture;
 }
+
+// SETUP SCREEN:
+
+SetupScreen::SetupScreen() {
+}
+
+SetupScreen::~SetupScreen() {
+}
+
+void SetupScreen::initSetupScreen() {
+    setupDBox.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
+    setupText.createFont("res/font/gamefont.ttf", 38);
+    setupDialogues.push_back("hello!");
+// hello! 
+// what is your gender?
+// and what is your name?
+// oke. welcome to the world of uet.
+
+}
