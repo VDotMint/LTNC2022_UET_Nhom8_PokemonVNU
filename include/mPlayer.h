@@ -35,6 +35,7 @@ class mPlayer {
         SDL_Texture* getPlayerTexture();
         SDL_Rect* getCurrentFrame();
         void setPlayerCoords(int x, int y, int mapID);
+        void setFacingDirection(int face) {faceDirection = face;}
         void renderStandingPlayer();
         void renderMovingPlayer();
         void renderRunningPlayer();

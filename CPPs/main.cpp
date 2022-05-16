@@ -81,8 +81,8 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
-            // playerMap->mapTheme.manualSkip(57.03); // MUSIC TESTING
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
+            cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
         }
         // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
         // { 
@@ -322,6 +322,19 @@ void gameLoop() {
                     if (selInterTile != NULL) {
                         d_text.textInit(RenderWindow::renderer, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
                         d_text.display(48, 547, RenderWindow::renderer);
+                        if (selInterTile->getX() == 13 && selInterTile->getY() == 16) { // SPECIAL TILE FOR GENERATING NEW POKEMONS UPON TALKING TO
+                            if (selInterTile->getInterCurrentSentenceID() == 2) {
+                                srand(time(NULL));
+                                mainPlayer.party[0] = rand() % 36 + 1;
+                                mainPlayer.party[1] = rand() % 36 + 1;
+                                mainPlayer.party[2] = rand() % 36 + 1;
+                            } else if (selInterTile->getInterCurrentSentenceID() == 1 and selInterTile->getInterDialogueSize() > 3) {
+                                selInterTile->dialogueTexts.pop_back();
+                            } else if (selInterTile->getInterCurrentSentenceID() == 3 and selInterTile->getInterDialogueSize() < 4) {
+                                std::string newPokemonSentence = mainPlayer.getPlayerName() + " received " + mainPlayer.party[0].data->name + ", " + mainPlayer.party[1].data->name + " and " + mainPlayer.party[2].data->name + "!";
+                                selInterTile->dialogueTexts.push_back(newPokemonSentence);
+                            }
+                        }
                     }
                 }
             }
@@ -381,15 +394,13 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
-                    mainPlayer.party[0] = 22;
-                    mainPlayer.party[1] = 15;
-                    mainPlayer.party[2] = 14;
+                    srand(time(NULL));
 
                     defaultOppo.name = "Champion Cynthia";
                     defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
-                    defaultOppo.party[0] = 34;
-                    defaultOppo.party[1] = 5;
-                    defaultOppo.party[2] = 12;
+                    defaultOppo.party[0] = rand() % 36 + 1;
+                    defaultOppo.party[1] = rand() % 36 + 1;
+                    defaultOppo.party[2] = rand() % 36 + 1;
 
                     transitionTransparency = 255;
                     inBattle = true;
@@ -416,6 +427,7 @@ void gameLoop() {
                     transitionTransparency = 0;
                     finishBattleToMapTransition = false;
                     mainBattle.freeBattleScreen();
+                    for (int i = 0; i < 3; i++) mainPlayer.party[i] = mainPlayer.party[i].data - pokemonData;
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

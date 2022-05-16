@@ -89,9 +89,7 @@ Move moves[]=
 };
 PokemonData pokemonData[]=
 {
-	//{"Snorlax",1,0,220,93,93,35,{moves,moves}},
-    //{"Charmander",2,0,99,61,52,70,{moves,moves+1}},
-	//{"Pikachu",4,0,105,83,60,125,{moves,moves+2}},
+    {"NULL", 0, 0, 0, 0, 0, 0, {moves,moves,moves,moves}},
     {"Tauros", 1, 0, 135, 105, 75, 115, {moves,moves,moves,moves}}, 
     {"Snorlax", 1, 0, 220, 70, 115, 35, {moves,moves,moves,moves}},
     {"Charizard", 2, 10, 138, 114, 83, 105, {moves,moves+1,moves,moves}}, 

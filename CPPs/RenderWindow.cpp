@@ -1,6 +1,7 @@
 #include "RenderWindow.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 using namespace std;
 
 SDL_Renderer* RenderWindow::renderer = nullptr;
@@ -47,6 +48,8 @@ void RenderWindow::close() {
     renderer = NULL;
     SDL_DestroyWindow(window);
     window = NULL;
+    
+    TTF_Quit();
     Mix_Quit();
     IMG_Quit();
     SDL_Quit();

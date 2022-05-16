@@ -88,3 +88,7 @@ std::string NPC::getCurrentSentence()
 {
     return dialogueTexts[NPCsen - 1];
 }
+
+int NPC::getCurrentSentenceID() {
+    return NPCsen;
+}

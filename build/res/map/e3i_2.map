@@ -102,6 +102,10 @@ If you don't feel like those Pokemons fit you, then talk to her again.
 She'll get you another batch.
 And you can do this repeatedly for as many times as you want, for free!
 NPC_DIALOGUE_END
+MAP_NEXT_NPC
+13 15 0
+res/npcsprite/npcSprite10.png
+NPC_DIALOGUE_END
 NPC_DATA_STOP
 WARP_NEXT_TILE
 13 23 2 31 9
@@ -112,4 +116,10 @@ WARP_NEXT_TILE
 WARP_NEXT_TILE
 26 23 2 41 9
 WARP_DATA_STOP
+INTER_NEXT_TILE
+13 16
+Hello student! I will now roll the slot machine to get your 3 random Pokemons!
+........ ........
+Here you go. Enjoy your new Pokemons.
+INTER_DIALOGUE_END
 INTER_DATA_STOP

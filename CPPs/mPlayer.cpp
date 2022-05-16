@@ -16,14 +16,18 @@ mPlayer::mPlayer() {
     xCoords = 11, yCoords = 22;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;
+
     for (int i = 0; i < 32; i++) {
         walkFrames[i] = {i*64, 0, 64, 88};
     }
-    srand(time(0));
-    for (int i=0;i<3;i++) {
-        party[i]=rand()%psize;
-    }
-    activePokemonCount=3;
+
+    for (int i = 0; i < 3; i++) party[i] = 0;
+
+    // srand(time(0));
+    // for (int i=0;i<3;i++) {
+    //     party[i]=rand()%psize;
+    // }
+    // activePokemonCount=3;
 }
 
 mPlayer::~mPlayer() {
@@ -40,6 +44,9 @@ bool mPlayer::loadPlayerData() {
     } else {
         getline(playerDatInStream, name);
         playerDatInStream >> gender >> currentMap >> xCoords >> yCoords;
+        int party0, party1, party2;
+        playerDatInStream >> party0 >> party1 >> party2;
+        party[0] = party0, party[1] = party1, party[2] = party2;
         playerDatInStream.close();
     }
     return success;
@@ -51,6 +58,7 @@ bool mPlayer::savePlayerData() {
     if (playerDatOutStream) {
         playerDatOutStream << name << endl;
         playerDatOutStream << gender << endl << currentMap << endl << xCoords << " " << yCoords << endl;
+        playerDatOutStream << party[0].data - pokemonData << " " << party[1].data - pokemonData << " " << party[2].data - pokemonData << endl;
     } else {
         success = false;
     }

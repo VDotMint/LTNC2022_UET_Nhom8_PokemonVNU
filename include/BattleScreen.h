@@ -95,6 +95,7 @@ class BattleScreen {
 		Text bd_Text;
 
 		PokemonSelectionScreen selScreen;
+		Mix_Chunk *effectiveSFX, *notEffectiveSFX, *superEffectiveSFX, *pokemonFainted;
 	public:
 		vector<std::string> battleDialogues;
 		vector<std::string> turnActionQueue;

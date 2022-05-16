@@ -29,4 +29,5 @@ public:
     void startBattle();
     void initDialogue(std::string nextSentence);
     std::string getCurrentSentence();
+    int getCurrentSentenceID();
 };

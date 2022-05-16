@@ -27,8 +27,8 @@ class WarpTile {
 class InterTile {
     private:
         int tileX, tileY;
-        std::vector<std::string> dialogueTexts;
     public:
+        std::vector<std::string> dialogueTexts;
         InterTile(int _tileX, int _tileY);
         ~InterTile();
         int getX() {return tileX;}
@@ -36,6 +36,8 @@ class InterTile {
         void initTileDialogue(std::string nextSentence);
         bool talkTile();
         std::string getInterCurrentSentence();
+        int getInterCurrentSentenceID();
+        int getInterDialogueSize() {return dialogueTexts.size();}
 };
 
 class Map {

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "Variables.h"
 #include "NPCs.h"
 #include "map.h"
 #include "RenderWindow.h"
@@ -168,6 +169,23 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
             tilePropMap[npcY][npcX] = 4;
             i--;
         }
+    }
+
+    if (mapID == 3 and (mainPlayer.party[0].data - pokemonData) == 0) { // EDGE CASE FOR E3 BUILDING. BLOCKS THE PLAYER FROM ENTERING IF THEY HAVE NO POKEMON
+        NPC* newNPC1 = new NPC;
+        newNPC1->initNPC(27, 9, 0, "res/npcsprite/npcSprite6.png");
+        newNPC1->initDialogue("I'm sorry, but you must first acquire some Pokemons before you may take the Pokemon UET Challenge.");
+        newNPC1->initDialogue("To get your Pokemons, go to the Student Button Room in the E3 Building.");
+
+        NPC* newNPC2 = new NPC;
+        newNPC2->initNPC(28, 9, 0, "res/npcsprite/npcSprite6.png");
+        newNPC2->initDialogue("I'm sorry, but you must first acquire some Pokemons before you may take the Pokemon UET Challenge.");
+        newNPC2->initDialogue("To get your Pokemons, go to the Student Button Room in the E3 Building.");
+
+        mapNPCs.push_back(newNPC1);
+        mapNPCs.push_back(newNPC2);
+        tilePropMap[9][27] = 4;
+        tilePropMap[9][28] = 4;
     }
     if (mapDebug == true) cerr << "NPC data loaded\n";
 
@@ -416,4 +434,8 @@ bool InterTile::talkTile() {
 
 std::string InterTile::getInterCurrentSentence() {
     return dialogueTexts[INTERsen - 1];
+}
+
+int InterTile::getInterCurrentSentenceID() {
+    return INTERsen;
 }

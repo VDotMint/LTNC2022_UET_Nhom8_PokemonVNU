@@ -97,6 +97,12 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     moveButtons[3].initBSB("res/battleassets/moveButton.png", 344, 611, 278, 72, 652, 167, true);
     backButton.initBSB("res/battleassets/backbutton.png", 659, 620, 154, 60, 362, 139);
 
+    // INIT THE SOUND EFFECTS
+    effectiveSFX = Mix_LoadWAV("res/sfx/normal_effective.wav");
+    notEffectiveSFX = Mix_LoadWAV("res/sfx/not_effective.wav");
+    superEffectiveSFX = Mix_LoadWAV("res/sfx/super_effective.wav");
+    pokemonFainted = Mix_LoadWAV("res/sfx/poke_fainted.wav");
+
     // INIT THE POKEMON SELECTION SCREEN
     selScreen.initSelectionScreen(&mainPlayer);
 }
@@ -154,6 +160,11 @@ void BattleScreen::freeBattleScreen() {
 
     battleDialogues.clear();
     turnActionQueue.clear();
+
+    Mix_FreeChunk(effectiveSFX);
+    Mix_FreeChunk(notEffectiveSFX);
+    Mix_FreeChunk(superEffectiveSFX);
+    Mix_FreeChunk(pokemonFainted);
 
 	pCirX = 0;
 	oCirX = 0;
@@ -301,6 +312,20 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 playerPokeRect.x = -(playerPokemonMoveAnim*playerPokemonMoveAnim) + 20*playerPokemonMoveAnim + 90;
                 playerPokemonMoveAnim++;
             } else if (playerPokemonMoveAnim == 21 and inAnim0 == true) {
+                if (PokemonTransparency == 0) {
+                    if (BattleSen + 1 < turnActionQueue.size()) {
+                        if (turnActionQueue[BattleSen+1] == "MOVE_NOEFFECT") {
+                            playerPokemonMoveAnim = 0;
+                            PokemonTransparency = 0;
+                            inAnim0 = false;
+                        } else if (turnActionQueue[BattleSen+1] == "MOVE_NOT_EFFECTIVE") {
+                            Mix_PlayChannel(-1, notEffectiveSFX, 0);
+                        } else if (turnActionQueue[BattleSen+1] == "MOVE_SUPER_EFFECTIVE") {
+                            Mix_PlayChannel(-1, superEffectiveSFX, 0);
+                        } else Mix_PlayChannel(-1, effectiveSFX, 0);
+                    } else Mix_PlayChannel(-1, effectiveSFX, 0);
+                }
+
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
                     SDL_SetTextureAlphaMod(opponentPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
@@ -314,12 +339,27 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
             }
         }
 
-        else if (turnActionQueue[BattleSen] == "OPPONENT_USE_MOVE") // ANIMATE THE OPPONENT USING A MOVE
+        // ANIMATE THE OPPONENT USING A MOVE
+        else if (turnActionQueue[BattleSen] == "OPPONENT_USE_MOVE") 
         {
             if (opponentPokemonMoveAnim < 21 and inAnim0 == true) {
                 oppoPokeRect.x = (opponentPokemonMoveAnim*opponentPokemonMoveAnim) - 20*opponentPokemonMoveAnim + 500;
                 opponentPokemonMoveAnim++;
             } else if (opponentPokemonMoveAnim == 21 and inAnim0 == true) {
+                if (PokemonTransparency == 0) {
+                    if (BattleSen + 1 < turnActionQueue.size()) {
+                        if (turnActionQueue[BattleSen+1] == "MOVE_NOEFFECT") {
+                            opponentPokemonMoveAnim = 0;
+                            PokemonTransparency = 0;
+                            inAnim0 = false;
+                        } else if (turnActionQueue[BattleSen+1] == "MOVE_NOT_EFFECTIVE") {
+                            Mix_PlayChannel(-1, notEffectiveSFX, 0);
+                        } else if (turnActionQueue[BattleSen+1] == "MOVE_SUPER_EFFECTIVE") {
+                            Mix_PlayChannel(-1, superEffectiveSFX, 0);
+                        } else Mix_PlayChannel(-1, effectiveSFX, 0);
+                    } else Mix_PlayChannel(-1, effectiveSFX, 0);
+                }
+
                 if (PokemonTransparency < 1170 and inAnim0 == true) {
                     SDL_SetTextureAlphaMod(playerPokeTexture, int(255*(abs(sin(PokemonTransparency*3.141592/180.0)))));
                     PokemonTransparency += 130;
@@ -340,6 +380,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 oppoPokeRect.y += 24;
                 oppoPokeRect.h -= 24;
             } else if (halfOppoPokeRect.h <= 0 and oppoPokeRect.y == 260 and inAnim0 == true) {
+                Mix_PlayChannel(-1, pokemonFainted, 0);
                 showOHPBar = false;
                 oppoPokeRect = {832, 20, 240, 240};
                 halfOppoPokeRect.h = 96;
@@ -371,16 +412,12 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                 playerPokeRect.y += 24;
                 playerPokeRect.h -= 24;
             } else if (halfPlayerPokeRect.h <= 0 and playerPokeRect.y == 540 and inAnim0 == true) {
+                Mix_PlayChannel(-1, pokemonFainted, 0);
                 showPHPBar = false;
                 playerPokeRect = {-240, 300, 240, 240};
                 halfPlayerPokeRect.h = 96;
                 inAnim0 = false;
             }
-        }
-        
-        else if (turnActionQueue[BattleSen] == "OPPONENT_DEFEATED")
-        {
-            inAnim0 = false;
         }
 
         else if (turnActionQueue[BattleSen] == "FORCE_OPEN_PARTY")
@@ -414,6 +451,16 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
                     playerPokeTexture = IMG_LoadTexture(RenderWindow::renderer, imgPlayerPath.c_str());
                 }
             }
+        }
+
+        else if (turnActionQueue[BattleSen] == "PLAYER_DEFEATED")
+        {
+            playerMap->freeMap();
+            playerMap->loadMap(gameMaps[1].c_str(), gameTileSets[1].c_str(), gameThemes[1].c_str(), themeRepeats[1], mapOverlays[1]);
+            mainPlayer.setPlayerCoords(20, 10, 1);
+            mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+            mainPlayer.setFacingDirection(0);
+            inAnim0 = false;
         }
 
         else if (turnActionQueue[BattleSen] == "END_BATTLE")
@@ -571,7 +618,7 @@ void BattleScreen::localTurnHandler(int move) {
                     turnActionQueue.push_back("FORCE_OPEN_PARTY");
                 } else {
                     battleDialogues.push_back(battlePlayer->getPlayerName() + " lost to " + battleOpponent->name + "!");
-                    turnActionQueue.push_back("OPPONENT_DEFEATED");
+                    turnActionQueue.push_back("PLAYER_DEFEATED");
                     battleDialogues.push_back(" ");
                     turnActionQueue.push_back("END_BATTLE");
                 }
@@ -589,7 +636,7 @@ void BattleScreen::localTurnHandler(int move) {
                 turnActionQueue.push_back("FORCE_OPEN_PARTY");
             } else {
                 battleDialogues.push_back(battlePlayer->getPlayerName() + " lost to " + battleOpponent->name + "!");
-                turnActionQueue.push_back("OPPONENT_DEFEATED");
+                turnActionQueue.push_back("PLAYER_DEFEATED");
                 battleDialogues.push_back(" ");
                 turnActionQueue.push_back("END_BATTLE");
             }
@@ -654,7 +701,7 @@ void BattleScreen::localSwitchPokemonHandler(int selPoke) {
                     turnActionQueue.push_back("FORCE_OPEN_PARTY");
                 } else {
                     battleDialogues.push_back(battlePlayer->getPlayerName() + " lost to " + battleOpponent->name + "!");
-                    turnActionQueue.push_back("OPPONENT_DEFEATED");
+                    turnActionQueue.push_back("PLAYER_DEFEATED");
                     battleDialogues.push_back(" ");
                     turnActionQueue.push_back("END_BATTLE");
                 }
