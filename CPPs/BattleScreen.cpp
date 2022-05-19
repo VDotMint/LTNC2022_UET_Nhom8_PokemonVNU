@@ -166,6 +166,10 @@ void BattleScreen::freeBattleScreen() {
     Mix_FreeChunk(notEffectiveSFX);
     Mix_FreeChunk(superEffectiveSFX);
     Mix_FreeChunk(pokemonFainted);
+    effectiveSFX=NULL;
+    notEffectiveSFX=NULL;
+    superEffectiveSFX=NULL;
+    pokemonFainted=NULL;
 
 	pCirX = 0;
 	oCirX = 0;
