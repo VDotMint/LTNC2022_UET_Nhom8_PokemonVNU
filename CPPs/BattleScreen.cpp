@@ -78,6 +78,7 @@ void BattleScreen::initBattleScreen(mPlayer* player, Trainer* opponent) {
     battleDialogues.push_back(sen2);
     std::string sen3 = player->getPlayerName() + " sent out " + currentPlayerPokemon->data->name + "!";
     battleDialogues.push_back(sen3);
+    turnActionQueue.push_back("BATTLE_START");
 
     // STARTING POKEMON TEXTURE
     std::string imgPlayerPath = "res/pokemonassets/" + battlePlayer->party[0].data->name + ".png";
@@ -482,11 +483,12 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 
 void BattleScreen::centralBattleProcess(SDL_Event* e) {
     // HANDLING WHEN THE X BUTTON IS PRESSED (USED MOSTLY FOR BATTLE DIALOGUES)
-    if (((e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) or e->type == SDL_MOUSEBUTTONDOWN) && inAnim0 == false && fightScreen == false && moveScreen == false && inSelectionScreen == false) {
+    if ((e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) && inAnim0 == false && fightScreen == false && moveScreen == false && inSelectionScreen == false) {
         if (startingBattle == true) {
             if (BattleSen < 3) {
                 inAnim0 = true;
                 BattleSen++;
+                Mix_PlayChannel(-1, aButton, 0);
                 if (BattleSen == 3) {
                     fightScreen = true;
                     startingBattle = false;
@@ -498,6 +500,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         } else {
             inAnim0 = true;
             BattleSen++;
+            Mix_PlayChannel(-1, aButton, 0);
             if (BattleSen == battleDialogues.size()) {
                 fightScreen = true;
                 BattleSen = 0;
@@ -522,7 +525,6 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         if (selScreen.backButton.clickedOn == true && turnActionQueue[BattleSen] != "FORCE_OPEN_PARTY") {
             selScreen.backButton.clickedOn = false;
             inSelectionScreen = false;
-            pokemonButton.buttonHandler();
             return;
         }
 
@@ -543,6 +545,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
         backButton.buttonHandler();
         if (backButton.clickedOn == true) {
             backButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
             fightScreen = true;
             moveScreen = false;
             return;
@@ -553,6 +556,7 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             moveButtons[i].moveButtonHandler(i);
             if (moveButtons[i].clickedOn == true) {
                 moveButtons[i].clickedOn = false;
+                Mix_PlayChannel(-1, clickedOnSound, 0);
                 localTurnHandler(i);
                 moveScreen = false;
                 return;
@@ -569,15 +573,18 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             moveScreen = true;
             fightScreen = false;
             fightButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
             for (int i = 0; i < 4; i++) moveButtons[i].moveButtonHandler(i);
             return;
         } else if (pokemonButton.clickedOn == true) {
             pokemonButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
             selScreen.updateSelectionScreen(battlePlayer);
             inSelectionScreen = true;
             return;
         } else if (retireButton.clickedOn == true) {
             retireButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
             beginBattleToMapTransition = true;
             return;
         }
@@ -666,9 +673,9 @@ void BattleScreen::localTurnHandler(int move) {
 
 void BattleScreen::localSwitchPokemonHandler(int selPoke) {
     if (battlePlayer->party[selPoke].c_hp == 0 or currentPlayerPokemon == &(battlePlayer->party[selPoke])) {
-        cout << selPoke << endl;
-        Mix_PlayChannel(-1, aButton, 0);
+        Mix_PlayChannel(-1, deniedSound, 0);
     } else {
+        Mix_PlayChannel(-1, aButton, 0);
         inSelectionScreen = false;
         if (currentPlayerPokemon->c_hp == 0) { // IF THE PLAYER SENDS OUT THE NEXT POKEMON AFTER A FAINT
             currentPlayerPokemon = &(battlePlayer->party[selPoke]);

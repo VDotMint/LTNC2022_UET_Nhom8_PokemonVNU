@@ -82,10 +82,7 @@ void Map::freeMap() {
     if (mapDebug == true) cerr << "Map Freed Successfully\n\n";
 }
 
-void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP, bool hasOverlay) {    
-
-    if (mapDebug == true) cerr << "Loading procedure started\n";
-
+void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath, double repeatP, bool hasOverlay) {
     // Load the level
     ifstream inputmap(path);
     string temp;
@@ -149,12 +146,29 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
         if (nextNPC != "MAP_NEXT_NPC" or nextNPC == "NPC_DATA_STOP") {
             break;
         } else {
-            int npcX, npcY, face;
+            int npcX, npcY, face; 
+            bool isTrainer;
             string npcTextPath;
-            inputmap >> npcX >> npcY >> face >> npcTextPath;
+            inputmap >> npcX >> npcY >> face >> isTrainer >> npcTextPath;
 
             NPC* newNPC = new NPC;
-            newNPC->initNPC(npcX, npcY, face, npcTextPath.c_str());
+            newNPC->initNPC(npcX, npcY, face, npcTextPath.c_str(), isTrainer);
+
+            if (isTrainer == true) {
+                string preBattleSentence;
+                while (preBattleSentence != "NPC_PREBATTLE_END") {
+                    getline(inputmap, preBattleSentence);
+                    if (preBattleSentence != "NPC_PREBATTLE_END" and preBattleSentence != "") {
+                    newNPC->initPreBattleDialogue(preBattleSentence);
+                    }
+                }
+
+                string trainerName, trainerPath;
+                getline(inputmap, trainerName);
+                getline(inputmap, trainerPath);
+                newNPC->setTrainerName(trainerName);
+                newNPC->setTrainerSprite(trainerPath);
+            }
             
             string dialogueSentence;
             while (dialogueSentence != "NPC_DIALOGUE_END") {

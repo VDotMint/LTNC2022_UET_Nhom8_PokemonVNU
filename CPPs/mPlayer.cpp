@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <fstream>
-using namespace std;
 
 SDL_Rect screenCenter = {(832-64)/2, (704-64)/2-24, 64, 88};
 static int moveFrame = 0, walkFrame = 0;
@@ -12,8 +11,8 @@ static int moveFrame = 0, walkFrame = 0;
 mPlayer::mPlayer() {
     gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
     name = "NO NAME";
-    currentMap = 0; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 = STUDENT BUTTON ROOM -> 9 = CHALLENGE ROOMS
-    xCoords = 11, yCoords = 22;
+    currentMap = 1; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 = STUDENT BUTTON ROOM , 5 -> 10 = CHALLENGE ROOMS
+    xCoords = 20, yCoords = 10;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;
 
@@ -22,12 +21,6 @@ mPlayer::mPlayer() {
     }
 
     for (int i = 0; i < 3; i++) party[i] = 0;
-
-    // srand(time(0));
-    // for (int i=0;i<3;i++) {
-    //     party[i]=rand()%psize;
-    // }
-    // activePokemonCount=3;
 }
 
 mPlayer::~mPlayer() {
@@ -37,9 +30,9 @@ mPlayer::~mPlayer() {
 
 bool mPlayer::loadPlayerData() {
     bool success = true;
-    ifstream playerDatInStream("data/player.sav");
+    std::ifstream playerDatInStream("data/player.sav");
     if (!playerDatInStream) {
-        cout << "No save file detected! Default player config loaded instead!\n";
+        std::cout << "No save file detected! Default player config loaded instead!\n";
         success = false;
     } else {
         getline(playerDatInStream, name);
@@ -54,7 +47,7 @@ bool mPlayer::loadPlayerData() {
 
 bool mPlayer::savePlayerData() {
     bool success = true;
-    ofstream playerDatOutStream("data/player.sav");
+    std::ofstream playerDatOutStream("data/player.sav");
     if (playerDatOutStream) {
         playerDatOutStream << name << endl;
         playerDatOutStream << gender << endl << currentMap << endl << xCoords << " " << yCoords << endl;
@@ -91,7 +84,7 @@ int mPlayer::getFacingDirection() {
 
 void mPlayer::initPlayerTexture() {
     if (gender == -1) {
-        cout << "Player gender uninitiated!\n";
+        std::cout << "Player gender uninitiated!\n";
     } else {
         SDL_Surface* tempSurface;
         if (gender == 0) {

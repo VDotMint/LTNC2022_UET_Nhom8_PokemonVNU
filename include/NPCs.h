@@ -12,8 +12,10 @@ private:
     SDL_Texture* npcTexture; // NPC's texture
     SDL_Rect walkFrames[16]; // Basic walk frame
     std::vector<std::string> dialogueTexts; // Dialogue text
+    std::vector<std::string> preBattleTexts; // Pre-battle text (only used if istrainer = true)
     bool isTrainer; // If true then will generate a random battle after the dialouge
-    int hasBattled; // 0 = has not battled, 1 = has battled, 2 = not a trainer
+    int hasBattled = 2; // 0 = has not battled, 1 = has battled, 2 = not a trainer
+    std::string trainerName, trainerPath;
 public:
     NPC();
     ~NPC();
@@ -28,6 +30,13 @@ public:
     int getBattleStatus() {return hasBattled;}
     void startBattle();
     void initDialogue(std::string nextSentence);
+    void initPreBattleDialogue(std::string nextSentence);
     std::string getCurrentSentence();
     int getCurrentSentenceID();
+    void changeBattleStatus(int status) {hasBattled = status;}
+
+    void setTrainerName(std::string name) {trainerName = name;}
+    void setTrainerSprite(std::string path) {trainerPath = path;}
+    std::string getTrainerName() {return trainerName;}
+    std::string getTrainerSprite() {return trainerPath;}
 };

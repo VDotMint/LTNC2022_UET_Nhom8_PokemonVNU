@@ -1,6 +1,7 @@
 #include "NPCs.h"
 #include "RenderWindow.h"
 #include "otherGraphics.h"
+#include "Variables.h"
 #include <iostream>
 
 static unsigned int NPCsen = 0;
@@ -14,10 +15,13 @@ NPC::~NPC() {
     SDL_DestroyTexture(npcTexture);
     npcTexture = NULL;
     dialogueTexts.clear();
+    preBattleTexts.clear();
 }
 
 void NPC::initNPC(int x, int y, int face, const char* texturePath, bool canBattle) {
     npcXCoords = x, npcYCoords = y, faceDirection = face, isTrainer = canBattle;
+
+    if (isTrainer) hasBattled = 0;
 
     SDL_Surface* tempSurface = IMG_Load(texturePath);
     SDL_SetColorKey(tempSurface, SDL_TRUE, SDL_MapRGB(tempSurface->format, 0, 255, 255));
@@ -69,24 +73,63 @@ bool NPC::talkNPC(int playerFace) {
         break;
     }
 
-    if (NPCsen < dialogueTexts.size()) {
-        NPCsen++;
-        return true;
+    if (isTrainer == true)
+    {
+        if (hasBattled == 0) {
+            if (NPCsen < preBattleTexts.size()) {
+                NPCsen++;
+                return true;
+            } else {
+                NPCsen = 0;
+                beginMapToBattleTransition = true;
+                return false;
+            }
+        } else {
+            if (NPCsen < dialogueTexts.size()) {
+                NPCsen++;
+                return true;
+            } else {
+                NPCsen = 0;
+                return false;
+            }
+        }
+    } 
+    else
+    {
+        if (NPCsen < dialogueTexts.size()) {
+            NPCsen++;
+            return true;
+        } else {
+            NPCsen = 0;
+            return false;
+        }
     }
-    else {
-        NPCsen = 0;
-        return false;
-    }
+
+    
+    // else {
+        
+    //     if (isTrainer == true and hasBattled == 0) {
+    //         beginMapToBattleTransition = true;
+    //     }
+        
+    // }
 }
 
 void NPC::initDialogue(std::string nextSentence) {
     dialogueTexts.push_back(nextSentence);
 }
 
+void NPC::initPreBattleDialogue(std::string nextSentence) {
+    preBattleTexts.push_back(nextSentence);
+}
 
 std::string NPC::getCurrentSentence()
 {
-    return dialogueTexts[NPCsen - 1];
+    if (isTrainer == true and hasBattled == 0) {
+        return preBattleTexts[NPCsen - 1];
+    } else {
+        return dialogueTexts[NPCsen - 1];
+    }
 }
 
 int NPC::getCurrentSentenceID() {

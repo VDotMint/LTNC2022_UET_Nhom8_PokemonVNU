@@ -53,6 +53,13 @@ bool initSystem() {
     gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
     changeMap = Mix_LoadWAV("res/sfx/change_map.wav");
     aButton = Mix_LoadWAV("res/sfx/a_button.wav");
+    gameSaved = Mix_LoadWAV("res/sfx/game_saved.wav");
+    startMenuSound = Mix_LoadWAV("res/sfx/start_menu.wav");
+    deniedSound = Mix_LoadWAV("res/sfx/denied.wav");
+    clickedOnSound = Mix_LoadWAV("res/sfx/clicked_on_sound.wav");
+
+    // INIT THE MAIN MENU
+    mainMenu.initMenu();
 
     // INIT THE DIALOGUE BOX TEXTURE
     d_box.initDialogueBox(RenderWindow::renderer, "res/otherassets/dialoguebox.png");
@@ -61,35 +68,53 @@ bool initSystem() {
 }
 
 void freeMainAssets() {
+    mainMenu.freeMenu();
     playerMap->freeOverlayElements();
     playerMap->freeMap();
+
     SDL_DestroyTexture(blackTransitionTexture);
     blackTransitionTexture = NULL;
+
     gameMusic.freeMusic();
+
     Mix_FreeChunk(changeMap);
-    changeMap = NULL;
     Mix_FreeChunk(aButton);
+    Mix_FreeChunk(gameSaved);
+    Mix_FreeChunk(startMenuSound);
+    Mix_FreeChunk(deniedSound);
+    Mix_FreeChunk(clickedOnSound);
+    changeMap = NULL;
     aButton = NULL;
+    gameSaved = NULL;
+    startMenuSound = NULL;
+    deniedSound = NULL;
+    clickedOnSound = NULL;
+
+    d_box.freeDialogueBox();
+    d_text.freeText();
 }
 
 void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
     while (SDL_PollEvent(e)) {
-        if (e->type == SDL_QUIT)
+        if (e->type == SDL_QUIT) // QUIT GAME
         {
             mainPlayer.savePlayerData();
             quit = true;
         }
-        else if (e->type == SDL_MOUSEBUTTONDOWN)
+
+        else if (e->type == SDL_MOUSEBUTTONDOWN) // DEBUGGING STATS
         {
             cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
             cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
         }
-        // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_b and inDialogue == false) // START A BATTLE
-        // { 
-        //     Trainer op;
-        //     battle(mainPlayer,op);
-        // } 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) // INTERACT WITH NPCS AND BLOCKS
+
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v) // OPEN MENU
+        { 
+            inMenu = true;
+            Mix_PlayChannel(-1, startMenuSound, 0);
+        }
+ 
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && inMenu == false) // INTERACT WITH NPCS AND BLOCKS
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
@@ -109,11 +134,13 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 }
             }
         } 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true && inDialogue == false)
-        {
-            beginMapToBattleTransition = true;
-        }
-        else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
+
+        // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true && inDialogue == false && inMenu == false)
+        // {
+        //     beginMapToBattleTransition = true;
+        // }
+
+        else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and inMenu == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
         {
             // cout << e->key.keysym.sym << " clicked down at game tick: " << SDL_GetTicks() << endl;
             switch (e->key.keysym.sym) {
@@ -139,9 +166,14 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
                 mainCamera.beginMovement(e, pCX, pCY, playerMap->getCollisionMap());
             }
         } 
+
         else if (e->type == SDL_KEYUP and mainCamera.getMovementState() == true and e->key.repeat == 0) // STOP MOVEMENT 
         { 
             mainCamera.stopMovement(e);
+        }
+
+        if (inMenu) {
+            mainMenu.centralMenuInputProcess();
         }
     }
 }
@@ -151,10 +183,6 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
             quit = true;
-        }
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_m && finishMapToBattleTransition != true && beginBattleToMapTransition != true)
-        {
-            beginBattleToMapTransition = true;
         }
         else if (e->type == SDL_MOUSEBUTTONDOWN)
         {
@@ -174,12 +202,12 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
         {
             gameTitleScreen.doButtonEvents(e);
             if (hasSaveFile == true and gameTitleScreen.tsButtons[0].isClicked() == true) {
-                Mix_PlayChannel(-1, aButton, 0);
+                Mix_PlayChannel(-1, clickedOnSound, 0);
                 gameTitleScreen.tsButtons[0].resetClickState();
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;
             } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
-                Mix_PlayChannel(-1, aButton, 0);
+                Mix_PlayChannel(-1, clickedOnSound, 0);
                 gameTitleScreen.tsButtons[1].resetClickState();
                 mPlayer newTempPlayer;
                 mainPlayer = newTempPlayer;
@@ -188,7 +216,7 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;
             } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
-                Mix_PlayChannel(-1, aButton, 0);
+                Mix_PlayChannel(-1, clickedOnSound, 0);
                 quit = true;
                 gameTitleScreen.freeTitleScreen();
             } 
@@ -339,6 +367,10 @@ void gameLoop() {
                 }
             }
 
+            if (inMenu == true) {
+                mainMenu.drawMenu();
+            }
+
             // ONLY ACTIVATED GOING FROM THE TITLE SCREEN TO THE OVERWORLD. SMOOTH BLACK TRANSITION
             if (tsToMapTransition == true) { 
                 if (transitionTransparency > 0) {
@@ -396,8 +428,11 @@ void gameLoop() {
                 } else if (transitionTransparency >= 255) {
                     srand(time(NULL));
 
-                    defaultOppo.name = "Champion Cynthia";
-                    defaultOppo.battleSpritePath = "res/battleassets/opponentSprite1.png";
+                    NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
+
+                    defaultOppo.name = selNPC->getTrainerName();
+                    defaultOppo.battleSpritePath = selNPC->getTrainerSprite();
+
                     defaultOppo.party[0] = rand() % 36 + 1;
                     defaultOppo.party[1] = rand() % 36 + 1;
                     defaultOppo.party[2] = rand() % 36 + 1;
@@ -407,9 +442,8 @@ void gameLoop() {
                     beginMapToBattleTransition = false;
                     finishMapToBattleTransition = true;
                     mainBattle.initBattleScreen(&mainPlayer, &defaultOppo);
-                    // battle(mainPlayer,tempoppo);
-                    // inBattle=false;
-                    // finishBattleToMapTransition = true;
+                    
+                    selNPC->changeBattleStatus(1);
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);

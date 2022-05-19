@@ -40,7 +40,10 @@ extern Text d_text;
 
 extern Mix_Chunk* changeMap;
 extern Mix_Chunk* aButton;
-            
+extern Mix_Chunk* gameSaved;
+extern Mix_Chunk* startMenuSound;
+extern Mix_Chunk* deniedSound;
+extern Mix_Chunk* clickedOnSound;
 
 extern Map* playerMap;
 extern Music gameMusic;
@@ -49,6 +52,7 @@ extern mPlayer mainPlayer;
 extern gameCam mainCamera;
 
 extern BattleScreen mainBattle;
+extern gameMenu mainMenu;
 
 // GAME STATES
 
@@ -68,6 +72,7 @@ extern bool quit;
 extern bool inTitleScreen; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 extern bool inBattle;
 extern bool inDialogue;
+extern bool inMenu;
 
 extern bool playerIsRunning;
 

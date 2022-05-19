@@ -16,7 +16,6 @@ class BattleScreenButton {
 		int currentButtonFrame;
 	public:
 		Text moveNames;
-		Text moveHover;
 
 		bool clickedOn = false;
 		BattleScreenButton();

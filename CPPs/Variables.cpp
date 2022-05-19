@@ -9,21 +9,21 @@ SDL_Event e;
 TitleScreen gameTitleScreen;
 SDL_Texture* blackTransitionTexture;
 
-string gameMaps[] = {
+std::string gameMaps[] = {
     "res/map/g2.map",
     "res/map/e3.map",
     "res/map/e3i.map",
     "res/map/g2i.map",
     "res/map/e3i_2.map",
 };
-string gameTileSets[] = {
+std::string gameTileSets[] = {
     "res/tileset/g2o_tiles.png",
     "res/tileset/e3o_tiles.png",
     "res/tileset/e3i_tiles.png",
     "res/tileset/g2i_tiles.png",
     "res/tileset/e3i_2_tiles.png",
 };
-string gameThemes[] = {
+std::string gameThemes[] = {
     "res/music/g2o_theme.mp3",
     "res/music/e3o_theme.mp3",
     "res/music/e3i_theme.mp3",
@@ -44,26 +44,26 @@ bool mapOverlays[] = {
     true,
     true,
 };
-string Type[]= {
-    "NULL",
-	"Normal",
-	"Fire",
-	"Water",
-	"Electric",
-	"Grass",
-	"Ice",
-	"Fighting",
-	"Poison",
-	"Ground",
-	"Flying",
-	"Psychic",
-	"Bug",
-	"Rock",
-	"Ghost",
-	"Dragon",
-	"Dark",
-	"Steel",
-	"Fairy"
+std::string Type[]= {
+    "NULL", // 0
+	"Normal", // 1
+	"Fire", // 2
+	"Water", // 3
+	"Electric", // 4
+	"Grass", // 5
+	"Ice", // 6
+	"Fighting", // 7
+	"Poison", // 8
+	"Ground", // 9
+	"Flying", // 10
+	"Psychic", // 11
+	"Bug", // 12
+	"Rock", // 13
+	"Ghost", // 14
+	"Dragon", // 15
+	"Dark", // 16
+	"Steel", // 17
+	"Fairy" // 18
 };
 
 Move moves[]=
@@ -71,7 +71,7 @@ Move moves[]=
 	{"Body Slam",1,85,15},
 	{"Flamethrower",2,90,15},
     {"Surf",3,90,15},
-    {"thunderbolt",4,90,15},
+    {"Thunderbolt",4,90,15},
     {"Leaf Blade",5,90,15},
     {"Ice Beam",6,90,10},
     {"Sacred Sword",7,90,15},
@@ -103,7 +103,7 @@ PokemonData pokemonData[]=
     {"Mamoswine", 6, 9, 170, 135, 65, 85, {moves,moves+5,moves,moves}},
     {"Lapras", 6, 3, 190, 90, 100, 65, {moves,moves+5,moves,moves}},
     {"Lucario", 7, 17, 130, 120, 75, 95, {moves,moves+6,moves,moves}},
-    {"Infernape", 7, 3, 136, 109, 76, 113, {moves,moves+6,moves,moves}},
+    {"Infernape", 7, 2, 136, 109, 76, 113, {moves,moves+6,moves,moves}},
     {"Gengar", 8, 14, 120, 135, 65, 115, {moves,moves+7,moves,moves}},  
     {"Venusaur", 8, 5, 140, 87, 105, 85, {moves,moves+7,moves,moves}},
     {"Swampert", 9, 3, 160, 115, 95, 65, {moves,moves+8,moves,moves}},
@@ -158,6 +158,10 @@ Text d_text;
 
 Mix_Chunk* changeMap;
 Mix_Chunk* aButton;
+Mix_Chunk* gameSaved;
+Mix_Chunk* startMenuSound;
+Mix_Chunk* deniedSound;
+Mix_Chunk* clickedOnSound;
 
 Map* playerMap;
 Music gameMusic;
@@ -166,6 +170,7 @@ mPlayer mainPlayer;
 gameCam mainCamera;
 
 BattleScreen mainBattle;
+gameMenu mainMenu;
 
 // GAME STATES
 
@@ -185,6 +190,7 @@ bool quit = false;
 bool inTitleScreen = false; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
 bool inBattle = false;
 bool inDialogue = false;
+bool inMenu = false;
 
 bool playerIsRunning = false;
 

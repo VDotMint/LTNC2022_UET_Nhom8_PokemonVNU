@@ -94,7 +94,7 @@ END_COLLISION_MAP
 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 END_OVERLAY_MAP
 MAP_NEXT_NPC
-11 19 1
+11 19 1 0
 res/npcsprite/npcSprite8.png
 To get your Pokemons, go talk to the woman at the desk.
 How it works is that she will roll a slot machine and you will get 3 random Pokemons.
@@ -103,7 +103,7 @@ She'll get you another batch.
 And you can do this repeatedly for as many times as you want, for free!
 NPC_DIALOGUE_END
 MAP_NEXT_NPC
-13 15 0
+13 15 0 0
 res/npcsprite/npcSprite10.png
 NPC_DIALOGUE_END
 NPC_DATA_STOP
