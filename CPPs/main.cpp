@@ -98,7 +98,6 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) // QUIT GAME
         {
-            mainPlayer.savePlayerData();
             quit = true;
         }
 
@@ -108,13 +107,13 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
         }
 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v) // OPEN MENU
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && beginMapToBattleTransition == true && beginMapToMapTransition == true) // OPEN MENU
         { 
             inMenu = true;
             Mix_PlayChannel(-1, startMenuSound, 0);
         }
  
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && inMenu == false) // INTERACT WITH NPCS AND BLOCKS
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && inMenu == false && beginMapToBattleTransition == true && beginMapToMapTransition == true) // INTERACT WITH NPCS AND BLOCKS
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
@@ -196,6 +195,7 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
 { 
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
+            mainPlayer.savePlayerData();
             quit = true;
         }
         if (gameTitleScreen.acceptInputState() == true)
@@ -413,6 +413,7 @@ void gameLoop() {
                     transitionTransparency -= 17;
                 } else if (transitionTransparency <= 0) {
                     finishMapToMapTransition = false;
+                    mainPlayer.savePlayerData();
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
@@ -426,6 +427,8 @@ void gameLoop() {
                 if (transitionTransparency < 255) {
                     transitionTransparency += 5;
                 } else if (transitionTransparency >= 255) {
+                    if (mainPlayer.getCurrentMap() >= 5 and mainPlayer.getCurrentMap() <= 11) playerMap->popLastNPC();
+
                     srand(time(NULL));
 
                     NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());

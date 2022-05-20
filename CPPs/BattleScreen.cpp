@@ -584,6 +584,11 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             return;
         } else if (retireButton.clickedOn == true) {
             retireButton.clickedOn = false;
+            playerMap->freeMap();
+            playerMap->loadMap(gameMaps[1].c_str(), gameTileSets[1].c_str(), gameThemes[1].c_str(), themeRepeats[1], mapOverlays[1]);
+            mainPlayer.setPlayerCoords(20, 10, 1);
+            mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
+            mainPlayer.setFacingDirection(0);
             Mix_PlayChannel(-1, clickedOnSound, 0);
             beginBattleToMapTransition = true;
             return;
@@ -606,7 +611,7 @@ void BattleScreen::localTurnHandler(int move) {
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("OPPONENT_NEXT_POKEMON");
             } else {
-                std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name;
+                std::string newSentence = battlePlayer->getPlayerName() + " defeated " + battleOpponent->name + "!";
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("OPPONENT_DEFEATED");
                 battleDialogues.push_back(" ");
@@ -786,40 +791,22 @@ void BattleScreenButton::buttonHandler() {
 }
 
 void BattleScreenButton::moveButtonHandler(int buttonNum) {
-    if (e.type == SDL_MOUSEMOTION or e.type == SDL_MOUSEBUTTONDOWN or e.type == SDL_MOUSEBUTTONUP) {
-        int x, y;
-        SDL_GetMouseState(&x, &y);
+    int x, y;
+    SDL_GetMouseState(&x, &y);
 
-        bool inside = true;
-        if (x < buttonDest.x) inside = false;
-        else if (x > buttonDest.x + buttonDest.w) inside = false;
-        else if (y < buttonDest.y) inside = false;
-        else if (y > buttonDest.y + buttonDest.h) inside = false;
+    bool inside = true;
+    if (x < buttonDest.x) inside = false;
+    else if (x > buttonDest.x + buttonDest.w) inside = false;
+    else if (y < buttonDest.y) inside = false;
+    else if (y > buttonDest.y + buttonDest.h) inside = false;
 
-        if (inside == false) {
-            moveNames.textInit(RenderWindow::renderer, mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->name.c_str(), {0, 0, 0}, buttonDest.x + 278);
-            currentButtonFrame = 0;
-        } else {
-            std::string moveDesc;
-            switch (e.type) {
-                case SDL_MOUSEMOTION:
-                moveDesc = "PP: " + to_string(mainBattle.getCurrentPlayerPokemon()->c_pp[buttonNum]) + "/" + to_string(mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->pp);
-                moveNames.textInit(RenderWindow::renderer, moveDesc.c_str(), {0, 0, 0}, buttonDest.x + 278);
-                break;
-
-                case SDL_MOUSEBUTTONDOWN:
-                
-                break;
-
-                case SDL_MOUSEBUTTONUP:
-                
-                break;
-
-                default:
-                moveNames.textInit(RenderWindow::renderer, mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->name.c_str(), {0, 0, 0}, buttonDest.x + 278);
-                break;
-            }
-        }
+    if (inside == false) {
+        moveNames.textInit(RenderWindow::renderer, mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->name.c_str(), {0, 0, 0}, buttonDest.x + 278);
+        currentButtonFrame = 0;
+    } else {
+        std::string moveDesc;
+        moveDesc = "PP: " + to_string(mainBattle.getCurrentPlayerPokemon()->c_pp[buttonNum]) + "/" + to_string(mainBattle.getCurrentPlayerPokemon()->data->move[buttonNum]->pp);
+        moveNames.textInit(RenderWindow::renderer, moveDesc.c_str(), {0, 0, 0}, buttonDest.x + 278);
     }
 }
 

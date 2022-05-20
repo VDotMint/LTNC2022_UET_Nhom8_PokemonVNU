@@ -69,6 +69,7 @@ class Map {
         int getMapID() {return mapID;}
         int getMapWidth();
         int getMapHeight();
+        void popLastNPC();
         int** getCollisionMap();
         NPC* getNearbyNPC(int pCX, int pCY, int playerFace);
         WarpTile* getNearbyWarpTile(int pCX, int PCY, int playerFace);
