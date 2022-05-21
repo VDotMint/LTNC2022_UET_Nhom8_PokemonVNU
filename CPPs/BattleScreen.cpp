@@ -483,7 +483,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 
 void BattleScreen::centralBattleProcess(SDL_Event* e) {
     // HANDLING WHEN THE X BUTTON IS PRESSED (USED MOSTLY FOR BATTLE DIALOGUES)
-    if ((e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x) && inAnim0 == false && fightScreen == false && moveScreen == false && inSelectionScreen == false) {
+    if ((e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x and e->key.repeat == 0) && inAnim0 == false && fightScreen == false && moveScreen == false && inSelectionScreen == false) {
         if (startingBattle == true) {
             if (BattleSen < 3) {
                 inAnim0 = true;

@@ -107,13 +107,13 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
         }
 
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && beginMapToBattleTransition == true && beginMapToMapTransition == true) // OPEN MENU
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && e->key.repeat == 0 && beginMapToBattleTransition == false && beginMapToMapTransition == false) // OPEN MENU
         { 
             inMenu = true;
             Mix_PlayChannel(-1, startMenuSound, 0);
         }
  
-        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && inMenu == false && beginMapToBattleTransition == true && beginMapToMapTransition == true) // INTERACT WITH NPCS AND BLOCKS
+        else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_x && e->key.repeat == 0 && inMenu == false && beginMapToBattleTransition == false && beginMapToMapTransition == false) // INTERACT WITH NPCS AND BLOCKS
         {
             NPC* selNPC = playerMap->getNearbyNPC(pCX, pCY, mainPlayer.getFacingDirection());
             if (selNPC != NULL) {
