@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <cmath>
 #include <iostream>
 #include <string>
 
@@ -28,15 +29,10 @@ Text::~Text() {
 }
 
 void Text::freeText() {
-    if (textFont != NULL) {
         TTF_CloseFont(textFont);
 	    textFont=NULL;
-    }
-
-    if (TextTexture != NULL) {
         SDL_DestroyTexture(TextTexture);
 	    TextTexture = NULL;
-    }
 }
 
 void Text::createFont(const char* fontPath, int fontSize) {
