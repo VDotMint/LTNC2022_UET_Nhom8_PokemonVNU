@@ -183,6 +183,7 @@ void gameMenu::centralMenuInputProcess() {
 		menuSelScreen.backButton.buttonHandler();
         if (menuSelScreen.backButton.clickedOn == true) {
             menuSelScreen.backButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
             inPokemonView = false;
             return;
         }

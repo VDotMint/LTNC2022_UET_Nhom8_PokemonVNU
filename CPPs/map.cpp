@@ -201,7 +201,25 @@ void Map::loadMap(const char* path, const char* sheetPath, const char* musicPath
         tilePropMap[9][27] = 4;
         tilePropMap[9][28] = 4;
     }
+
+    if (mapID >= 5 and mapID <= 11) {
+        srand(time(NULL));
+        int randDestMap = rand() % 6 + 6;
+
+        WarpTile* newWarpTile = new WarpTile(12, 7, randDestMap, 12, 22);
+        mapWarpTiles.push_back(newWarpTile);
+
+        NPC* newNPC1 = new NPC;
+        newNPC1->initNPC(12, 8, 0, "res/npcsprite/npcSprite6.png");
+        newNPC1->initDialogue("You must battle and win vs the Trainer to advance to the next room!");
+
+        mapNPCs.push_back(newNPC1);
+        tilePropMap[8][12] = 4;
+    }
+
     if (mapDebug == true) cerr << "NPC data loaded\n";
+
+    // WARP AND INTER TILE LOADINGING
 
     i = 0;
     string nextWarpTile;
@@ -327,6 +345,13 @@ int Map::getMapHeight() {
 
 int** Map::getCollisionMap() {
     return tilePropMap;
+}
+
+void Map::popLastNPC() {
+    int lastNPC = mapNPCs.size() - 1;
+    tilePropMap[mapNPCs[lastNPC]->getY()][mapNPCs[lastNPC]->getX()] = 0;
+    delete mapNPCs[lastNPC];
+    mapNPCs.pop_back();
 }
 
 NPC* Map::getNearbyNPC(int pCX, int pCY, int playerFace) {

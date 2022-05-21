@@ -15,6 +15,7 @@ mPlayer::mPlayer() {
     xCoords = 20, yCoords = 10;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
     playerTexture = NULL;
+    currentHighScore = 0;
 
     for (int i = 0; i < 32; i++) {
         walkFrames[i] = {i*64, 0, 64, 88};

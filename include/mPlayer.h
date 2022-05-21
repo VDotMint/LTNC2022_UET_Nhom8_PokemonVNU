@@ -7,6 +7,11 @@
 
 extern Pokemon pokemon[];
 
+// struct HighScoreListNode {
+//     HighScoreListNode* nextHighScore;
+//     int score;
+// };
+
 class mPlayer {
     private:
         int gender;
@@ -16,7 +21,7 @@ class mPlayer {
         int faceDirection;
         SDL_Texture* playerTexture;
         SDL_Rect walkFrames[32];
-        
+        int currentHighScore;
     public:
         mPlayer();
         ~mPlayer();

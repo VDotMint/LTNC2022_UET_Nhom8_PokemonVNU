@@ -15,6 +15,13 @@ std::string gameMaps[] = {
     "res/map/e3i.map",
     "res/map/g2i.map",
     "res/map/e3i_2.map",
+    "res/map/chal5.map",
+    "res/map/chal6.map",
+    "res/map/chal7.map",
+    "res/map/chal8.map",
+    "res/map/chal9.map",
+    "res/map/chal10.map",
+    "res/map/chal11.map"
 };
 std::string gameTileSets[] = {
     "res/tileset/g2o_tiles.png",
@@ -22,6 +29,13 @@ std::string gameTileSets[] = {
     "res/tileset/e3i_tiles.png",
     "res/tileset/g2i_tiles.png",
     "res/tileset/e3i_2_tiles.png",
+    "res/tileset/chal5_tiles.png",
+    "res/tileset/chal6_tiles.png",
+    "res/tileset/chal7_tiles.png",
+    "res/tileset/chal8_tiles.png",
+    "res/tileset/chal9_tiles.png",
+    "res/tileset/chal10_tiles.png",
+    "res/tileset/chal11_tiles.png"
 };
 std::string gameThemes[] = {
     "res/music/g2o_theme.mp3",
@@ -29,6 +43,13 @@ std::string gameThemes[] = {
     "res/music/e3i_theme.mp3",
     "res/music/e3i_theme.mp3",
     "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3",
+    "res/music/e3i_theme.mp3"
 };
 double themeRepeats[] = {
     8.85,
@@ -36,6 +57,13 @@ double themeRepeats[] = {
     0.77,
     0.77,
     0.77,
+    0.77,
+    0.77,
+    0.77,
+    0.77,
+    0.77,
+    0.77,
+    0.77
 };
 bool mapOverlays[] = {
     false,
@@ -43,6 +71,13 @@ bool mapOverlays[] = {
     true,
     true,
     true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
 };
 std::string Type[]= {
     "NULL", // 0
