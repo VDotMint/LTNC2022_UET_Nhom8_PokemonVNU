@@ -41,6 +41,7 @@ bool mPlayer::loadPlayerData() {
         int party0, party1, party2;
         playerDatInStream >> party0 >> party1 >> party2;
         party[0] = party0, party[1] = party1, party[2] = party2;
+        playerDatInStream >> currentHighScore;
         playerDatInStream.close();
     }
     return success;
@@ -53,6 +54,7 @@ bool mPlayer::savePlayerData() {
         playerDatOutStream << name << endl;
         playerDatOutStream << gender << endl << currentMap << endl << xCoords << " " << yCoords << endl;
         playerDatOutStream << party[0].data - pokemonData << " " << party[1].data - pokemonData << " " << party[2].data - pokemonData << endl;
+        playerDatOutStream << currentHighScore << endl;
     } else {
         success = false;
     }

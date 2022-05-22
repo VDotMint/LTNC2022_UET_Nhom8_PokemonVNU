@@ -124,7 +124,7 @@ Move moves[]=
 };
 PokemonData pokemonData[]=
 {
-    {"NULL", 0, 0, 0, 0, 0, 0, {moves,moves,moves,moves}},
+    {"MissingNo.", 0, 0, 1, 0, 0, 0, {moves,moves,moves,moves}},
     {"Tauros", 1, 0, 135, 105, 75, 115, {moves,moves+6,moves+8,moves+15}}, 
     {"Snorlax", 1, 0, 220, 70, 115, 35, {moves+5,moves+1,moves+3,moves+10}},
     {"Charizard", 2, 10, 138, 114, 83, 105, {moves+1,moves+8,moves+3,moves+6}}, 

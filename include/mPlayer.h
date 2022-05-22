@@ -44,4 +44,6 @@ class mPlayer {
         void renderStandingPlayer();
         void renderMovingPlayer();
         void renderRunningPlayer();
+        int getCurrentHighScore() {return currentHighScore;}
+        void updateCurrentHighScore(int newXP) {currentHighScore += newXP;}
 };

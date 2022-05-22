@@ -103,8 +103,9 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
 
         else if (e->type == SDL_MOUSEBUTTONDOWN) // DEBUGGING STATS
         {
-            cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
-            cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
+            // cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
+            // cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
+            cout << mainPlayer.getCurrentHighScore() << endl;
         }
 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && e->key.repeat == 0 && beginMapToBattleTransition == false && beginMapToMapTransition == false) // OPEN MENU
@@ -241,7 +242,7 @@ void gameLoop() {
                 } else if (transitionTransparency >= 255) {
                     inTitleScreen = false;
                     gameTitleScreen.freeTitleScreen();
-                    SDL_Delay(2000);
+                    SDL_Delay(1000);
                 }
                 SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
@@ -350,7 +351,7 @@ void gameLoop() {
                     if (selInterTile != NULL) {
                         d_text.textInit(RenderWindow::renderer, selInterTile->getInterCurrentSentence().c_str(), { 0, 0, 0 });
                         d_text.display(48, 547, RenderWindow::renderer);
-                        if (selInterTile->getX() == 13 && selInterTile->getY() == 16) { // SPECIAL TILE FOR GENERATING NEW POKEMONS UPON TALKING TO
+                        if (selInterTile->getX() == 13 && selInterTile->getY() == 16 && mainPlayer.getCurrentMap() == 4) { // SPECIAL TILE FOR GENERATING NEW POKEMONS UPON TALKING TO
                             if (selInterTile->getInterCurrentSentenceID() == 2) {
                                 srand(time(NULL));
                                 mainPlayer.party[0] = rand() % 36 + 1;

@@ -2,6 +2,8 @@
 #include "RenderWindow.h"
 #include "Battle.h"
 
+/* DEPRECATED TERMINAL BATTLE FUNCTION
+
 void battle(mPlayer &my,Trainer &op) {
 	if (my.activePokemonCount==0) return;
 	int i=0,j=0;
@@ -125,6 +127,8 @@ bool useMove(int input, Pokemon &my, Pokemon &op) {
 	return false;
 }
 
+*/
+
 bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent) {
 	std::string newBattleSentence;
 	if (isOpponent == true) newBattleSentence += "Opposing ";
@@ -168,6 +172,8 @@ bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent) {
 	return false;
 }
 
+/* DEPRECATED TERMINAL BATTLE FUNCTION
+
 void printParty(Pokemon my[]) {
 	for (int i=0;i<3;i++) {
 		cout<<i<<". "<<setw(12)<<setfill(' ')<<left<<my[i].data->name<<my[i].c_hp<<'/'<<setw(9)<<setfill(' ')<<my[i].data->hp<<'\n';
@@ -193,3 +199,5 @@ int selectPokemon(Pokemon my[]) {
 		else return input;
 	}
 };
+
+*/
