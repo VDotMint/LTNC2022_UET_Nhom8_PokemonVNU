@@ -131,6 +131,8 @@ void gameMenu::initMenu() {
 
 	menuSelScreen.initMenuSelectionScreen();
 
+    highScore.createFont("res/font/gamefont.ttf", 25);
+
 	menuDest.x = 538;
 	menuDest.y = 43;
 	SDL_QueryTexture(menuTexture, NULL, NULL, &menuDest.w, &menuDest.h);
@@ -139,17 +141,20 @@ void gameMenu::initMenu() {
 void gameMenu::freeMenu() {
 	SDL_DestroyTexture(menuTexture);
 	menuTexture = NULL;
+
+    menuSelScreen.freeMenuSelectionScreen();
+    highScore.freeText();
+
 	for (int i = 0; i < 4; i++) buttons[i].~MenuButton();
 }
 
 void gameMenu::centralMenuInputProcess() {
-	if (e.type == SDL_KEYDOWN and e.key.keysym.sym == SDLK_ESCAPE and inPokemonView == false) {
+	if (e.type == SDL_KEYDOWN and e.key.keysym.sym == SDLK_ESCAPE and inPokemonView == false and inHighScoreView == false) {
 		inMenu = false;
         return;
 	}
 
-    if (inPokemonView == false) {
-
+    if (inPokemonView == false and inHighScoreView == false) {
         for (int i = 0; i < 4; i++) buttons[i].buttonHandler();
 
         buttons[0].buttonHandler();
@@ -167,6 +172,14 @@ void gameMenu::centralMenuInputProcess() {
             Mix_PlayChannel(-1, gameSaved, 0);
             mainPlayer.savePlayerData();
             inMenu = false;
+            return;
+        }
+
+        buttons[2].buttonHandler();
+        if (buttons[2].clickedOn == true) {
+            buttons[2].clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
+            inHighScoreView = true;
             return;
         }
 
@@ -188,15 +201,29 @@ void gameMenu::centralMenuInputProcess() {
             return;
         }
 	}
+
+    if (inHighScoreView == true) {
+        mainPlayer.playerScoreList.backButton.buttonHandler();
+        if (mainPlayer.playerScoreList.backButton.clickedOn == true) {
+            mainPlayer.playerScoreList.backButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
+            inHighScoreView = false;
+            return;
+        }
+    }
 }
 
 void gameMenu::drawMenu() {
 	SDL_RenderCopy(RenderWindow::renderer, menuTexture, NULL, &menuDest);
 	for (int i = 0; i < 4; i++) buttons[i].drawButton();
 
-    if (inPokemonView == true) {
-        menuSelScreen.display();
-    }
+    std::string currentScoreText = "Score: " + to_string(mainPlayer.getCurrentHighScore());
+    highScore.textInit(RenderWindow::renderer, currentScoreText.c_str(), {0, 0, 0});
+    highScore.display(568, 479, RenderWindow::renderer);
+
+    if (inPokemonView == true) menuSelScreen.display();
+
+    if (inHighScoreView == true) mainPlayer.playerScoreList.drawHighScoreScreen();
 }
 
 // POKEMON SELECTION SCREEN (MENU'S VERSION)

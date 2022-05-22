@@ -103,9 +103,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
 
         else if (e->type == SDL_MOUSEBUTTONDOWN) // DEBUGGING STATS
         {
-            // cout << mainPlayer.getXCoords() << " " << mainPlayer.getYCoords() << " " << mainPlayer.getCurrentMap() << endl;
-            // cout << mainPlayer.party[0].data - pokemonData << " " << mainPlayer.party[1].data - pokemonData << " " << mainPlayer.party[2].data - pokemonData << endl;
-            cout << mainPlayer.getCurrentHighScore() << endl;
+
         }
 
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && e->key.repeat == 0 && beginMapToBattleTransition == false && beginMapToMapTransition == false) // OPEN MENU
@@ -135,14 +133,8 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             }
         } 
 
-        // else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_n && beginMapToBattleTransition != true && finishBattleToMapTransition != true && inDialogue == false && inMenu == false)
-        // {
-        //     beginMapToBattleTransition = true;
-        // }
-
         else if (e->type == SDL_KEYDOWN and mainCamera.getMovementState() == false and e->key.repeat == 0 and inDialogue == false and inMenu == false and beginMapToMapTransition == false and finishMapToMapTransition == false) // BEGIN MOVEMENT
         {
-            // cout << e->key.keysym.sym << " clicked down at game tick: " << SDL_GetTicks() << endl;
             switch (e->key.keysym.sym) {
                 case SDLK_s:
                     mainPlayer.changeFacingDirect(0);
@@ -184,10 +176,6 @@ void battleInputProcess(SDL_Event* e) // THE BATTLE INPUT PROCESS
         if (e->type == SDL_QUIT) {
             quit = true;
         }
-        else if (e->type == SDL_MOUSEBUTTONDOWN)
-        {
-            // cerr << e->motion.x << " " << e->motion.y << endl;
-        }
         mainBattle.centralBattleProcess(e);
     }
 }
@@ -213,6 +201,7 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
                 mPlayer newTempPlayer;
                 mainPlayer = newTempPlayer;
                 mainPlayer.initPlayerTexture();
+                mainPlayer.playerScoreList.resetHighScoreList();
                 mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;

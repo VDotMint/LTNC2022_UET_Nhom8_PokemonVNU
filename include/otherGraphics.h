@@ -4,7 +4,6 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <string>
-
 using namespace std;
 
 class Text {
@@ -88,7 +87,7 @@ class gameMenu {
 		Text highScore;
 		SDL_Rect menuDest;
 		MenuPokemonSelectionScreen menuSelScreen;
-		bool inPokemonView;
+		bool inPokemonView, inHighScoreView;
 	public:
 		gameMenu();
 		~gameMenu();

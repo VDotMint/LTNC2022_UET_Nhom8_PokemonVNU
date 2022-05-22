@@ -344,7 +344,7 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
             }
         }
 
-        // ANIMATE THE OPPONENT USING A MOVE
+        // ANIMATE THE OPPONENT USING A MOVE, HANDLING THE BATTLE SCRIPTS
         else if (turnActionQueue[BattleSen] == "OPPONENT_USE_MOVE") 
         {
             if (opponentPokemonMoveAnim < 21 and inAnim0 == true) {
@@ -460,6 +460,8 @@ void BattleScreen::drawBattleScreen(bool fMtB, bool fBtM) {
 
         else if (turnActionQueue[BattleSen] == "PLAYER_DEFEATED")
         {
+            battlePlayer->playerScoreList.updateHighScoreList(battlePlayer->getCurrentHighScore());
+            battlePlayer->resetCurrentHighScore();
             playerMap->freeMap();
             playerMap->loadMap(gameMaps[1].c_str(), gameTileSets[1].c_str(), gameThemes[1].c_str(), themeRepeats[1], mapOverlays[1]);
             mainPlayer.setPlayerCoords(20, 10, 1);
@@ -588,6 +590,8 @@ void BattleScreen::centralBattleProcess(SDL_Event* e) {
             return;
         } else if (retireButton.clickedOn == true) {
             retireButton.clickedOn = false;
+            battlePlayer->playerScoreList.updateHighScoreList(battlePlayer->getCurrentHighScore());
+            battlePlayer->resetCurrentHighScore();
             playerMap->freeMap();
             playerMap->loadMap(gameMaps[1].c_str(), gameTileSets[1].c_str(), gameThemes[1].c_str(), themeRepeats[1], mapOverlays[1]);
             mainPlayer.setPlayerCoords(20, 10, 1);
@@ -609,6 +613,12 @@ void BattleScreen::localTurnHandler(int move) {
             std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("OPPONENT_FAINT");
+
+            battlePlayer->updateCurrentHighScore(currentOpponentPokemon->data->hp);
+            std::string newXPSentence = battlePlayer->getPlayerName() + " scored " + to_string(currentOpponentPokemon->data->hp) + " points!";
+            battleDialogues.push_back(newXPSentence);
+            turnActionQueue.push_back("PLAYER_GAIN_SCORE");
+
             opponentFaintedPokemons++;
             if (opponentFaintedPokemons < 3) {
                 std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
@@ -663,6 +673,12 @@ void BattleScreen::localTurnHandler(int move) {
                 std::string newSentence = "The opposing " + currentOpponentPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
                 turnActionQueue.push_back("OPPONENT_FAINT");
+
+                battlePlayer->updateCurrentHighScore(currentOpponentPokemon->data->hp);
+                std::string newXPSentence = battlePlayer->getPlayerName() + " scored " + to_string(currentOpponentPokemon->data->hp) + " points!";
+                battleDialogues.push_back(newXPSentence);
+                turnActionQueue.push_back("PLAYER_GAIN_SCORE");
+
                 opponentFaintedPokemons++;
                 if (opponentFaintedPokemons < 3) {
                     std::string newSentence = battleOpponent->name + " sent out " + battleOpponent->party[opponentFaintedPokemons].data->name + "!";
