@@ -172,6 +172,23 @@ bool useMove(int input, Pokemon &my, Pokemon &op, bool isOpponent) {
 	return false;
 }
 
+float moveEvaluate(Move* move,Pokemon &my,Pokemon &op) {
+	float STAB=1,TE;
+	if (move->type==my.data->type||move->type==my.data->stype) STAB=1.5;
+	TE=typeEffectiveness[move->type][op.data->type]*typeEffectiveness[move->type][op.data->stype];
+	return move->power*TE*STAB;
+}
+
+int computerChooseMove(Pokemon &my,Pokemon &op) {
+	int r=0;
+	for (int i=1;i<4;i++) {
+		if (moveEvaluate(my.data->move[i],my,op)>moveEvaluate(my.data->move[r],my,op))
+		r=i;
+	}
+	return r;
+};
+
+
 /* DEPRECATED TERMINAL BATTLE FUNCTION
 
 void printParty(Pokemon my[]) {

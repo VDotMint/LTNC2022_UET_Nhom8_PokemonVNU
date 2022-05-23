@@ -633,7 +633,7 @@ void BattleScreen::localTurnHandler(int move) {
             }
         }
         if (!isKO) { // IF THE OPPONENT SURVIVES THE PLAYER'S ATTACK
-            isKO = useMove(rand() % 4, *currentOpponentPokemon, *currentPlayerPokemon, true);
+            isKO = useMove(computerChooseMove(*currentOpponentPokemon, *currentPlayerPokemon), *currentOpponentPokemon, *currentPlayerPokemon, true);
             if (isKO) {
                 std::string newSentence = currentPlayerPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
@@ -651,7 +651,7 @@ void BattleScreen::localTurnHandler(int move) {
             }
         }
     } else { // THE OPPONENT IS FASTER THAN THE PLAYER
-        isKO = useMove(rand() % 4, *currentOpponentPokemon, *currentPlayerPokemon, true);
+        isKO = useMove(computerChooseMove(*currentOpponentPokemon, *currentPlayerPokemon), *currentOpponentPokemon, *currentPlayerPokemon, true);
         if (isKO) {
             std::string newSentence = currentPlayerPokemon->data->name + " fainted!";
             battleDialogues.push_back(newSentence);
@@ -722,7 +722,7 @@ void BattleScreen::localSwitchPokemonHandler(int selPoke) {
             battleDialogues.push_back(newSentence);
             turnActionQueue.push_back("PLAYER_NEXT_POKEMON");
             playerBeforeAttackHP = currentPlayerPokemon->c_hp;
-            bool isKO = useMove(rand() % 4, *currentOpponentPokemon, *currentPlayerPokemon, true);
+            bool isKO = useMove(computerChooseMove(*currentOpponentPokemon, *currentPlayerPokemon), *currentOpponentPokemon, *currentPlayerPokemon, true);
             if (isKO) {
                 std::string newSentence = currentPlayerPokemon->data->name + " fainted!";
                 battleDialogues.push_back(newSentence);
