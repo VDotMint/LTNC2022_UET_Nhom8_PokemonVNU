@@ -24,26 +24,6 @@ class TitleScreenButton {
         SDL_Texture* getButtonTexture();
 };
 
-class TitleScreen {
-    private:
-        SDL_Texture* splashScreenTexture;
-        SDL_Texture* titleScreenBackground;
-        SDL_Texture* titleScreenLogo;
-        bool presentSaveFile;
-        bool acceptInput;
-    public:
-        TitleScreenButton tsButtons[4];
-        TitleScreen();
-        ~TitleScreen();
-        void freeTitleScreen();
-        void initTitleScreen(bool hasSaveFile);
-        void drawTitleScreen();
-        void stopInputState();
-        bool acceptInputState();
-        void doButtonEvents(SDL_Event* e);
-        void tsButtonInit(); // Place the buttons on the title screen
-};
-
 class SSButton {
 	private:
 		SDL_Texture* buttonTexture;
@@ -58,6 +38,30 @@ class SSButton {
         void freeButton();
 		void drawButton();
         void buttonHandler(SDL_Event* e);
+};
+
+class TitleScreen {
+    private:
+        SDL_Texture* splashScreenTexture;
+        SDL_Texture* titleScreenBackground;
+        SDL_Texture* titleScreenLogo;
+        SDL_Texture* helpScreenTexture;
+        bool presentSaveFile;
+        bool inHelpScreen;
+        bool acceptInput;
+    public:
+        TitleScreenButton tsButtons[4];
+        SSButton backButton;
+        TitleScreen();
+        ~TitleScreen();
+        void freeTitleScreen();
+        void initTitleScreen(bool hasSaveFile);
+        void drawTitleScreen();
+        void stopInputState();
+        bool acceptInputState();
+        void doButtonEvents(SDL_Event* e);
+        void tsButtonInit(); // Place the buttons on the title screen
+        void toggleHelpScreen() {inHelpScreen = true;}
 };
 
 class SetupScreen {

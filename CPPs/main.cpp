@@ -207,6 +207,10 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
                 gameTitleScreen.stopInputState();
                 gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
                 startTSToSetupTransition = true;
+            } else if (gameTitleScreen.tsButtons[2].isClicked() == true) {
+                Mix_PlayChannel(-1, clickedOnSound, 0);
+                gameTitleScreen.tsButtons[2].resetClickState();
+                gameTitleScreen.toggleHelpScreen();
             } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
                 Mix_PlayChannel(-1, clickedOnSound, 0);
                 quit = true;

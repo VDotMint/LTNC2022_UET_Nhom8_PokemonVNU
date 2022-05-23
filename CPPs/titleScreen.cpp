@@ -38,16 +38,20 @@ void TitleScreen::freeTitleScreen() {
     SDL_DestroyTexture(splashScreenTexture);
     SDL_DestroyTexture(titleScreenBackground);
     SDL_DestroyTexture(titleScreenLogo);
+    SDL_DestroyTexture(helpScreenTexture);
     splashScreenTexture = NULL;
     titleScreenBackground = NULL;
     titleScreenLogo = NULL;
+    helpScreenTexture = NULL;
     logoYCoord = 175;
+    backButton.freeButton();
 }
 
 void TitleScreen::initTitleScreen(bool hasSaveFile) {
     splashScreenTexture = IMG_LoadTexture(RenderWindow::renderer, "res/titlescreen/splash.png");
     titleScreenBackground = IMG_LoadTexture(RenderWindow::renderer, "res/titlescreen/background.png");
     titleScreenLogo = IMG_LoadTexture(RenderWindow::renderer, "res/titlescreen/logo.png");
+    helpScreenTexture = IMG_LoadTexture(RenderWindow::renderer, "res/titlescreen/helpScreen.png");
     presentSaveFile = hasSaveFile;
 
     SDL_SetTextureBlendMode(splashScreenTexture, SDL_BLENDMODE_BLEND);
@@ -150,6 +154,11 @@ void TitleScreen::drawTitleScreen() {
         }
     }
     if (buttonAnimPos3 == 0) acceptInput = true;
+
+    if (inHelpScreen == true) {
+        SDL_RenderCopy(RenderWindow::renderer, helpScreenTexture, NULL, NULL);
+        backButton.drawButton();
+    }
 }
 
 void TitleScreen::tsButtonInit() {
@@ -164,6 +173,8 @@ void TitleScreen::tsButtonInit() {
         tsButtons[2].initTSBTexture("res/titlescreen/button_help.png");
         tsButtons[3].initTSBTexture("res/titlescreen/button_quit.png");
     }
+
+    backButton.initSSB("res/titlescreen/back_button.png", 18, 636, 147, 56, 362, 139);
 }
 
 bool TitleScreen::acceptInputState() {
@@ -182,6 +193,16 @@ void TitleScreen::doButtonEvents(SDL_Event* e) {
     } else {
         for (int i = 1; i < 4; i++) {
             tsButtons[i].buttonHandler(e);
+        }
+    }
+
+    if (inHelpScreen == true) {
+        backButton.buttonHandler(e);
+        if (backButton.clickedOn == true) {
+            backButton.clickedOn = false;
+            Mix_PlayChannel(-1, clickedOnSound, 0);
+            inHelpScreen = false;
+            return;
         }
     }
 }
