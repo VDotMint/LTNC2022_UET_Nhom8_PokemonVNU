@@ -10,7 +10,7 @@ static int moveFrame = 0, walkFrame = 0;
 
 mPlayer::mPlayer() {
     gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
-    name = "NO NAME";
+    name = "Player";
     currentMap = 1; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 = STUDENT BUTTON ROOM , 5 -> 10 = CHALLENGE ROOMS
     xCoords = 20, yCoords = 10;
     faceDirection = 0; // 0 = SOUTH, 1 = EAST, 2 = NORTH, 3 = WEST
@@ -71,6 +71,21 @@ bool mPlayer::savePlayerData() {
         success = false;
     }
     return success;
+}
+
+void mPlayer::resetPlayerData() {
+    gender = 0; // -1 = UNDEFINED, 0 = MALE, 1 = FEMALE
+    name = "Player";
+    currentMap = 1; // 0 = G2 EXTERIOR, 1 = E3 EXTERIOR, 2 = E3 INTERIOR, 3 = G2 INTERIOR, 4 = STUDENT BUTTON ROOM , 5 -> 10 = CHALLENGE ROOMS
+    xCoords = 20, yCoords = 10;
+    faceDirection = 0;
+    currentHighScore = 0;
+    playerScoreList.resetHighScoreList();
+    SDL_DestroyTexture(playerTexture);
+    initPlayerTexture();
+    party[0] = 0;
+    party[1] = 0;
+    party[2] = 0;
 }
 
 int mPlayer::getGender() {
@@ -207,10 +222,10 @@ HighScoreList::HighScoreList() {}
 HighScoreList::~HighScoreList() {}
 
 void HighScoreList::initHighScoreList() {
-    head = new HighScoreListNode;
+    head = new HighScoreListNode(0);
     HighScoreListNode* iterNode = head;
     for (int i = 0; i < 4; i++) {
-        HighScoreListNode* nextNode = new HighScoreListNode;
+        HighScoreListNode* nextNode = new HighScoreListNode(0);
         iterNode->nextHighScore = nextNode;
         iterNode = nextNode;
     }
@@ -230,6 +245,10 @@ void HighScoreList::freeHighScoreList() {
         p = p->nextHighScore;
         delete p1;
     }
+
+    SDL_DestroyTexture(highScoreScreenText);
+    for (int i = 0; i < 5; i++) highScoreTexts[i].freeText();
+    backButton.~MenuButton();
 }
 
 void HighScoreList::loadHighScoreList(int highScoreList[]) {

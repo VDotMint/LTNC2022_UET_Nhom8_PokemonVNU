@@ -98,6 +98,7 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) // QUIT GAME
         {
+            mainPlayer.savePlayerData();
             quit = true;
         }
 
@@ -198,10 +199,11 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
             } else if (gameTitleScreen.tsButtons[1].isClicked() == true) {
                 Mix_PlayChannel(-1, clickedOnSound, 0);
                 gameTitleScreen.tsButtons[1].resetClickState();
-                mPlayer newTempPlayer;
-                mainPlayer = newTempPlayer;
-                mainPlayer.initPlayerTexture();
-                mainPlayer.playerScoreList.resetHighScoreList();
+                
+                playerMap->freeMap();
+                playerMap->loadMap(gameMaps[1].c_str(), gameTileSets[1].c_str(), gameThemes[1].c_str(), themeRepeats[1], mapOverlays[1]);
+                mainPlayer.resetPlayerData();
+
                 mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 gameTitleScreen.stopInputState();
                 tsToMapTransition = true;

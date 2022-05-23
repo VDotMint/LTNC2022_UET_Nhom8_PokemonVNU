@@ -68,6 +68,7 @@ class mPlayer {
 
         bool loadPlayerData();
         bool savePlayerData();
+        void resetPlayerData();
 
         int getGender();
         std::string getPlayerName();

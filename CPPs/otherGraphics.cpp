@@ -160,9 +160,13 @@ void gameMenu::centralMenuInputProcess() {
         buttons[0].buttonHandler();
         if (buttons[0].clickedOn == true) {
             buttons[0].clickedOn = false;
-            Mix_PlayChannel(-1, clickedOnSound, 0);
-            menuSelScreen.updateMenuSelectionScreen();
-            inPokemonView = true;
+            if (mainPlayer.party[0].data - pokemonData == 0) {
+                Mix_PlayChannel(-1, deniedSound, 0);
+            } else {
+                Mix_PlayChannel(-1, clickedOnSound, 0);
+                menuSelScreen.updateMenuSelectionScreen();
+                inPokemonView = true;
+            }
             return;
         }
 
