@@ -2,6 +2,8 @@
 Formerly Pokémon VNU but that is only possible if LTNC is the only subject in the semester.
 
 ## Giới thiệu về Game:
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/29592868/169844629-622cf24d-a0f9-4ed0-bc52-dda1f0b21964.png">
+
 - Pokémon UET là một game mang tính tái tạo lại một phần nhỏ của tựa game Pokémon Emerald của GAME FREAK trong ngôn ngữ lập trình C++ và SDL2.0.
 - Những map của game được thiết kế lại để chúng nhìn giống 2 tòa nhà chính của Trường Đại học Công Nghệ, ĐHQGHN (nhà G2 và nhà E3).
 - Nhà G2 đã được trưng dụng làm một cơ sở để người chơi chiến đấu Pokémon mới một loạt NPC trong Game.
