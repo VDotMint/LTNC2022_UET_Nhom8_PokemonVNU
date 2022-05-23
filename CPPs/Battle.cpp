@@ -180,12 +180,21 @@ float moveEvaluate(Move* move,Pokemon &my,Pokemon &op) {
 }
 
 int computerChooseMove(Pokemon &my,Pokemon &op) {
-	int r=0;
-	for (int i=1;i<4;i++) {
-		if (moveEvaluate(my.data->move[i],my,op)>moveEvaluate(my.data->move[r],my,op))
-		r=i;
+	srand(time(NULL));
+
+	int n = rand() % 2;
+
+	if (n == 0) {
+		int newr = rand() % 4;
+		return newr;
+	} else {
+		int r=0;
+		for (int i=1;i<4;i++) {
+			if (moveEvaluate(my.data->move[i],my,op)>moveEvaluate(my.data->move[r],my,op))
+			r=i;
+		}
+		return r;
 	}
-	return r;
 };
 
 
