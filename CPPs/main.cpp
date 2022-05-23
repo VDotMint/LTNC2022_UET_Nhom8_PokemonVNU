@@ -23,7 +23,7 @@ bool initSystem() {
     IMG_Init(IMG_INIT_PNG);
     TTF_Init();
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
-    renderWindow.create("Pokémon VNU");
+    renderWindow.create("Pokémon UET");
 
     // LOAD SAVE FILE
     if (!mainPlayer.loadPlayerData()) {
@@ -37,6 +37,9 @@ bool initSystem() {
     // INIT THE TITLE SCREEN
     gameTitleScreen.initTitleScreen(hasSaveFile);
     gameTitleScreen.tsButtonInit();
+
+    // INIT THE SETUP SCREEN
+    mainSetup.initSetupScreen();
 
     // INIT THE PLAYER'S CURRENT MAP
     playerMap = new Map;
@@ -69,6 +72,7 @@ bool initSystem() {
 
 void freeMainAssets() {
     mainMenu.freeMenu();
+    mainSetup.freeSetupScreen();
     playerMap->freeOverlayElements();
     playerMap->freeMap();
 
@@ -180,8 +184,8 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
 { 
     while (SDL_PollEvent(e)) {
         if (e->type == SDL_QUIT) {
-            mainPlayer.savePlayerData();
             quit = true;
+            gameTitleScreen.freeTitleScreen();
         }
         if (gameTitleScreen.acceptInputState() == true)
         {
@@ -201,7 +205,8 @@ void titleScreenInputProcess(SDL_Event* e) // ALREADY MOSTLY FINISHED. DO NOT TO
 
                 mainCamera.setCameraPos((mainPlayer.getXCoords() - 6) * 64, (mainPlayer.getYCoords() - 5) * 64);
                 gameTitleScreen.stopInputState();
-                tsToMapTransition = true;
+                gameMusic.loadMusic(gameThemes[mainPlayer.getCurrentMap()].c_str(), themeRepeats[mainPlayer.getCurrentMap()]);
+                startTSToSetupTransition = true;
             } else if (gameTitleScreen.tsButtons[3].isClicked() == true) {
                 Mix_PlayChannel(-1, clickedOnSound, 0);
                 quit = true;
@@ -234,9 +239,60 @@ void gameLoop() {
                 SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
             }
 
+            if (startTSToSetupTransition == true) {
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 17;
+                } else if (transitionTransparency >= 255) {
+                    inTitleScreen = false;
+                    inSetupScreen = true;
+                    startTSToSetupTransition = false;
+                    finishTSToSetupTransition = true;
+                    gameTitleScreen.freeTitleScreen();
+                    SDL_Delay(500);
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
             renderWindow.display();
 
             SDL_Delay(1000/60);
+        }
+
+        else if (inSetupScreen == true)
+        {
+            while (SDL_PollEvent(&e)) mainSetup.setupScreenInputProcess(&e);
+
+            renderWindow.drawColor(0, 0, 0);
+            renderWindow.clear();
+
+            mainSetup.drawSetupScreen();
+
+            if (finishTSToSetupTransition == true) {
+                if (transitionTransparency > 0) {
+                    transitionTransparency -= 17;
+                } else if (transitionTransparency <= 0) {
+                    transitionTransparency = 0;
+                    finishTSToSetupTransition = false;
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            if (tsToMapTransition == true) {
+                if (transitionTransparency < 255) {
+                    transitionTransparency += 17;
+                } else if (transitionTransparency >= 255) {
+                    inSetupScreen = false;
+                    SDL_Delay(1000);
+                }
+                SDL_SetTextureAlphaMod(blackTransitionTexture, transitionTransparency);
+                SDL_RenderCopy(RenderWindow::renderer, blackTransitionTexture, NULL, NULL);
+            }
+
+            renderWindow.display();
+
+            SDL_Delay(1000 / 60);
         }
         
         else if (inBattle == true) // PLAYER IN BATTLE

@@ -204,6 +204,7 @@ Music gameMusic;
 mPlayer mainPlayer;
 gameCam mainCamera;
 
+SetupScreen mainSetup;
 BattleScreen mainBattle;
 gameMenu mainMenu;
 
@@ -214,6 +215,9 @@ bool beginMapToMapTransition = false;
 bool finishMapToMapTransition = false;
 int transitionTransparency = 0;
 
+bool startTSToSetupTransition = false;
+bool finishTSToSetupTransition = false;
+
 bool beginMapToBattleTransition = false;
 bool finishMapToBattleTransition = false;
 bool beginBattleToMapTransition = false;
@@ -223,6 +227,7 @@ bool hasSaveFile = true;
 bool quit = false;
 
 bool inTitleScreen = true; // SET TO FALSE TO SKIP TITLE SCREEN FOR FASTER DEBUG
+bool inSetupScreen = false;
 bool inBattle = false;
 bool inDialogue = false;
 bool inMenu = false;

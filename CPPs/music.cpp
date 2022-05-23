@@ -17,6 +17,7 @@ void Music::freeMusic() {
 }
 
 void Music::loadMusic(const char* path, double repeatP) {
+    freeMusic();
     gameTheme = Mix_LoadMUS(path);
     repeatPoint = repeatP;
 }

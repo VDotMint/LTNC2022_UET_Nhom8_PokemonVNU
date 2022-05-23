@@ -79,6 +79,7 @@ class mPlayer {
         SDL_Texture* getPlayerTexture();
         SDL_Rect* getCurrentFrame();
 
+        void setPlayerGender(int gender);
         void changeFacingDirect(int direct);
         void initPlayerTexture();
         void setPlayerCoords(int x, int y, int mapID);

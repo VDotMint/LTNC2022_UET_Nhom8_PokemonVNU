@@ -1,5 +1,6 @@
 #include "titleScreen.h"
 #include "RenderWindow.h"
+#include "Variables.h"
 #include <iostream>
 
 // TITLE SCREEN:
@@ -268,6 +269,50 @@ SDL_Texture* TitleScreenButton::getButtonTexture() {
 SetupScreen::SetupScreen() {}
 SetupScreen::~SetupScreen() {}
 
+void SetupScreen::initSetupScreen() {
+    chooseUrGender.createFont("res/font/gamefont.ttf", 40);
+    rubyChoice.initSSB("res/titlescreen/rubybutton.png", 111, 157, 241, 444, 241, 444);
+    sapphireChoice.initSSB("res/titlescreen/sapphirebutton.png", 480, 157, 241, 444, 241, 444);
+}
+
+void SetupScreen::freeSetupScreen() {
+    chooseUrGender.freeText();
+    rubyChoice.freeButton();
+    sapphireChoice.freeButton();
+}
+
+void SetupScreen::drawSetupScreen() {
+    chooseUrGender.textInit(RenderWindow::renderer, "Choose your character:", {255,255,255});
+    chooseUrGender.display(196, 58, RenderWindow::renderer);
+
+    rubyChoice.drawButton();
+    sapphireChoice.drawButton();
+}
+
+void SetupScreen::setupScreenInputProcess(SDL_Event* e) {
+    if (e->type == SDL_QUIT) {
+        quit = true;
+    }
+
+    rubyChoice.buttonHandler(e);
+    if (rubyChoice.clickedOn == true && tsToMapTransition == false) {
+        rubyChoice.clickedOn = false;
+        Mix_PlayChannel(-1, clickedOnSound, 0);
+        mainPlayer.setPlayerGender(0);
+        tsToMapTransition = true;
+        return;
+    }
+
+    sapphireChoice.buttonHandler(e);
+    if (sapphireChoice.clickedOn == true && tsToMapTransition == false) {
+        sapphireChoice.clickedOn = false;
+        Mix_PlayChannel(-1, clickedOnSound, 0);
+        mainPlayer.setPlayerGender(1);
+        tsToMapTransition = true;
+        return;
+    }
+}
+
 // SETUP SCREEN BUTTONS
 
 SSButton::SSButton() {}
@@ -275,5 +320,52 @@ SSButton::~SSButton() {}
 
 void SSButton::initSSB(const char* path, int x, int y, int w, int h, int BW, int BH) {
     buttonTexture = IMG_LoadTexture(RenderWindow::renderer, path);
-    
+    buttonDest = {x, y, w, h};
+    for (int i = 0; i < 3; i++) {
+        buttonFrame[i] = {i*BW, 0, BW, BH};
+    }
+}
+
+void SSButton::freeButton() {
+    SDL_DestroyTexture(buttonTexture);
+    buttonTexture = NULL;
+}
+
+void SSButton::drawButton() {
+    SDL_RenderCopy(RenderWindow::renderer, buttonTexture, &buttonFrame[currentButtonFrame], &buttonDest);
+}
+
+void SSButton::buttonHandler(SDL_Event* e) {
+    if (e->type == SDL_MOUSEMOTION or e->type == SDL_MOUSEBUTTONDOWN or e->type == SDL_MOUSEBUTTONUP) {
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+
+        bool inside = true;
+        if (x < buttonDest.x) inside = false;
+        else if (x > buttonDest.x + buttonDest.w) inside = false;
+        else if (y < buttonDest.y) inside = false;
+        else if (y > buttonDest.y + buttonDest.h) inside = false;
+
+        if (inside == false) {
+            currentButtonFrame = 0;
+        } else {
+            switch (e->type) {
+                case SDL_MOUSEMOTION:
+                currentButtonFrame = 1;
+                break;
+
+                case SDL_MOUSEBUTTONDOWN:
+                currentButtonFrame = 2;
+                break;
+
+                case SDL_MOUSEBUTTONUP:
+                currentButtonFrame = 1;
+                clickedOn = true;
+                break;
+
+                default:
+                break;
+            }
+        }
+    }
 }

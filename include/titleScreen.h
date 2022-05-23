@@ -48,14 +48,16 @@ class SSButton {
 	private:
 		SDL_Texture* buttonTexture;
         SDL_Rect buttonDest;
-        SDL_Rect buttonFrame;
+        SDL_Rect buttonFrame[3];
+        int currentButtonFrame;
 	public:
 		bool clickedOn = false;
 		SSButton();
 		~SSButton();
 		void initSSB(const char* path, int x, int y, int w, int h, int BW, int BH);
+        void freeButton();
 		void drawButton();
-        void buttonHandler();
+        void buttonHandler(SDL_Event* e);
 };
 
 class SetupScreen {
@@ -67,5 +69,7 @@ class SetupScreen {
         SetupScreen();
         ~SetupScreen();
         void initSetupScreen();
+        void freeSetupScreen();
         void drawSetupScreen();
+        void setupScreenInputProcess(SDL_Event* e);
 };

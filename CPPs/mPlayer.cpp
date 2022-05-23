@@ -140,6 +140,18 @@ void mPlayer::changeFacingDirect(int direct) {
     faceDirection = direct;
 }
 
+void mPlayer::setPlayerGender(int _gender) {
+    if (_gender == 0) {
+        name = "Ruby";
+        gender = 0;
+    } else if (_gender == 1) {
+        name = "Sapphire";
+        gender = 1;
+    }
+    SDL_DestroyTexture(playerTexture);
+    initPlayerTexture();
+}
+
 void mPlayer::renderStandingPlayer() {
     switch (faceDirection) {
         case 0:
