@@ -102,11 +102,6 @@ void overworldInputProcess(SDL_Event* e, int pCX, int pCY) {
             quit = true;
         }
 
-        else if (e->type == SDL_MOUSEBUTTONDOWN) // DEBUGGING STATS
-        {
-
-        }
-
         else if (e->type == SDL_KEYDOWN && e->key.keysym.sym == SDLK_v && e->key.repeat == 0 && beginMapToBattleTransition == false && beginMapToMapTransition == false) // OPEN MENU
         { 
             inMenu = true;

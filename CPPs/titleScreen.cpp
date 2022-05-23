@@ -262,3 +262,18 @@ void TitleScreenButton::resetClickState() {
 SDL_Texture* TitleScreenButton::getButtonTexture() {
     return buttonTexture;
 }
+
+// SETUP SCREEN
+
+SetupScreen::SetupScreen() {}
+SetupScreen::~SetupScreen() {}
+
+// SETUP SCREEN BUTTONS
+
+SSButton::SSButton() {}
+SSButton::~SSButton() {}
+
+void SSButton::initSSB(const char* path, int x, int y, int w, int h, int BW, int BH) {
+    buttonTexture = IMG_LoadTexture(RenderWindow::renderer, path);
+    
+}

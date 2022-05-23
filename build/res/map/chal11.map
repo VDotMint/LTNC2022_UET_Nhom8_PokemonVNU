@@ -64,16 +64,16 @@ END_MAP
 END_COLLISION_MAP
 MAP_NEXT_NPC
 12 13 0 1
-res/npcsprite/npcSprite11.png
-You there, I think it's time we go for an epic spar.
-Let's go!
+res/npcsprite/npcSprite10.png
+Hello Trainer!
+I too, am an Ace Trainer!
+Prepare to be crushed!
 NPC_PREBATTLE_END
-Gentleman Russell
-res/battleassets/opponentSprites/opponentSprite3.png
-This building here used to be the University of Business and Economics.
-But it has ceased to exist 30 years ago after AI fully and utterly obsoleted the business majors.
-Now all the aspiring business students are relegated to battling on cryptocurrency and NFTs markets.
-Powered by engineering students of course.
+Ace Trainer Susie
+res/battleassets/opponentSprites/opponentSprite8.png
+You think it's a little weird that they gave me the clothing of an accountant too, eh?
+I find it quite rad of them as well.
+But welp, no-life developers...
 NPC_DIALOGUE_END
 NPC_DATA_STOP
 WARP_DATA_STOP

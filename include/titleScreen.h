@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "otherGraphics.h"
 
 class TitleScreenButton {
     private:
@@ -41,4 +42,30 @@ class TitleScreen {
         bool acceptInputState();
         void doButtonEvents(SDL_Event* e);
         void tsButtonInit(); // Place the buttons on the title screen
+};
+
+class SSButton {
+	private:
+		SDL_Texture* buttonTexture;
+        SDL_Rect buttonDest;
+        SDL_Rect buttonFrame;
+	public:
+		bool clickedOn = false;
+		SSButton();
+		~SSButton();
+		void initSSB(const char* path, int x, int y, int w, int h, int BW, int BH);
+		void drawButton();
+        void buttonHandler();
+};
+
+class SetupScreen {
+    private:
+        Text chooseUrGender;
+        SSButton rubyChoice;
+        SSButton sapphireChoice;
+    public:
+        SetupScreen();
+        ~SetupScreen();
+        void initSetupScreen();
+        void drawSetupScreen();
 };

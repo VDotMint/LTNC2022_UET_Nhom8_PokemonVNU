@@ -64,16 +64,18 @@ END_MAP
 END_COLLISION_MAP
 MAP_NEXT_NPC
 12 13 0 1
-res/npcsprite/npcSprite11.png
-You there, I think it's time we go for an epic spar.
-Let's go!
+res/npcsprite/npcSprite13.png
+Hello challenger! Welcome to the Pokemon UET Challenge!
+You see, whether you are starting this challenge for the first time or the nth time,...
+...I will always be your first opponent!
+So get ready and good luck.
+I could be a cake walk, but could also be your toughest opponent yet!
 NPC_PREBATTLE_END
-Gentleman Russell
-res/battleassets/opponentSprites/opponentSprite3.png
-This building here used to be the University of Business and Economics.
-But it has ceased to exist 30 years ago after AI fully and utterly obsoleted the business majors.
-Now all the aspiring business students are relegated to battling on cryptocurrency and NFTs markets.
-Powered by engineering students of course.
+Pokemon Trainer Dust
+res/battleassets/opponentSprites/opponentSprite10.png
+Congratulations on defeating me!
+Go on! Advance to the next room and enjoy the fierceness of the Pokemon UET Challenge.
+I might not see you again in the challenge, but best of luck to you!
 NPC_DIALOGUE_END
 NPC_DATA_STOP
 WARP_DATA_STOP

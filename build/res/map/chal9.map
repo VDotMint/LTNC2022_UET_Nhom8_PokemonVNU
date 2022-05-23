@@ -64,16 +64,17 @@ END_MAP
 END_COLLISION_MAP
 MAP_NEXT_NPC
 12 13 0 1
-res/npcsprite/npcSprite11.png
-You there, I think it's time we go for an epic spar.
-Let's go!
+res/npcsprite/npcSprite2.png
+Bonjour challenger!
+I maybe a young student, but I bring the heat to every battle!
+Do not underestimate my poweress! It's time we overwhelm you!
+En garde!
 NPC_PREBATTLE_END
-Gentleman Russell
-res/battleassets/opponentSprites/opponentSprite3.png
-This building here used to be the University of Business and Economics.
-But it has ceased to exist 30 years ago after AI fully and utterly obsoleted the business majors.
-Now all the aspiring business students are relegated to battling on cryptocurrency and NFTs markets.
-Powered by engineering students of course.
+Middleschooler Antoine
+res/battleassets/opponentSprites/opponentSprite5.png
+I would say I'm better that match, and you lucked out a victory...
+But still, a win is a win, and I look forward to getting my revenge soon!
+Au revoir...
 NPC_DIALOGUE_END
 NPC_DATA_STOP
 WARP_DATA_STOP
