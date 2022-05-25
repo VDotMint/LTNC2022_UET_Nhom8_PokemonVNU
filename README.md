@@ -33,6 +33,20 @@ Formerly Pokémon VNU but that is only possible if LTNC is the only subject in t
 ## Instruction
 ![image](https://user-images.githubusercontent.com/29592868/169816056-b2d8eeec-f55c-4a95-84ab-6aee60790fa6.png)
 
-## Typing
+## Game mechanic
+### Speed
+Mỗi lượt, Pokemon có chỉ số speed cao hơn sẽ được tấn công trước.
+Nếu bằng nhau, người chơi được ưu tiên trước.
+### Typing
+Mỗi Pokemon sẽ mang 1 hoặc 2 hệ.
+Mỗi một chiêu thức sẽ mang 1 hệ.
+#### STAB
+Same Type Attack Bonus:
+  Khi hệ của Pokemon tấn công trùng với vệ của chiêu thức, sát thương sẽ được tăng 50%.
+#### Type Effectiveness
+Tương tác các hệ được cho bởi bảng sau
+
+
+
 ![image](https://user-images.githubusercontent.com/29592868/169819959-e4ae407b-d83b-4869-bb7a-b08ab931670c.png)
 
